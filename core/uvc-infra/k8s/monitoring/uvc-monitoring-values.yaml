@@ -1,0 +1,40 @@
+grafana:
+  ingress:
+    enabled: true
+    hosts:
+      - monitoring.univocal.de   # Ersetze dies mit deiner Domain oder einer IP-Adresse
+    paths:
+      - /
+    annotations:
+      kubernetes.io/ingress.class: nginx  # Falls du einen NGINX-Ingress-Controller verwendest
+    tls:  # Optional, falls du TLS/HTTPS möchtest
+      - hosts:
+          - monitoring.univocal.de
+        secretName: uvc-de-monitoring-tls  # Erstelle ein entsprechendes TLS-Secret oder nutze Cert-Manager
+  persistence:
+    enabled: true
+    storageClassName: ionos-enterprise-hdd        # Passe ggf. deinen StorageClass-Namen an
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+prometheus:
+  prometheusSpec:    
+    storageSpec: 
+     volumeClaimTemplate:
+       spec:
+         storageClassName: ionos-enterprise-hdd
+         accessModes: ["ReadWriteOnce"]
+         resources:
+           requests:
+             storage: 50Gi
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ionos-enterprise-hdd
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi

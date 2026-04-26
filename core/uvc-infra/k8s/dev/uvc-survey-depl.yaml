@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: uvc-survey
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: uvc-survey
+  template:
+    metadata:
+      labels:
+        app: uvc-survey
+    spec:
+      initContainers:
+        - name: wait-for-redis
+          image: busybox
+          command: ['sh', '-c', 'until nc -z uvc-redis-srv 6379; do echo "Warte auf Redis..."; sleep 2; done;']
+        - name: migration
+          image: uvc/uvc-survey
+          env:
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+          command: ["pnpm", "--filter", "uvc-survey", "run", "migrate-up"]
+      containers:
+        - name: uvc-survey
+          image: uvc/uvc-survey
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          ports:
+            - containerPort: 3007
+          #livenessProbe:
+          #  httpGet:
+          #    path: /health
+          #    port: 3007
+          #  initialDelaySeconds: 180
+          #  periodSeconds: 20
+          #  timeoutSeconds: 5
+          #readinessProbe:
+          #  httpGet:
+          #    path: /health
+          #    port: 3007
+          #  initialDelaySeconds: 90
+          #  periodSeconds: 20
+          #  timeoutSeconds: 5
+          env:
+            - name: JWT_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-encryption-key
+                  key: schluessel
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+            - name: BREVO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: brevo_key
+            - name: ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: mode
+            - name: PUBLIC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: public_url
+            - name: NETWORK_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: network_key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-survey-srv
+spec:
+  selector:
+    app: uvc-survey
+  ports:
+    - name: uvc-survey
+      protocol: TCP
+      port: 3007
+      targetPort: 3007

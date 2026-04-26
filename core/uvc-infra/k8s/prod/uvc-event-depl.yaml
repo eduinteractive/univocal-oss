@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: uvc-event
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: uvc-event
+  template:
+    metadata:
+      labels:
+        app: uvc-event
+    spec:
+      imagePullSecrets:
+        - name: REGISTRY_SECRET_PLACEHOLDER
+      initContainers:
+        - name: wait-for-redis
+          image: busybox
+          command: ['sh', '-c', 'until nc -z uvc-redis-srv 6379; do echo "Warte auf Redis..."; sleep 2; done;']
+        - name: migration
+          image: REGISTRY_URL_PLACEHOLDER/uvc-event:latest
+          env:
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+          command: ["npm", "run", "migrate-up"]
+      containers:
+        - name: uvc-event
+          image: REGISTRY_URL_PLACEHOLDER/uvc-event:latest
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          ports:
+            - containerPort: 3008
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3008
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3008
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+          env:
+            - name: JWT_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-encryption-key
+                  key: schluessel
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+            - name: BREVO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: brevo_key
+            - name: ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: mode
+            - name: PUBLIC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: public_url
+            - name: S3_ENDPOINT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: endpoint_url
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: access_key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: secret_key
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: bucket_name
+            - name: NETWORK_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: network_key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-event-srv
+spec:
+  selector:
+    app: uvc-event
+  ports:
+    - name: uvc-event
+      protocol: TCP
+      port: 3008
+      targetPort: 3008

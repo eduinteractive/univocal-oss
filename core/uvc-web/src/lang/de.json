@@ -1,0 +1,1241 @@
+{
+    "COMMON": {
+        "SITE_SUBTITLE": "Vernetzung - Zusammenarbeit - Souveränität",
+        "ACTIONS": "Aktionen",
+        "YES": "Ja",
+        "NO": "Nein",
+        "CLOSE": "Schließen",
+        "STATUS": "Status",
+        "ALL": "Alle",
+        "MORE": "Mehr",
+        "UNKNOWN": "Unbekannt",
+        "SEND": "Absenden",
+        "NEXT": "Weiter",
+        "BACK": "Zurück",
+        "PUBLIC": "Öffentlich",
+        "PRIVATE": "Nicht öffentlich",
+        "CREATED_AT": "Erstellt am",
+        "UPDATED_AT": "Zuletzt aktualisiert am",
+        "EXPORT": "Export",
+        "DELETE": "Löschen",
+        "EDIT": "Bearbeiten",
+        "DROPZONE_IMAGE": "Bild reinziehen oder anklicken und auswählen",
+        "DROPZONE_IMAGE_MAX_SIZE": "Maximale Dateigröße: 5MB",
+        "DROPZONE_TO_BIG": "Die Datei ist zu groß oder hat ein falsches Format.",
+        "DROPZONE_IMAGE_DELETE": "Bild löschen",
+        "WAIT": "Bitte warten...",
+        "DELETE_TITLE": "Bist du dir wirklich sicher?",
+        "DELETE_DESCRIPTION": "Mit dem Löschen dieses Eintrags wird dieser unwiderruflich gelöscht.",
+        "MATERIALS": "Materialien",
+        "MULTIDROPZONE_FILES": "Dateien reinziehen oder anklicken und auswählen",
+        "MULTIDROPZONE_FILES_MAX_SIZE": "Maximale Dateigröße: 5MB",
+        "MULTIDROPZONE_FILES_DELETE": "Dateien löschen",
+        "MULTIDROPZONE_FILES_UPLOADED": "Datei(en) hochgeladen",
+        "ACTIVE": "Aktiv",
+        "INACTIVE": "Inaktiv",
+        "COPY_LINK": "Link kopieren",
+        "COPY_LINK_SUCCESS": "Der Link wurde in die Zwischenablage kopiert.",
+        "APP_TITLE": "Univocal",
+        "ADDRESS": {
+            "ADDRESS": "Adresse",
+            "STREET": "Straße",
+            "ZIP": "PLZ",
+            "CITY": "Ort",
+            "PHONE": "Telefon",
+            "WEBSITE": "Webseite"
+        },
+        "CONTACT": {
+            "EMAIL": "E-Mail-Adresse"
+        },
+        "NOTIFICATIONS_EMPTY": "Keine Benachrichtigungen",
+        "PRIVACY_NOTICE": "Datenschutzhinweis",
+        "PRIVACY_DESCRIPTION": "Achtung: Bevor du Inhalte hinzufügst, die personenbezogene Daten (Namen, Adressen, E-Mail-Adressen, Telefonnummern, etc.) beinhalten, solltest du vorher die entsprechenden Einwilligungen einholen.",
+        "GENERATION_NOTICE": "Generiert auf Univocal am",
+        "DATA_EMPTY": "Keine Einträge vorhanden",
+        "VIEW_ACCESS_EDIT_TITLE": "Änderung der Sichtbarkeit",
+        "VIEW_ACCESS_LESS_NOTICE": "Achtung: Mit dieser Änderung wird die Sichtbarkeit verringert. Dies kann dazu führen, dass einige Nutzer*innen nicht mehr auf die Daten zugreifen können. Überlege dir gut, ob du diese Änderung durchführen möchtest.",
+        "VIEW_ACCESS_HIGH_NOTICE": "Achtung: Mit dieser Änderung wird die Sichtbarkeit erhöht. Dies kann dazu führen, dass mehr Nutzer*innen auf die Daten zugreifen können. Überlege dir gut, ob du diese Änderung (z.B. wegen Datenschutzproblematiken) durchführen möchtest.",
+        "ATTRIBUTES": {
+            "TITLE": "Titel",
+            "TITLE_PLACEHOLDER": "Titel eingeben...",
+            "TITLE_ERROR": "Bitte gebe einen Titel ein.",
+            "DESCRIPTION": "Beschreibung",
+            "DESCRIPTION_PLACEHOLDER": "Beschreibung eingeben...",
+            "NAME": "Name",
+            "VIEW_ACCESS": "Sichtbarkeit",
+            "VIEW_ACCESS_PLACEHOLDER": "Sichtbarkeit auswählen...",
+            "FILL_ALL_FIELDS": "Bitte füllen Sie alle Felder aus.",
+            "FILL_REQUIRED_FIELDS": "Bitte füllen Sie alle Pflichtfelder aus.",
+            "COLOR": "Farbe",
+            "COLOR_PLACEHOLDER": "Farbe auswählen..."
+        }
+    },
+    "ADMIN": {
+        "DASHBOARD_TITLE": "Dashboard - Administration",
+        "STATISTICS": {
+            "TOTAL_USERS": "Gesamtanzahl Benutzer",
+            "MEDIAN_TENANT_SIZE": "Median der Gruppengröße",
+            "TENANTS_WITH_USERS": "Gruppen mit Benutzern",
+            "REGISTRATIONS_TITLE": "Registrierungen im Zeitverlauf",
+            "REGISTRATIONS_LABEL": "Registrierungen",
+            "SERVICES_TITLE": "Erstellte Inhalte im Zeitverlauf",
+            "TIME_SERIES_LABEL": "Zeitraum",
+            "TIME_SERIES_DAILY": "Täglich",
+            "TIME_SERIES_WEEKLY": "Wöchentlich",
+            "TIME_SERIES_MONTHLY": "Monatlich",
+            "CALENDAR": "Kalender",
+            "EVENT": "Veranstaltungen",
+            "KNOWLEDGE": "Wissensdatenbank",
+            "KNOWLEDGE_CONTACTS": "Kontakte",
+            "KNOWLEDGE_WIKIS": "Wikis",
+            "PROFILE": "Profile",
+            "PROFILE_NEWS": "Neuigkeiten",
+            "PROFILE_PROJECTS": "Profil-Projekte",
+            "PROJECT": "Projekte",
+            "SURVEY": "Umfragen",
+            "BUDGET": "Budgets",
+            "TOTAL_CALENDAR_EVENTS": "Kalendereinträge gesamt",
+            "TOTAL_EVENTS": "Veranstaltungen gesamt",
+            "TOTAL_CONTACTS": "Kontakte gesamt",
+            "TOTAL_WIKIS": "Wikis gesamt",
+            "TOTAL_NEWS": "Neuigkeiten gesamt",
+            "TOTAL_PROFILE_PROJECTS": "Profil-Projekte gesamt",
+            "TOTAL_PROJECTS": "Projekte gesamt",
+            "TOTAL_SURVEYS": "Umfragen gesamt",
+            "TOTAL_BUDGETS": "Budgets gesamt",
+            "TENANT_LIST_TITLE": "Gruppen und Mitgliederanzahl",
+            "TENANT_NAME": "Gruppenname",
+            "TENANT_USER_COUNT": "Anzahl Mitglieder",
+            "ERROR_TITLE": "Fehler beim Laden der Statistiken",
+            "ERROR_DESCRIPTION": "Die Statistiken konnten nicht geladen werden. Bitte versuchen Sie es später erneut."
+        },
+        "AUDIT_PORTAL": {
+            "TITLE": "Audit-Portal - Meldungen",
+            "PENDING_REPORTS": "Ausstehende Meldungen",
+            "RESOLVED_REPORTS": "Erledigte Meldungen",
+            "STATUS": {
+                "PENDING": "Ausstehend",
+                "RESOLVED": "Erledigt"
+            },
+            "TYPE": {
+                "PRIVATE_MESSAGE": "Private Nachricht",
+                "GROUP_MESSAGE": "Gruppennachricht"
+            },
+            "ACTION": {
+                "WARNING": "Warnung",
+                "BAN": "Sperre",
+                "DELETE": "Löschen",
+                "OTHER": "Sonstiges"
+            },
+            "TABLE": {
+                "ID": "ID",
+                "TYPE": "Typ",
+                "STATUS": "Status",
+                "ACTION": "Aktion",
+                "CREATED": "Erstellt"
+            },
+            "MODAL": {
+                "TITLE": "Meldung bearbeiten",
+                "REPORT_ID": "Meldungs-ID",
+                "MESSAGE_ID": "Nachrichten-ID",
+                "ORIGINAL_MESSAGE_CONTENT": "Originaler Nachrichteninhalt",
+                "MESSAGE_CONTENT": "Nachrichteninhalt",
+                "CURRENT_ACTION": "Aktuelle Aktion",
+                "CURRENT_REASON": "Aktueller Grund",
+                "ACTION_LABEL": "Aktion",
+                "ACTION_PLACEHOLDER": "Aktion auswählen",
+                "REASON_LABEL": "Grund",
+                "REASON_PLACEHOLDER": "Grund für die Aktion (optional)"
+            },
+            "SUCCESS": {
+                "UPDATED": "Meldung erfolgreich aktualisiert"
+            }
+        },
+        "TENANT": {
+            "SUCCESS": {
+                "INVITATION_CREATED": "Einladung erfolgreich erstellt"
+            }
+        },
+        "DOMAIN_ADMINISTRATION": "Domain - Administration",
+        "DOMAIN_ADMINISTRATION_DESCRIPTION": "Hier kannst du die dir zugewiesene Domain administrieren. Eine Domain ist ein Zusammenschluss unterschiedlicher Schüler*innenvertretungen in einer Stadt / Land.",
+        "DOMAIN_EDIT_TITLE": "Domain bearbeiten",
+        "DOMAIN_CREATE_TITLE": "Domain erstellen",
+        "DOMAIN_NEW": "Domain hinzufügen",
+        "DOMAIN_TAB_NETWORKS": "Netzwerke",
+        "TENANT_IMPORT": "Gruppen importieren",
+        "TENANT_EDIT": "Gruppe bearbeiten",
+        "TENANT_CREATE": "Gruppe erstellen",
+        "TENANT_SEARCH": "Gruppe suchen",
+        "TENANT_TABLE_NAME": "Name der Gruppe",
+        "TENANT_TABLE_PUBLIC": "Öffentlich",
+        "TENANT_TABLE_VISIBILITY": "Sichtbarkeit",
+        "TENANT_VISIBILITY_PUBLIC": "Öffentlich",
+        "TENANT_VISIBILITY_HIDDEN": "Verborgen",
+        "TENANT_VISIBILITY_ON_REQUEST": "Auf Anfrage",
+        "MEMBER_EDIT": "Mitglied bearbeiten",
+        "MEMBER_CREATE": "Mitglied hinzufügen",
+        "MEMBER_INVITE": "Mitglied einladen",
+        "MEMBER_TITLE": "Mitglieder",
+        "ATTRIBUTES": {
+            "SHORTCODE": "Shortcode",
+            "SHORTCODE_PLACEHOLDER": "Shortcode eingeben...",
+            "IDP_IDENTIFIER": "IDP Identifier",
+            "IDP_IDENTIFIER_PLACEHOLDER": "IDP Identifier eingeben...",
+            "DOMAIN": "Domain",
+            "DOMAIN_PLACEHOLDER": "Domain auswählen...",
+            "CSV": "CSV-Datei hochladen",
+            "IMPORT_ERROR_NAME": "Die CSV-Datei muss ein 'name' Spalte enthalten!",
+            "IMPORT_ERROR_CSV": "Bitte lade eine CSV-Datei hoch.",
+            "MEMBER": "Mitglied suchen",
+            "MEMBER_PLACEHOLDER": "E-Mail-Adresse eingeben oder auswählen...",
+            "INVITE_BY_EMAIL": "Einladung senden an: {{email}}",
+            "ACCESS": "Gruppenberechtigung",
+            "ACCESS_PLACEHOLDER": "Gruppenberechtigung auswählen...",
+            "INTEGRATION": "Modulare Integrationen",
+            "INTEGRATION_PLACEHOLDER": "Integrationen auswählen...",
+            "INTEGRATIONS": {
+                "DASHBOARD": "Dashboard",
+                "CALENDAR": "Kalender",
+                "SURVEY": "Umfragen",
+                "CHAT": "Chat",
+                "BUDGET": "Finanzplaner",
+                "KNOWLEDGE": "Wissensdatenbank",
+                "EVENTS": "Veranstaltungen",
+                "PROJECTS": "Projekte"
+            },
+            "GROUP_PUBLIC": "Ist die Gruppe öffentlich zugänglich?",
+            "GROUP_VISIBILITY": "Sichtbarkeit der Gruppe"
+        }
+    },
+    "AUTH": {
+        "PASSWORD_FORGET_SUCCESS": "Die E-Mail wurde versendet. Bitte überprüfe dein Postfach.",
+        "PASSWORD_FORGET_REPEAT_SUCCESS": "Wir haben dir eine neue Mail gesendet. Bitte überprüfe dein Postfach",
+        "PASSWORD_FORGET_WAIT": "10 Sekunden warten",
+        "PASSWORD_FORGET_REPEAT": "E-Mail erneut senden",
+        "LOGIN_FORWARD": "Zurück zur Anmeldung",
+        "LOGIN_SUCCESS": "Du hast dich erfolgreich angemeldet.",
+        "LOGIN_BUTTON": "Anmelden",
+        "REGISTER_FORWARD": "Du hast noch keinen Account?",
+        "REGISTER_FORWARD_ANCHOR": "Registrieren",
+        "REGISTER_SUCCESS": "Du hast dich erfolgreich registriert! Du kannst dich jetzt anmelden.",
+        "REGISTER_ACCOUNT": "Accountdaten",
+        "REGISTER_PERSONAL": "Persönliche Daten",
+        "REGISTER_BUTTON": "Registrieren",
+        "REGISTER_NOTICE": "Du wirst in Kürze eine Bestätigungsmail erhalten. Bitte klicke auf den Link in der Bestätigungsmail, um deine E-Mail-Adresse zu bestätigen.",
+        "REGISTER_LOGIN_FORWARD": "Du hast bereits einen Account?",
+        "REGISTER_LOGIN_FORWARD_ANCHOR": "Anmelden",
+        "PASSWORD_RESET_SUCCESS": "Dein Passwort wurde erfolgreich zurückgesetzt! Du kannst dich jetzt anmelden.",
+        "PASSWORD_RESET_NOTICE": "Gib dein neues Passwort ein",
+        "PASSWORD_RESET_BUTTON": "Password zurücksetzen",
+        "ATTRIBUTES": {
+            "FIRST_NAME": "Vorname",
+            "FIRST_NAME_PLACEHOLDER": "Vorname eingeben...",
+            "LAST_NAME": "Nachname",
+            "LAST_NAME_PLACEHOLDER": "Nachname eingeben...",
+            "EMAIL": "E-Mail-Adresse",
+            "EMAIL_PLACEHOLDER": "E-Mail-Adresse eingeben...",
+            "EMAIL_ERROR": "Die E-Mail-Adresse ist nicht gültig.",
+            "EMAIL_LOCKED_WARNING_TITLE": "E-Mail-Adresse gesperrt",
+            "EMAIL_LOCKED_WARNING": "Diese E-Mail-Adresse wurde aus einer Einladung übernommen. Wenn du sie änderst, kannst du die Einladung möglicherweise nicht mehr akzeptieren.",
+            "EMAIL_UNLOCK": "Entsperren",
+            "EMAIL_UNLOCK_CONFIRM": "Möchtest du die E-Mail-Adresse wirklich entsperren? Du könntest die Einladung möglicherweise nicht mehr akzeptieren, wenn du eine andere E-Mail-Adresse verwendest.",
+            "PASSWORD": "Passwort",
+            "PASSWORD_PLACEHOLDER": "Passwort eingeben...",
+            "PASSWORD_REPEAT": "Passwort wiederholen",
+            "PASSWORD_REPEAT_PLACEHOLDER": "Password eingeben...",
+            "PASSWORD_ERROR_STRENGTH": "Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.",
+            "PASSWORD_ERROR_MISMATCH": "Die Passwörter stimmen nicht überein.",
+            "TERMS_PRE": "Ich habe die",
+            "TERMS": "Nutzungsbedingungen",
+            "TERMS_AFT": "gelesen und stimme diesen zu",
+            "TERMS_ERROR": "Du musst die Nutzungsbedingungen akzeptieren.",
+            "TOKEN_ERROR": "Der Link ist ungültig",
+            "LOGOUT_SUCCESS": "Du hast dich erfolgreich abgemeldet!"
+        }
+    },
+    "CHAT": {
+        "REPORT_MESSAGE": "Nachricht melden",
+        "REPORT_MESSAGE_DESCRIPTION": "Möchtest du diese Nachricht wirklich melden? Sie wird dann von einem Administrator der Plattform überprüft, der entsprechende Maßnahmen ergreifen wird.",
+        "UNKNOWN_SENDER": "Unbekannte*r Absender*in"
+    },
+    "BUDGET": {
+        "GROUP_TITLE": "Bezeichnung",
+        "GROUP_SOLL_AMOUNT": "Soll-Betrag",
+        "GROUP_IST_AMOUNT": "Ist-Betrag",
+        "INCOME": "Einnahmen",
+        "INCOME_NEW": "Neue Einnahmengruppe",
+        "EXPENSE": "Ausgaben",
+        "EXPENSE_NEW": "Neue Ausgabengruppe",
+        "TOTAL": "Gesamt",
+        "CREATE": "Budget erstellen",
+        "EDIT": "Budget bearbeiten",
+        "POSITIONS": "Budgetpositionen",
+        "POSITION": "Position",
+        "POSITION_NEW": "Budgetposition hinzufügen",
+        "POSITION_EDIT": "Budgetposition bearbeiten",
+        "DIFFERENCE": "Differenz",
+        "TAB_OVERVIEW": "Übersicht",
+        "TAB_BUDGETS": "Budgets",
+        "TAB_BUDGET": "Budget",
+        "TAB_DESCRIPTION": "Beschreibung",
+        "TAB_SETTINGS": "Einstellungen",
+        "SETTINGS_TITLE": "Budgeteinstellungen",
+        "SETTING_IST": "Ist-Spalte",
+        "SETTING_IST_DESCRIPTION": "Mit dieser Einstellung kannst du die Ist-Spalte aktivieren oder deaktivieren. Die Ist-Spalte zeigt den aktuellen Stand deines Budgets.",
+        "FUNCTIONS_TITLE": "Budgetfunktionen",
+        "FUNCTION_DOWNLOAD": "Download",
+        "FUNCTION_DOWNLOAD_DESCRIPTION": "Mit dieser Option kannst du die aktuellen Budgetdaten herunterladen.",
+        "ATTRIBUTES": {
+            "YEAR": "Abrechnungsjahr",
+            "YEAR_PLACEHOLDER": "Abrechnungsjahr eingeben...",
+            "SOLL_AMOUNT": "Soll-Betrag",
+            "SOLL_AMOUNT_PLACEHOLDER": "Soll-Betrag eingeben...",
+            "IST_AMOUNT": "Ist-Betrag",
+            "IST_AMOUNT_PLACEHOLDER": "Ist-Betrag eingeben...",
+            "SOLL_AMOUNT_ERROR": "Der Soll-Betrag darf nicht kleiner als 0 sein.",
+            "IST_AMOUNT_ERROR": "Der Ist-Betrag darf nicht kleiner als 0 sein."
+        }
+    },
+    "CALENDAR": {
+        "EVENT_EDIT": "Termin bearbeiten",
+        "EVENT_NEW": "Termin hinzufügen",
+        "EVENT_DELETE": "Termin entfernen",
+        "EVENT_DELETE_DESCRIPTION": "Möchtest du diesen Termin wirklich entfernen?",
+        "EVENT_DETAILS": "Termindetails",
+        "EVENTS_ON_DATE": "Termine am {{date}}",
+        "FUTURE_EVENTS": "Zukünftige Termine",
+        "MATERIALS": "Materialien",
+        "ICAL_TITLE": "ICAL - Link zum Kalender",
+        "ICAL_DESCRIPTION": "Du kannst diesen Link kopieren und die Termine in der Gruppe mit deinem Kalender synchronisieren. (z.B. Google Kalender, Outlook, Apple Kalender, etc.)",
+        "ICAL_DESCRIPTION_2": "Hinweis: Die Synchronisierung kann je nach Kalender-App unterschiedlich lange dauern. Bitte beachte, dass die Synchronisierung der Termine nicht in Echtzeit erfolgt.",
+        "ICAL_DESCRIPTION_3": "Achtung: Der Link sollte nicht an Dritte weitergegeben werden, die nicht diesselbe Gruppenberechtigung haben.",
+        "TABLE_TITLE": "Bezeichnung",
+        "TABLE_DESCRIPTION": "Beschreibung",
+        "TABLE_DATE": "Datum",
+        "TABLE_LOCATION": "Ort",
+        "TABLE_VIEW_ACCESS": "Sichtbarkeit",
+        "TABLE_ACTIONS": "Aktionen",
+        "FUNCTIONS_TITLE": "Funktionen",
+        "FUNCTION_EXPORT": "Termin exportieren (ICS)",
+        "ATTRIBUTES": {
+            "STARTDATE": "Start",
+            "STARTDATE_PLACEHOLDER": "Startdatum und Uhrzeit",
+            "STARTDATE_ERROR": "Bitte gebe ein Startdatum ein.",
+            "ENDDATE": "Ende",
+            "ENDDATE_PLACEHOLDER": "Enddatum und Uhrzeit",
+            "ENDDATE_BEFORE_STARTDATE": "Das Enddatum darf nicht vor dem Startdatum liegen.",
+            "LOCATION": "Ort",
+            "LOCATION_PLACEHOLDER": "Ort eingeben...",
+            "COLOR": "Farbe",
+            "COLOR_PLACEHOLDER": "Farbe auswählen..."
+        }
+    },
+    "DASHBOARD": {
+        "CALENDAR_TITLE": "Kalender",
+        "CALENDAR_EMPTY_DAY": "Es sind keine Termine an diesem Tag eingetragen",
+        "MEMBERS_TITLE": "Mitglieder",
+        "NOTIFICATIONS_GROUP_TITLE": "Benachrichtigungen aus der Gruppe",
+        "SHOW_MORE": "Mehr anzeigen"
+    },
+    "EVENTS": {
+        "GENERAL": "Beschreibung",
+        "REGISTRATIONS": "Anmeldungen",
+        "TOC": "Programm",
+        "ACCREDITATIONS": "Check-In",
+        "EDIT": "Event bearbeiten",
+        "CREATE": "Event erstellen",
+        "PROGRAM_ENABLE_TITLE": "Programm aktivieren",
+        "PROGRAM_ENABLE_DESCRIPTION": "Aktivieren Sie das Programm, um das Programm / den Ablauf der Veranstaltung über einen Link für die Teilnehmenden zu veröffentlichen.",
+        "PROGRAM_INFO": "Informationen zum Programm",
+        "PROGRAM_LINK": "Link zum Programm",
+        "PROGRAM_PDF": "QR-Code ausdrucken",
+        "PROGRAM": "Programm",
+        "NO_CONTENT": "Es ist noch kein Inhalt vorhanden.",
+        "MATERIALS": "Materialien",
+        "REGISTRATION_ENABLE_TITLE": "Registrierung aktivieren",
+        "REGISTRATION_ENABLE_DESCRIPTION": "Aktivieren Sie die Registrierung, um die vorherige Anmeldung von Teilnehmer*innen zu ermöglichen.",
+        "REGISTRATION_INFO": "Informationen zur Registrierung",
+        "REGISTRATION_LINK": "Link zur Registrierung",
+        "ACCREDITATION_ENABLE_TITLE": "Check-In aktivieren",
+        "ACCREDITATION_ENABLE_DESCRIPTION": "Aktivieren Sie den Check-In, um die Anwesenheit der Teilnehmer*innen über ein Formular zu erfassen.",
+        "ACCREDITATION_INFO": "Informationen zum Check-In",
+        "ACCREDITATION_LINK": "Link zum Check-In",
+        "TABLE": {
+            "NAME": "Vor- und Nachname",
+            "EMAIL": "E-Mail",
+            "EMPTY": "Keine Teilnehmer*innen gefunden"
+        },
+        "CERTIFICATE": {
+            "TITLE": "Teilnahmebescheinigung",
+            "DESCRIPTION": "Hiermit wird bescheinigt, dass der*die Teilnehmer*in _______________ an der Veranstaltung \"{{title}}\" am {{date}} teilgenommen hat.",
+            "GENERATED_AT": "Generiert auf dem Univocal am {{date}}",
+            "DOWNLOAD_FILENAME": "Teilnahmebescheinigung.pdf"
+        },
+        "META": {
+            "GENERATE_SHAREPIC": "Sharepic generieren",
+            "GENERATE_CERTIFICATE": "Teilnahmebescheinigung generieren",
+            "CREATED_AT": "Erstellt am",
+            "UPDATED_AT": "Zuletzt aktualisiert am"
+        },
+        "CUSTOM_FIELDS": {
+            "TITLE": "Felder",
+            "NAME": "Feldname",
+            "NAME_PLACEHOLDER": "Name des Feldes",
+            "TYPE": "Feldart",
+            "TYPE_PLACEHOLDER": "Art des Feldes",
+            "TEXT": "Text",
+            "SINGLE_CHOICE": "Single Choice",
+            "MULTIPLE_CHOICE": "Multiple Choice",
+            "OPTION": "Option {{index}}",
+            "NEW_OPTION": "Neue Option",
+            "MODAL_TITLE": "Benutzerdefiniertes Feld",
+            "ERROR_DUPLICATE": "Ein Feld mit diesem Namen existiert bereits.",
+            "ERROR_REQUIRED": "Bitte fülle alle Pflichtfelder aus.",
+            "ERROR_TYPE_REQUIRED": "Bitte wähle einen Feldart aus.",
+            "ERROR_CHOICE_REQUIRED": "Bitte füge mindestens eine Auswahlmöglichkeit hinzu.",
+            "DEFAULT_NAME": "Vor- und Nachname",
+            "DEFAULT_EMAIL": "E-Mail-Adresse"
+        }
+    },
+    "KNOWLEDGE": {
+        "TITLE": "Wissen",
+        "DESCRIPTION": "Hier findest du alle Wikis, Tutorials und Kontakte, die für eure Arbeit relevant sind.",
+        "TABS": {
+            "WIKIS": "Wikis",
+            "CONTACTS": "Kontakte"
+        },
+        "WIKI": {
+            "EDIT": "Wiki bearbeiten",
+            "CREATE": "Wiki erstellen",
+            "NAV": {
+                "EDIT_SECTIONS": "Kapitel bearbeiten",
+                "STOP_EDIT": "Bearbeitung beenden",
+                "SELECT_CHAPTER": "Kapitel auswählen",
+                "EDIT_SECTION_MODAL_TITLE": "Kapitel bearbeiten",
+                "SECTION_NAME": "Kapitelname",
+                "SECTION_NAME_PLACEHOLDER": "Kapitelname eingeben",
+                "ERROR_SECTION_NAME_REQUIRED": "Kapitelname darf nicht leer sein."
+            },
+            "CONTENT": {
+                "NO_CONTENT": "Es ist noch kein Inhalt vorhanden.",
+                "PICK_CHAPTER": "Wähle ein Kapitel aus.",
+                "DELETE_TITLE": "Kapitel löschen",
+                "DELETE_DESCRIPTION": "Möchtest du dieses Kapitel wirklich löschen?"
+            }
+        },
+        "CONTACT_GROUP": {
+            "EDIT": "Kontaktgruppe bearbeiten",
+            "CREATE": "Kontaktgruppe erstellen",
+            "TABS": {
+                "CONTACTS": "Kontakte",
+                "GENERAL": "Beschreibung",
+                "FUNCTIONS": "Funktionen"
+            },
+            "FUNCTIONS": {
+                "EMAIL_EXPORT_TITLE": "E-Mail-Adressen - Export",
+                "EMAIL_EXPORT_DESCRIPTION": "Mit dieser Option kannst du die E-Mail-Adressen exportieren.",
+                "CSV_EXPORT_TITLE": "CSV Export",
+                "CSV_EXPORT_DESCRIPTION": "Mit dieser Option kannst du die Kontakte als CSV exportieren.",
+                "EXPORT_MODAL_TITLE": "Kontakte exportieren",
+                "EXPORT_MODAL_LABEL": "Kontakte",
+                "EXPORT_MODAL_PLACEHOLDER": "Kontakte"
+            },
+            "CSV_HEADERS": {
+                "TITLE": "Bezeichnung",
+                "FIRST_NAME": "Vorname",
+                "LAST_NAME": "Nachname",
+                "EMAIL": "E-Mail-Adresse",
+                "PHONE": "Telefon",
+                "DESCRIPTION": "Beschreibung",
+                "STREET": "Straße",
+                "ZIP": "PLZ",
+                "CITY": "Ort"
+            },
+            "META": {
+                "CREATED_AT": "Erstellt am",
+                "UPDATED_AT": "Zuletzt aktualisiert am"
+            }
+        },
+        "CONTACT": {
+            "EDIT": "Kontakt bearbeiten",
+            "CREATE": "Kontakt erstellen",
+            "GROUPS": "Kontaktgruppen",
+            "ADD_MULTIPLE": "Kontakte hinzufügen",
+            "TABLE": {
+                "TITLE": "Bezeichnung",
+                "FIRST_NAME": "Vorname",
+                "LAST_NAME": "Nachname",
+                "EMAIL": "E-Mail-Adresse",
+                "PHONE": "Telefon",
+                "ADDRESS": "Adresse"
+            }
+        }
+    },
+    "PROFILE": {
+        "BACKGROUND": {
+            "TITLE": "Profilhintergrund",
+            "EDIT_BUTTON": "Titelbild bearbeiten"
+        },
+        "TABS": {
+            "DESCRIPTION": "Beschreibung",
+            "PROJECTS": "Projekte",
+            "NEWS": "Neuigkeiten"
+        },
+        "DESCRIPTION": {
+            "TITLE": "Beschreibung unserer Gruppe",
+            "EMPTY": "Keine Beschreibung vorhanden.",
+            "MODAL_TITLE": "Gruppenbeschreibung"
+        },
+        "META": {
+            "MODAL_TITLE": "Gruppenbeschreibung",
+            "CONTACT_PERSON": "Ansprechpartner*in",
+            "MISSING": "Nicht vorhanden",
+            "PRESS_SPOKESPERSON": "Pressesprecher*in",
+            "CONTACT_INFO": "Kontaktinformationen",
+            "AVATAR": "Avatar",
+            "MORE_INFO": "Weitere Informationen",
+            "CONTACT_PERSON_LABEL": "Kontakt: Ansprechpartner*in",
+            "CONTACT_PERSON_PLACEHOLDER": "Kontaktperson",
+            "CONTACT_EMAIL_LABEL": "Kontakt: E-Mail",
+            "CONTACT_EMAIL_PLACEHOLDER": "Kontakt E-Mail",
+            "CONTACT_PHONE_LABEL": "Kontakt: Telefon",
+            "CONTACT_PHONE_PLACEHOLDER": "Kontakt Telefon",
+            "CONTACT_WEBSITE_LABEL": "Kontakt: Webseite",
+            "CONTACT_WEBSITE_PLACEHOLDER": "Kontakt Webseite"
+        },
+        "OBJECTS": {
+            "ERROR_TITLE_REQUIRED": "Titel ist erforderlich",
+            "ERROR_CONTENT_REQUIRED": "Inhalt ist erforderlich",
+            "STATUS": {
+                "TITLE": "Status",
+                "PLACEHOLDER": "Status",
+                "DRAFT": "Entwurf",
+                "PUBLISHED": "Veröffentlicht"
+            }
+        }
+    },
+    "PROJECTS": {
+        "TABS": {
+            "TASKS": "Aufgaben",
+            "DESCRIPTION": "Beschreibung"
+        },
+        "MODAL": {
+            "EDIT": "Projekt bearbeiten",
+            "CREATE": "Projekt erstellen"
+        },
+        "CONNECTOR": {
+            "TITLE": "Verknüpfung erstellen",
+            "SELECT_ORIGIN_LABEL": "Was soll verknüpft werden?",
+            "SELECT_ORIGIN_PLACEHOLDER": "Wähle eine Option aus...",
+            "SELECT_TARGET_LABEL_SUFFIX": " auswählen",
+            "SELECT_TARGET_PLACEHOLDER": "Wähle eine Option aus...",
+            "SELECT_WIKI_CHAPTER_LABEL": "Wiki-Kapitel auswählen",
+            "SELECT_WIKI_CHAPTER_PLACEHOLDER": "Wähle ein Kapitel aus..."
+        },
+        "TASKS": {
+            "MODAL": {
+                "EDIT": "Aufgabe bearbeiten",
+                "CREATE": "Aufgabe erstellen",
+                "SUBTASK_EDIT": "Unteraufgabe bearbeiten",
+                "SUBTASK_CREATE": "Unteraufgabe erstellen"
+            },
+            "TABS": {
+                "GENERAL": "Allgemein",
+                "SUBTASKS": "Unteraufgaben",
+                "CONNECTORS": "Verknüpfungen"
+            },
+            "FIELDS": {
+                "TITLE": "Titel",
+                "TITLE_PLACEHOLDER": "Titel",
+                "DUE_DATE": "Fälligkeitsdatum",
+                "DUE_DATE_PLACEHOLDER": "Bis wann soll die Aufgabe erledigt sein?",
+                "OWNER": "Zuständige Person",
+                "OWNER_PLACEHOLDER": "Zuständige Person"
+            },
+            "LIST": {
+                "TASK": "Aufgabe",
+                "DUE_DATE": "Fälligkeitsdatum",
+                "OWNER": "Zuständige Person",
+                "ACTIONS": "Aktionen",
+                "NO_DATE": "Kein Datum",
+                "NO_OWNER": "Keine Person"
+            },
+            "VIEW": {
+                "DELETE_TITLE": "Aufgabe löschen",
+                "DELETE_DESCRIPTION": "Möchtest du diese Aufgabe wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+                "SUBTASKS": "Unteraufgaben",
+                "CONNECTORS": "Verknüpfungen",
+                "FUNCTIONS": "Funktionen",
+                "EDIT": "Bearbeiten",
+                "DELETE": "Löschen",
+                "TABLE_TITLE": "Titel",
+                "TABLE_DESCRIPTION": "Beschreibung",
+                "TABLE_DUE_DATE": "Fälligkeitsdatum",
+                "TABLE_OWNER": "Ersteller"
+            },
+            "COLUMN": {
+                "DELETE_DESCRIPTION": "Mit dem Löschen dieses Eintrags werden auch alle Einträge unwiderruflich gelöscht."
+            },
+            "ADD_TASK": "+ Aufgabe hinzufügen",
+            "NEW_COLUMN": "Neue Spalte",
+            "ADD": "+"
+        }
+    },
+    "SURVEYS": {
+        "TABS": {
+            "QUESTIONS": "Fragen",
+            "EXECUTION": "Durchführung",
+            "RESULTS": "Ergebnisse",
+            "DESCRIPTION": "Beschreibung"
+        },
+        "MODAL": {
+            "EDIT": "Umfrage bearbeiten",
+            "CREATE": "Umfrage erstellen",
+            "COMPONENT_EDIT": "Frage bearbeiten",
+            "COMPONENT_ADD": "Frage hinzufügen"
+        },
+        "EXECUTION": {
+            "ACTIVATE": "Umfrage aktivieren",
+            "ACTIVATE_DESCRIPTION": "Aktivieren Sie die Umfrage, um sie für die Teilnehmer sichtbar zu machen. Wenn die Umfrage aktiv ist oder Ergebnisse übermittelt wurden, kann sie nicht mehr bearbeitet werden.",
+            "INFO_TITLE": "Informationen zur Durchführung der Umfrage:",
+            "SURVEY_ID": "Umfrage-ID:",
+            "SURVEY_MODE": "Umfragemodus:",
+            "COPY_LINK": "Link kopieren",
+            "COPY_LINK_SUCCESS": "Der Link wurde in die Zwischenablage kopiert.",
+            "QR_CODE_PRINT": "QR-Code ausdrucken",
+            "CODES_DOWNLOAD": "Codes herunterladen",
+            "CODES_GENERATE": "Codes generieren",
+            "CODES_DELETE": "Codes löschen",
+            "CODES_GENERATE_MODAL_TITLE": "Umfragecodes generieren",
+            "CODES_AMOUNT_LABEL": "Anzahl der Codes",
+            "CODES_SHOW": "Umfragecodes anzeigen",
+            "CODES_EMPTY": "Es wurden noch keine Umfragecodes generiert.",
+            "LINK_TO_SURVEY": "Link zur Umfrage"
+        },
+        "RESULTS": {
+            "DELETE_TITLE": "Ergebnisse löschen",
+            "DELETE_DESCRIPTION": "Möchtest du wirklich alle Ergebnisse löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "COUNT_TITLE": "Anzahl der Ergebnisse",
+            "DOWNLOAD": "Ergebnisse herunterladen",
+            "DELETE": "Ergebnisse löschen",
+            "ANSWERS": "Antworten",
+            "NO_ANSWER": "Keine Angabe",
+            "QUESTION": "Frage:",
+            "NO_ANSWERS_MESSAGE": "Wenn eine Antwort vorliegt, wird sie hier angezeigt."
+        },
+        "COMPONENTS": {
+            "ADD_QUESTION": "Frage hinzufügen",
+            "DELETE_TITLE": "Frage löschen",
+            "DELETE_DESCRIPTION": "Möchtest du diese Frage wirklich löschen?",
+            "ACTIVE_WARNING": "Die Umfrage ist bereits aktiv und kann nicht mehr bearbeitet werden. Um die Umfrage zu bearbeiten, deaktiviere sie und lösche die vorhanden Ergebnisse.",
+            "UNKNOWN_QUESTION": "Unbekannte Frage",
+            "REQUIRED": " *",
+            "ANSWER_LABEL": "Antwort",
+            "ANSWER_PLACEHOLDER": "Antwort eingeben...",
+            "OPTION": "Option",
+            "NEW_OPTION": "Neue Option",
+            "OPTIONS_TITLE": "Optionen",
+            "MULTIPLE_OPTIONS": "Es können mehrere Optionen ausgewählt werden",
+            "MAX_SELECTION": "Maximale Auswahl (0 = unbegrenzt)",
+            "REQUIRED_QUESTION": "Soll die Frage beantwortet werden müssen? (Pflichtfeld)",
+            "CANCEL": "Abbrechen",
+            "SAVE": "Speichern"
+        },
+        "COMPONENT_TYPES": {
+            "TEXT": "Text",
+            "LIKERT": "Skala: Likert",
+            "CHOICE": "Multiple/Single Choice",
+            "OPEN": "Offene Frage",
+            "WORDCLOUD": "Wortwolke",
+            "NOMINAL": "Skala: Nominal"
+        },
+        "COMPONENT_TOOLTIPS": {
+            "TEXT": "Ein Text für zusätzliche Informationen",
+            "LIKERT": "Eine Skala mit festen Antwortmöglichkeiten (z.B. Stimme zu, Stimme nicht zu)",
+            "CHOICE": "Ein Auswahl von individuellen Antwortmöglichkeiten",
+            "OPEN": "Eine offene Frage für freie Textantworten",
+            "WORDCLOUD": "Eine offene Frage für freie Textantworten als visualisierte Wortwolke",
+            "NOMINAL": "Eine Skala mit festen Antwortmöglichkeiten (z.B. Geschlecht, Ja/Nein)"
+        },
+        "FIELDS": {
+            "QUESTION": "Frage",
+            "QUESTION_PLACEHOLDER": "Titel der Frage",
+            "SCALE_TEMPLATE": "Skalenvorlage",
+            "SCALE_TEMPLATE_PLACEHOLDER": "Skalenvorlage auswählen",
+            "NOMINAL_TYPE": "Nominaltyp",
+            "NOMINAL_TYPE_PLACEHOLDER": "Nominaltyp auswählen",
+            "EXECUTION_MODE": "Ausführungsmodus",
+            "EXECUTION_MODE_PLACEHOLDER": "Ausführungsmodus"
+        },
+        "ERRORS": {
+            "TITLE_REQUIRED": "Bitte gebe einen Titel ein.",
+            "TYPE_REQUIRED": "Bitte wähle einen Typ aus.",
+            "SCALE_TEMPLATE_REQUIRED": "Bitte wähle eine Skalenvorlage aus.",
+            "OPTIONS_REQUIRED": "Bitte füge mindestens eine Option hinzu.",
+            "EXECUTION_MODE_REQUIRED": "Bitte wähle einen Ausführungsmodus.",
+            "CODES_AMOUNT_MIN": "Bitte gebe eine Anzahl von mindestens 1 an."
+        },
+        "PDF": {
+            "QR_CODE_FILENAME": "QR-Code.pdf",
+            "CODES_FILENAME": "Umfragecodes.pdf",
+            "RESULTS_FILENAME": "Umfrageergebnisse.csv",
+            "CODE_LABEL": "Code:",
+            "TAN_LABEL": "TAN:",
+            "GENERATED_AT": "Generiert am",
+            "GENERATED_IN": "in Univocal"
+        }
+    },
+    "TENANT": {
+        "NOTIFICATIONS": {
+            "EMPTY": "Es gibt noch keine Benachrichtigungen!",
+            "DELETE": "Benachrichtigung löschen",
+            "SEND_MODAL_TITLE": "Benachrichtigung senden",
+            "GROUP_LABEL": "Gruppenbenachrichtung",
+            "MESSAGE_PLACEHOLDER": "Nachricht eingeben...",
+            "CHARACTERS_LEFT": "Noch {{count}} Zeichen",
+            "SEND_BUTTON": "Senden",
+            "SEND_TITLE": "Gruppenbenachrichtigung verschicken",
+            "SEND_DESCRIPTION": "Mit dieser Funktion kannst du eine Benachrichtigung in die gesamte Gruppe senden."
+        },
+        "INTEGRATIONS": {
+            "ACTIVATED": "Aktiviert",
+            "DEACTIVATED": "Deaktiviert"
+        },
+        "SETTINGS": {
+            "TITLE": "Einstellungen",
+            "DESCRIPTION": "Hier kannst du Einstellungen für deine Gruppe tätigen, um zum Beispiel Integrationen zu aktivieren oder Gruppenfunktionen auszuführen.",
+            "TABS": {
+                "INTEGRATIONS": "Integrationen",
+                "FUNCTIONS": "Gruppenfunktionen",
+                "MISC": "Weitere Einstellungen"
+            }
+        },
+        "MISC": {
+            "CALENDAR_TITLE": "Kalendereinstellungen",
+            "CALENDAR_LABEL": "Kalender (iCal-Support)",
+            "CALENDAR_DESCRIPTION": "Mit dieser Funktion kannst du den iCal-Support für den Gruppenkalender aktivieren oder deaktivieren, damit die Mitglieder der Gruppe den Kalender in anderen Anwendungen wie Google Kalender oder Outlook einbinden können.",
+            "ON": "An",
+            "OFF": "Aus"
+        },
+        "ERRORS": {
+            "MESSAGE_REQUIRED": "Bitte gebe eine Nachricht ein"
+        }
+    },
+    "PAGES": {
+        "VERIFY": {
+            "TITLE": "E-Mail-Adresse bestätigen",
+            "SUCCESS": "Deine E-Mail-Adresse wurde erfolgreich bestätigt. Du wirst in Kürze zur Anmeldung weitergeleitet.",
+            "ERROR": "Etwas ist schiefgelaufen. Bitte melde dich bei unserem Support -",
+            "LOADING": "Deine E-Mail-Adresse wird gerade bestätigt. Bitte warte einen Moment."
+        },
+        "SURVEY": {
+            "SUCCESS": "Vielen Dank für Ihre Teilnahme.",
+            "ALREADY_COMPLETED": "Du hast die Umfrage bereits ausgefüllt.",
+            "ERRORS": {
+                "FILL_REQUIRED_FIELDS": "Bitte füllen alle Pflichtfelder aus.",
+                "ENTER_SURVEY_CODE": "Bitte geben Sie den Umfragecode ein.",
+                "ENTER_EMAIL": "Bitte geben Sie Ihre E-Mail-Adresse ein."
+            },
+            "FIELDS": {
+                "ANSWER": "Antwort",
+                "ANSWER_PLACEHOLDER": "Antwort eingeben...",
+                "SURVEY_CODE": "Umfragecode",
+                "SURVEY_CODE_PLACEHOLDER": "Umfragecode eingeben...",
+                "EMAIL": "E-Mail",
+                "EMAIL_PLACEHOLDER": "E-Mail eingeben..."
+            },
+            "SECTIONS": {
+                "SURVEY_CODE_TITLE": "Umfragecode",
+                "SURVEY_CODE_DESCRIPTION": "Für die Teilnahme wird ein Umfragecode benötigt.",
+                "EMAIL_TITLE": "E-Mail",
+                "EMAIL_DESCRIPTION": "Für die Teilnahme wird deine Mailadresse benötigt."
+            },
+            "SUBMIT": "Antwort absenden",
+            "THANKS": "Vielen Dank für die Teilnahme an der Umfrage.",
+            "UNKNOWN_QUESTION": "Unbekannte Frage"
+        },
+        "HOMEPAGE": {
+            "WELCOME": "Willkommen bei Univocal",
+            "DESCRIPTION": "Wähle in der linken Navigationsliste eine Gruppe aus, um loszulegen. Wenn du noch in keiner Gruppe bist, kannst du im Bereich 'Offene Gruppen' eine Gruppe suchen und beitreten.",
+            "INVITATIONS": "Du hast ({{count}}) Gruppeneinladungen"
+        },
+        "EVENT": {
+            "REGISTRATION": {
+                "ERRORS": {
+                    "FILL_ALL_FIELDS": "Bitte füllen Sie alle Felder aus."
+                },
+                "NO_ACCESS_TITLE": "Kein Zugriff",
+                "NO_ACCESS_DESCRIPTION": "Die Registrierung ist nicht freigeschaltet.",
+                "THANKS": "Vielen Dank für deine Registrierung",
+                "SECTION_TITLE": "Registrierung",
+                "FIELDS": {
+                    "FIRST_NAME": "Vorname",
+                    "FIRST_NAME_PLACEHOLDER": "Vorname eingeben",
+                    "LAST_NAME": "Nachname",
+                    "LAST_NAME_PLACEHOLDER": "Nachname eingeben",
+                    "EMAIL": "Email",
+                    "EMAIL_PLACEHOLDER": "Email eingeben"
+                },
+                "SUBMIT": "Registrierung abschicken"
+            },
+            "PROGRAM": {
+                "NO_ACCESS_TITLE": "Kein Zugriff",
+                "NO_ACCESS_DESCRIPTION": "Das Programm ist nicht freigeschaltet.",
+                "PROGRAM_TITLE": "Programm",
+                "MATERIALS_TITLE": "Materialien",
+                "PROGRAM_LINK": "Hier gehts zum Programm"
+            },
+            "ACCREDITATION": {
+                "ERRORS": {
+                    "FILL_ALL_FIELDS": "Bitte füllen Sie alle Felder aus."
+                },
+                "NO_ACCESS_TITLE": "Kein Zugriff",
+                "NO_ACCESS_DESCRIPTION": "Die Registrierung ist nicht freigeschaltet.",
+                "THANKS": "Vielen Dank für dein Check-In",
+                "SECTION_TITLE": "Check-In",
+                "FIELDS": {
+                    "FIRST_NAME": "Vorname",
+                    "FIRST_NAME_PLACEHOLDER": "Vorname eingeben",
+                    "LAST_NAME": "Nachname",
+                    "LAST_NAME_PLACEHOLDER": "Nachname eingeben",
+                    "EMAIL": "Email",
+                    "EMAIL_PLACEHOLDER": "Email eingeben"
+                },
+                "SUBMIT": "Check-In durchführen"
+            }
+        },
+        "AUTH": {
+            "FORGOT_PASSWORD": "Du hast dein Passwort vergessen?",
+            "RESET_PASSWORD": "Passwort zurücksetzen"
+        },
+        "USER": {
+            "CHAT": {
+                "TITLE": "Chat",
+                "MESSAGE_REPORTED": "Die Nachricht wurde erfolgreich gemeldet!"
+            },
+            "CHATS": {
+                "TITLE": "Chats",
+                "NEW_CHAT_BUTTON": "Neuen Chat starten",
+                "YOU": "Du",
+                "LAST_MESSAGE": "Letzte Nachricht am:",
+                "NO_CHATS": "Keine Chats vorhanden"
+            },
+            "INVITATIONS": {
+                "TITLE": "Gruppeneinladungen",
+                "TABLE_HEADERS": {
+                    "GROUP": "Gruppe",
+                    "INVITED_AT": "Eingeladen am",
+                    "INVITED_AS": "Eingeladen als",
+                    "ACTIONS": "Aktionen"
+                },
+                "BUTTONS": {
+                    "ACCEPT": "Akzeptieren",
+                    "DECLINE": "Ablehnen"
+                },
+                "SUCCESS_ACCEPT": "Du hast die Einladung angenommen. Die Seite wird neu geladen, um die Änderungen zu übernehmen.",
+                "SUCCESS_DECLINE": "Einladung erfolgreich abgelehnt.",
+                "NO_INVITATIONS": "Keine Einladungen vorhanden"
+            },
+            "TENANT_JOIN_REQUESTS": {
+                "WITHDRAW": "Anfrage zurückziehen",
+                "SUCCESS_WITHDRAW": "Anfrage wurde zurückgezogen."
+            },
+            "MY_ACCOUNT": {
+                "TITLE": "Mein Account",
+                "PERSONAL_INFO": "Persönliche Informationen",
+                "PASSWORD_UPDATE": "Passwort aktualisieren",
+                "FIELDS": {
+                    "FIRST_LAST_NAME": "Vor- und Nachname:",
+                    "EMAIL": "E-Mail:",
+                    "OLD_PASSWORD": "Altes Passwort",
+                    "OLD_PASSWORD_PLACEHOLDER": "Altes Passwort",
+                    "NEW_PASSWORD": "Neues Passwort",
+                    "NEW_PASSWORD_PLACEHOLDER": "Neues Passwort",
+                    "CONFIRM_PASSWORD": "Neues Passwort bestätigen",
+                    "CONFIRM_PASSWORD_PLACEHOLDER": "Neues Passwort bestätigen"
+                },
+                "BUTTONS": {
+                    "SAVE": "Speichern"
+                },
+                "SUCCESS": "Das Password wurde erfolgreich aktualisiert!",
+                "ERRORS": {
+                    "PASSWORDS_DONT_MATCH": "Die Passwörter stimmen nicht überein!",
+                    "FILL_ALL_FIELDS": "Du musst alle Felder ausfüllen!",
+                    "PASSWORD_REQUIREMENTS": "Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten"
+                }
+            },
+            "NEW_CHAT": {
+                "TITLE": "Neuen Chat starten",
+                "NO_MEMBERS": "Du hast keine Gruppenmitglieder, mit denen du chatten kannst."
+            }
+        }
+    },
+    "TENANT_PAGES": {
+        "CALENDAR": {
+            "TITLE": "Kalender",
+            "DESCRIPTION": "Hier kannst du Termine anlegen und verwalten.",
+            "SUCCESS": {
+                "SAVED": "Termin erfolgreich gespeichert",
+                "DELETED": "Termin erfolgreich gelöscht",
+                "CREATED": "Termin erfolgreich erstellt"
+            }
+        },
+        "DASHBOARD": {
+            "TITLE": "Dashboard",
+            "DESCRIPTION": "Hier findest du alle wichtigen Informationen deiner Gruppe an einem Ort."
+        },
+        "GROUP_CHAT": {
+            "TITLE": "Chat - General",
+            "DESCRIPTION": "Hier kannst du Nachrichten an alle Mitglieder deiner Gruppe senden.",
+            "SUCCESS": {
+                "MESSAGE_REPORTED": "Die Nachricht wurde erfolgreich gemeldet!"
+            },
+            "ERRORS": {
+                "CONNECTION_LOST": "Die Verbindung zum Server wurde unterbrochen. Bitte versuche es erneut."
+            }
+        },
+        "MEMBERS": {
+            "TITLE": "Mitglieder",
+            "DESCRIPTION": "Hier kannst du sehen, welche Mitglieder in deiner Gruppe sind.",
+            "ADD_MEMBER": "+ Mitglied hinzufügen",
+            "DELETE_DIALOG": {
+                "TITLE": "Mitglied aus Gruppe entfernen",
+                "DESCRIPTION": "Möchtest du dieses Mitglied wirklich aus der Gruppe entfernen?"
+            },
+            "SUCCESS": {
+                "EDITED": "Mitglied erfolgreich bearbeitet!",
+                "DELETED": "Mitglied erfolgreich gelöscht!",
+                "INVITED": "Einladung erfolgreich versendet!",
+                "INVITATION_DELETED": "Einladung erfolgreich gelöscht!"
+            }
+        },
+        "NOTIFICATIONS": {
+            "TITLE": "Benachrichtigungen",
+            "DELETE_DIALOG": {
+                "TITLE": "Benachrichtigung löschen",
+                "DESCRIPTION": "Möchtest du diese Benachrichtigung wirklich löschen?"
+            },
+            "SUCCESS": {
+                "DELETED": "Benachrichtigung erfolgreich gelöscht!"
+            }
+        },
+        "BUDGETS": {
+            "TITLE": "Finanzen",
+            "DESCRIPTION": "Hier kannst du eure unterschiedlichen Budgets für Projekte oder deiner Gruppe einsehen und verwalten.",
+            "SUCCESS": {
+                "UPDATED": "Du hast erfolgreich den Budgetplan aktualisiert.",
+                "DELETED": "Du hast erfolgreich den Budgetplan gelöscht."
+            },
+            "ADD": "+ Budget hinzufügen",
+            "POSITIONS": {
+                "SUCCESS": {
+                    "CREATED": "Die Position wurde erfolgreich erstellt.",
+                    "UPDATED": "Die Position wurde erfolgreich aktualisiert.",
+                    "DELETED": "Die Position wurde erfolgreich gelöscht."
+                }
+            }
+        },
+        "EVENTS": {
+            "TITLE": "Veranstaltungen",
+            "DESCRIPTION": "Hier kannst du Veranstaltungen erstellen und verwalten.",
+            "SUCCESS": {
+                "CREATED": "Veranstaltung erfolgreich erstellt!",
+                "UPDATED": "Veranstaltung erfolgreich aktualisiert!",
+                "DELETED": "Veranstaltung erfolgreich gelöscht!"
+            },
+            "ADD": "+ Event hinzufügen",
+            "NOT_FOUND": "Event nicht gefunden"
+        },
+        "KNOWLEDGE": {
+            "TITLE": "Wissensdatenbank",
+            "DESCRIPTION": "Hier kannst du Wissen sammeln und teilen.",
+            "WIKIS": {
+                "TITLE": "Wikis",
+                "DESCRIPTION": "Hier kannst du Wikis erstellen und verwalten.",
+                "SUCCESS": {
+                    "CREATED": "Wiki erfolgreich erstellt!",
+                    "UPDATED": "Wiki erfolgreich aktualisiert!",
+                    "DELETED": "Wiki erfolgreich gelöscht!"
+                },
+                "ADD": "+ Wiki hinzufügen"
+            },
+            "WIKI": {
+                "SUCCESS": {
+                    "UPDATED": "Du hast erfolgreich dein Wiki bearbeitet."
+                },
+                "SECTION": {
+                    "SUCCESS": {
+                        "CREATED": "Du hast erfolgreich ein neues Kapitel hinzugefügt.",
+                        "UPDATED": "Du hast erfolgreich ein Kapitel bearbeitet.",
+                        "DELETED": "Du hast erfolgreich ein Kapitel gelöscht."
+                    }
+                }
+            },
+            "CONTACT_GROUPS": {
+                "TITLE": "Kontaktgruppen",
+                "DESCRIPTION": "Hier kannst du Kontaktgruppen erstellen und verwalten.",
+                "SUCCESS": {
+                    "CREATED": "Kontaktgruppe erfolgreich erstellt!",
+                    "UPDATED": "Kontaktgruppe erfolgreich aktualisiert!",
+                    "DELETED": "Kontaktgruppe erfolgreich gelöscht!"
+                },
+                "ADD": "+ Kontaktgruppe hinzufügen"
+            },
+            "CONTACTS": {
+                "BUTTONS": {
+                    "IMPORT": "Kontakte importieren",
+                    "ADD": "+ Kontakt hinzufügen"
+                },
+                "SUCCESS": {
+                    "CREATED": "Du hast erfolgreich den Kontakt erstellt.",
+                    "UPDATED": "Du hast erfolgreich den Kontakt aktualisiert.",
+                    "DELETED": "Du hast erfolgreich den Kontakt gelöscht.",
+                    "IMPORTED": "Du hast erfolgreich die Kontakte importiert."
+                }
+            }
+        },
+        "PROFILE": {
+            "TITLE": "Profil",
+            "SUCCESS": {
+                "UPDATED": "Profil erfolgreich aktualisiert!"
+            },
+            "PROJECTS": {
+                "TITLE": "Projekte",
+                "DESCRIPTION": "Hier findest du alle Projekte deiner Gruppe.",
+                "SUCCESS": {
+                    "CREATED": "Projekt erfolgreich erstellt!",
+                    "UPDATED": "Projekt erfolgreich aktualisiert!",
+                    "DELETED": "Projekt erfolgreich gelöscht!"
+                },
+                "ADD": "+ Projekt hinzufügen",
+                "MODAL_TITLE": "Projekt"
+            },
+            "NEWS": {
+                "TITLE": "Neuigkeiten",
+                "DESCRIPTION": "Hier findest du alle Neuigkeiten deiner Gruppe.",
+                "SUCCESS": {
+                    "CREATED": "Neuigkeit erfolgreich erstellt!",
+                    "UPDATED": "Neuigkeit erfolgreich aktualisiert!",
+                    "DELETED": "Neuigkeit erfolgreich gelöscht!"
+                },
+                "ADD": "+ Neuigkeit hinzufügen",
+                "MODAL_TITLE": "Neuigkeit"
+            }
+        },
+        "PROJECTS": {
+            "TITLE": "Projekte",
+            "DESCRIPTION": "Hier kannst du Projekte erstellen und verwalten.",
+            "SUCCESS": {
+                "CREATED": "Projekt erfolgreich erstellt!",
+                "UPDATED": "Projekt erfolgreich aktualisiert!",
+                "DELETED": "Projekt erfolgreich gelöscht!"
+            },
+            "ADD": "+ Projekt hinzufügen",
+            "TASKS": {
+                "SUCCESS": {
+                    "CREATED": "Die Aufgabe wurde erfolgreich erstellt.",
+                    "UPDATED": "Die Aufgabe wurde erfolgreich aktualisiert.",
+                    "DELETED": "Die Aufgabe wurde erfolgreich gelöscht."
+                }
+            }
+        },
+        "SURVEYS": {
+            "TITLE": "Umfragen",
+            "DESCRIPTION": "Hier kannst du Umfragen erstellen und verwalten.",
+            "SUCCESS": {
+                "CREATED": "Umfrage erfolgreich erstellt!",
+                "UPDATED": "Umfrage erfolgreich aktualisiert!",
+                "DELETED": "Umfrage erfolgreich gelöscht!"
+            },
+            "ADD": "+ Umfrage hinzufügen",
+            "COMPONENTS": {
+                "SUCCESS": {
+                    "CREATED": "Komponente erstellt.",
+                    "UPDATED": "Komponente aktualisiert.",
+                    "DELETED": "Komponente gelöscht."
+                },
+                "ORDER": {
+                    "SUCCESS": {
+                        "UPDATED": "Reihenfolge aktualisiert."
+                    }
+                }
+            },
+            "CODES": {
+                "SUCCESS": {
+                    "GENERATED": "Codes generiert.",
+                    "RESET": "Codes zurückgesetzt."
+                }
+            },
+            "RESULTS": {
+                "SUCCESS": {
+                    "DELETED": "Ergebnisse gelöscht."
+                }
+            }
+        },
+        "SETTINGS": {
+            "TITLE": "Einstellungen",
+            "SUCCESS": {
+                "SAVED": "Einstellungen erfolgreich gespeichert!",
+                "NOTIFICATION_SENT": "Benachrichtigung erfolgreich versendet!",
+                "CALENDAR_ACTIVATED": "Gruppenkalender freigegeben!",
+                "CALENDAR_DEACTIVATED": "Gruppenkalender nicht freigegeben!"
+            }
+        }
+    },
+    "DOMAIN_PAGES": {
+        "DOMAIN": {
+            "SUCCESS": {
+                "GROUP_ADDED": "Gruppe erfolgreich hinzugefügt",
+                "GROUP_UPDATED": "Gruppe erfolgreich aktualisiert"
+            }
+        },
+        "DOMAINS": {
+            "TITLE": "Domain - Administration"
+        }
+    },
+    "DISCOVER_PAGES": {
+        "TENANTS": {
+            "TITLE": "Offene Gruppen",
+            "DESCRIPTION": "Hier findest du alle offenen Gruppen, denen du beitreten kannst.",
+            "BUTTONS": {
+                "JOIN": "Beitreten",
+                "LEAVE": "Verlassen",
+                "REQUEST": "Beitritt anfragen",
+                "WITHDRAW": "Anfrage zurückziehen"
+            },
+            "SUCCESS": {
+                "JOINED": "Du bist einer neuen Gruppe beigetreten. Die Seite wird neu geladen, um die Änderungen zu übernehmen.",
+                "LEFT": "Du hast die Gruppe erfolgreich verlassen. Die Seite wird neu geladen, um die Änderungen zu übernehmen.",
+                "REQUEST_SENT": "Deine Beitrittsanfrage wurde gesendet. Die Gruppenverwaltung wird sie prüfen."
+            }
+        }
+    },
+    "ADMIN_PAGES": {
+        "DOMAINS": {
+            "TITLE": "Domain - Administration",
+            "SUCCESS": {
+                "CREATED": "Domain erfolgreich erstellt",
+                "UPDATED": "Domain erfolgreich aktualisiert",
+                "DELETED": "Domain erfolgreich gelöscht"
+            }
+        },
+        "TENANT": {
+            "TITLE": "Gruppe bearbeiten",
+            "INVITATIONS_TITLE": "Einladungen",
+            "INVITATIONS_EMAIL": "E-Mail",
+            "INVITATIONS_DATE": "Eingeladen am",
+            "INVITATIONS_STATUS": "Status",
+            "INVITATIONS_PERMISSION": "Berechtigung",
+            "INVITATIONS_STATUS_PENDING": "Ausstehend",
+            "INVITATIONS_STATUS_ACCEPTED": "Angenommen",
+            "INVITATIONS_STATUS_REJECTED": "Abgelehnt",
+            "INVITATIONS_EMPTY": "Keine Einladungen",
+            "SUCCESS": {
+                "USER_GROUP_UPDATED": "Gruppe des Benutzers wurde aktualisiert",
+                "USER_ADDED": "Benutzer wurde zur Gruppe hinzugefügt",
+                "USER_REMOVED": "Benutzer wurde aus der Gruppe entfernt"
+            }
+        },
+        "TENANTS": {
+            "TITLE": "Tenant - Administration",
+            "SUCCESS": {
+                "UPDATED": "Gruppe erfolgreich aktualisiert",
+                "CREATED": "Gruppe erfolgreich erstellt",
+                "DELETED": "Gruppe erfolgreich gelöscht",
+                "IMPORTED": "Gruppen erfolgreich importiert"
+            }
+        },
+        "USER": {
+            "TITLE": "Benutzer*in bearbeiten",
+            "EMAIL": "E-Mail",
+            "NAME": "Name",
+            "STATUS": "Status",
+            "GROUPS": "Gruppen",
+            "ACTIONS": "Aktionen",
+            "ACTION_LABEL": "Aktion auswählen",
+            "ACTION_BAN": "Sperren (Bann)",
+            "ACTION_UNBAN": "Entsperren",
+            "EXECUTE": "Ausführen",
+            "SUCCESS_BANNED": "Benutzer*in wurde gesperrt.",
+            "SUCCESS_UNBANNED": "Benutzer*in wurde entsperrt.",
+            "STATUS_ACTIVATED": "Aktiviert",
+            "STATUS_BANNED": "Gesperrt",
+            "STATUS_NOT_VERIFIED": "Nicht verifiziert",
+            "BACK": "Zurück zur Übersicht"
+        },
+        "USERS": {
+            "TITLE": "Benutzer*innen - Administration",
+            "SEARCH_PLACEHOLDER": "Suchen nach Name oder E-Mail...",
+            "STATUS_FILTER": "Status",
+            "STATUS_ALL": "Alle",
+            "TABLE_EMAIL": "E-Mail",
+            "TABLE_NAME": "Name",
+            "TABLE_STATUS": "Status",
+            "TABLE_ACTIONS": "Aktionen",
+            "EMPTY": "Keine Benutzer*innen gefunden",
+            "VIEW": "Bearbeiten"
+        }
+    },
+    "ERROR_PAGES": {
+        "HTTP_403": {
+            "TITLE": "403 - Zugriff verweigert",
+            "DESCRIPTION": "Du hast keine Berechtigung, dir diese Seite anzusehen."
+        }
+    },
+    "MEMBERS": {
+        "MODAL": {
+            "EDIT": "Mitglied bearbeiten",
+            "INVITE": "Mitglied einladen",
+            "MEMBER": "Mitglied"
+        },
+        "TABLE": {
+            "NAME": "Name",
+            "ROLE": "Rolle",
+            "ACTIONS": "Aktionen"
+        },
+        "INVITATIONS": {
+            "TITLE": "Ausstehende Einladungen",
+            "DELETE_TITLE": "Einladung löschen",
+            "DELETE_DESCRIPTION": "Möchtest du die Einladung wirklich löschen?"
+        },
+        "REQUESTS": {
+            "TITLE": "Beitrittsanfragen",
+            "EMPTY": "Keine offenen Beitrittsanfragen.",
+            "EMAIL": "E-Mail",
+            "REQUESTED_AT": "Angefragt am",
+            "ACTIONS": "Aktionen",
+            "ACCEPT": "Annehmen",
+            "REJECT": "Ablehnen",
+            "SUCCESS_ACCEPT": "Anfrage angenommen. Der Benutzer wurde zur Gruppe hinzugefügt.",
+            "SUCCESS_REJECT": "Anfrage abgelehnt."
+        }
+    },
+    "NAV": {
+        "HOME": "Startseite",
+        "MY_SV": "Meine SV",
+        "DASHBOARD": "Dashboard",
+        "MEMBERS": "Mitglieder",
+        "PROJECTS": "Projekte",
+        "KNOWLEDGE": "Wissen",
+        "SURVEYS": "Umfragen",
+        "CALENDAR": "Kalender",
+        "PROFILE": "Gruppenprofil",
+        "GROUP_CHAT": "Gruppenchat",
+        "EVENTS": "Veranstaltungen",
+        "BUDGETS": "Finanzen",
+        "SETTINGS": "Einstellungen",
+        "DISCOVER": "Entdecken",
+        "OPEN_TENANTS": "Offene Gruppen",
+        "SV_ADMIN": "Administration",
+        "DOMAINS": "Domains",
+        "ADMIN": "Super-Administration",
+        "TENANTS": "Tenants",
+        "SWITCH_GROUP": "Gruppe wechseln",
+        "ACCOUNT": "Mein Account",
+        "INVITATIONS": "Einladungen",
+        "PRIVACY": "Datenschutzerklärung",
+        "IMPRINT": "Impressum",
+        "TERMS_OF_USE": "Nutzungsbedingungen",
+        "LOGOUT": "Abmelden"
+    }
+}

@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - shibboleth-apache-configmap.yaml
+  - shibboleth-configmap.yaml
+  - uvc-certificate.yaml
+  - uvc-ssl-issuer.yaml
+  - uvc-auth-depl.yaml
+  - uvc-tenant-depl.yaml
+  - uvc-survey-depl.yaml
+  - uvc-project-depl.yaml
+  - uvc-profile-depl.yaml
+  - uvc-knowledge-depl.yaml
+  - uvc-event-depl.yaml
+  - uvc-chat-depl.yaml
+  - uvc-calendar-depl.yaml
+  - uvc-ingress-srv.yaml
+  - uvc-shibboleth-depl.yaml
+  - uvc-web-depl.yaml
+  - uvc-landing-depl.yaml
+  - uvc-redis-depl.yaml
+
+commonLabels:
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/part-of: uvc
+  uvc/env: prod
+
+commonAnnotations:
+  app.kubernetes.io/version: "${APP_VERSION}"
+  uvc/doc.version: "${DOC_VERSION}"
+  uvc/doc.owner: "${DOC_OWNER}"
+  uvc/doc.status: "approved"
+  uvc/doc.reviewedAt: "2025-10-18"
+  uvc/doc.approvedBy: "${DOC_APPROVED_BY}"
+  uvc/build.timestamp: "${BUILD_TIMESTAMP}"
+  uvc/build.commit: "${GIT_SHA}"
+  uvc/build.branch: "${GIT_BRANCH}"

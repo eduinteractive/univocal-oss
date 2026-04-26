@@ -1,0 +1,24 @@
+{
+  "name": "uvc-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Univocal Monorepo with PNPM Workspaces",
+  "scripts": {
+    "build:libs": "pnpm --filter './lib/*' build",
+    "build:services": "pnpm --filter './core/*' build",
+    "build:all": "pnpm build:libs && pnpm build:services",
+    "test": "pnpm --recursive test",
+    "clean": "pnpm --recursive clean",
+    "publish:libs": "pnpm build:libs && pnpm --filter './lib/*' publish",
+    "install:all": "pnpm install"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.2",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=8"
+  }
+}

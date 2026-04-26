@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: uvc-web
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: uvc-web
+  template:
+    metadata:
+      labels:
+        app: uvc-web
+    spec:
+      containers:
+        - name: uvc-web
+          image: uvc/uvc-web
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-web-srv
+spec:
+  selector:
+    app: uvc-web
+  ports:
+    - name: uvc-web
+      protocol: TCP
+      port: 3000
+      targetPort: 80

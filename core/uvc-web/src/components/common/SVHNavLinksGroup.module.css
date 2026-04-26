@@ -1,0 +1,3 @@
+.navLink:hover {
+    background-color: var(--mantine-color-gray-0) !important;
+}

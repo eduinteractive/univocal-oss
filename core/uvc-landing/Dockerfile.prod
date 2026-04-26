@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1.7
+# -------- Builder --------
+FROM node:20-alpine AS builder
+WORKDIR /service
+RUN npm i -g pnpm
+
+# NUR im Builder verwenden (kommt nicht ins Runtime-Image)
+ARG NPM_TOKEN
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+RUN pnpm config set inject-workspace-packages true --location project
+
+# Diese COPYs erwarten, dass der Build-Kontext das Repo-Root ist (Skaffold: context: .)
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY lib ./lib
+
+RUN pnpm install --filter ./lib/*
+RUN pnpm run build:libs
+
+COPY core/uvc-landing ./core/uvc-landing
+
+# Nur das Zielpaket + transitive Workspace-Deps installieren
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile --filter ./core/uvc-landing...
+
+# Build (produces .next/standalone with output: "standalone")
+RUN pnpm --filter ./core/uvc-landing run build
+
+# Monorepo standalone: Next nests the app under .next/standalone/core/uvc-landing/ (not standalone/server.js).
+# public + .next/static must live next to that server.js (same as a non-monorepo app root).
+RUN STAND_APP=core/uvc-landing/.next/standalone/core/uvc-landing \
+ && mkdir -p "$STAND_APP/public" \
+ && if [ -d core/uvc-landing/public ]; then cp -a core/uvc-landing/public/. "$STAND_APP/public/"; fi \
+ && mkdir -p "$STAND_APP/.next" \
+ && cp -r core/uvc-landing/.next/static "$STAND_APP/.next/static"
+
+# -------- Runtime: full standalone tree (root node_modules + pnpm layout) --------
+FROM node:20-alpine AS runtime
+ENV NODE_ENV=production
+ENV PORT=3010
+WORKDIR /app
+
+COPY --from=builder /service/core/uvc-landing/.next/standalone/ ./
+
+EXPOSE 3010
+CMD ["node", "core/uvc-landing/server.js"]

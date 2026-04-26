@@ -1,0 +1,23 @@
+.rt_table {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    border-spacing: 0px !important;
+}
+
+.rt_table table {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    border-spacing: 0px !important;
+}
+
+.rt_table th {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    padding: 5px 10px;
+}
+
+.rt_table td {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    padding: 5px 10px;
+}

@@ -1,0 +1,124 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uvc-ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "ingress-token"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://univocal.local.de, http://apps.univocal.local.de"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/upgrade-insecure-requests: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "5m"  # Hier hinzugefügt
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: univocal.local.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-landing-srv
+                port:
+                  number: 3010
+    - host: apps.univocal.local.de
+      http:
+        paths:
+          - path: /Shibboleth\.sso(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-shibboleth-srv
+                port:
+                  number: 80
+          - path: /api/auth/public/dfn/login(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-shibboleth-srv
+                port:
+                  number: 80
+          - path: /api/auth/public/dfn/bridge(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-shibboleth-srv
+                port:
+                  number: 80
+          - path: /api/auth/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-auth-srv
+                port:
+                  number: 3001
+          - path: /api/tenant/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-tenant-srv
+                port:
+                  number: 3002
+          - path: /api/profile/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-profile-srv
+                port:
+                  number: 3003
+          - path: /api/calendar/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-calendar-srv
+                port:
+                  number: 3004
+          - path: /api/chat/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-chat-srv
+                port:
+                  number: 3005
+          - path: /api/knowledge/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-knowledge-srv
+                port:
+                  number: 3006
+          - path: /api/survey/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-survey-srv
+                port:
+                  number: 3007
+          - path: /api/event/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-event-srv
+                port:
+                  number: 3008
+          - path: /api/project/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-project-srv
+                port:
+                  number: 3009
+          - path: /.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-web-srv
+                port:
+                  number: 3000

@@ -1,0 +1,40 @@
+# Next.js: NEXT_PUBLIC_* is baked in at docker build. Pass the same value as build-arg when building the image.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uvc-landing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uvc-landing
+  template:
+    metadata:
+      labels:
+        app: uvc-landing
+    spec:
+      containers:
+        - name: uvc-landing
+          image: uvc/uvc-landing
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "1500Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-landing-srv
+spec:
+  selector:
+    app: uvc-landing
+  ports:
+    - name: uvc-landing
+      protocol: TCP
+      port: 3010
+      targetPort: 3010

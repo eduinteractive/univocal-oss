@@ -1,0 +1,20 @@
+# Lokale Registry-Konfiguration
+# Kopiere diese Datei zu .registry.local und passe die Werte an
+# .registry.local ist in .gitignore und wird nicht committed
+
+export REGISTRY_URL="svh.cr.de-fra.ionos.com"
+export REGISTRY_SECRET="ionosregistry"
+
+# Shibboleth dev (required for scripts/dev.sh)
+export SHIB_DEV_ENTITY_ID="http://apps.univocal.local.de/shibboleth"
+export SHIB_DEV_DISCOVERY_URL="https://wayf.aai.dfn.de/DFN-AAI-Test/wayf"
+export SHIB_DEV_METADATA_URL="http://www.aai.dfn.de/metadata/dfn-aai-test-metadata.xml"
+export SHIB_DEV_SUPPORT_CONTACT="support@univocal.local.de"
+export SHIB_DEV_APACHE_SERVER_NAME="apps.univocal.local.de"
+
+# Shibboleth prod (required for scripts/deploy.sh)
+export SHIB_PROD_ENTITY_ID="https://apps.univocal.de/shibboleth"
+export SHIB_PROD_DISCOVERY_URL="https://wayf.aai.dfn.de/DFN-AAI/wayf"
+export SHIB_PROD_METADATA_URL="http://www.aai.dfn.de/metadata/dfn-aai-metadata.xml"
+export SHIB_PROD_SUPPORT_CONTACT="support@education-interactive.de"
+export SHIB_PROD_APACHE_SERVER_NAME="https://apps.univocal.de:443"

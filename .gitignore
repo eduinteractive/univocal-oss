@@ -1,0 +1,9 @@
+**/.DS_Store
+node_modules/
+.temp/
+.kube/
+.certs/
+# Lokale Production-Konfigurationen (nicht committen!)
+.registry.local
+.env.prod.local
+core/svh-infra/k8s/prod/local/

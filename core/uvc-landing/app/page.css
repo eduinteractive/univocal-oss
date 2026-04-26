@@ -1,0 +1,43 @@
+body {
+    hyphens: auto;
+}
+
+.uvc-tool-icon {
+    transition: transform 150ms ease;
+}
+
+.uvc-tool-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Feature sections: float image inside the text (Word-like wrap). */
+.uvc-feature {
+    display: block;
+}
+
+.uvc-feature__title { margin-bottom: 0.75rem; }
+
+/* Smartphone: no illustrations */
+.uvc-feature__float { display: none; }
+
+/* Tablet+ (but not smartphone): show floats and wrap text */
+@media (min-width: 768px) {
+    .uvc-feature__float {
+        display: block;
+        float: right;
+        width: clamp(280px, 34vw, 360px);
+        margin: 0.2rem 0 0.6rem 20px; /* align with body text, wrap nicely */
+    }
+
+    .uvc-feature__float--sm {
+        width: clamp(220px, 28vw, 300px);
+        margin-left: 20px;
+    }
+
+    /* Ensure the section contains the float */
+    .uvc-feature::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}

@@ -1,0 +1,5 @@
+.kube
+.kube/localconfig.yaml
+.kube/kubeconfig.yaml
+.kube/config.json
+.DS_Store

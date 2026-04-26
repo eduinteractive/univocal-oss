@@ -1,0 +1,18 @@
+.root {
+	position: relative !important;
+}
+
+.input {
+	min-height: rem(54px) !important;
+	padding-top: rem(19px) !important;
+}
+
+.label {
+	position: absolute !important;
+	pointer-events: none !important;
+	font-size: var(--mantine-font-size-xs) !important;
+	padding-left: var(--mantine-spacing-sm) !important;
+	padding-top: calc(var(--mantine-spacing-sm) / 3) !important;
+	color: var(--mantine-color-gray-6) !important;
+	z-index: 1 !important;
+}

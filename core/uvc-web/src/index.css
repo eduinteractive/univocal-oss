@@ -1,0 +1,12 @@
+:root {
+
+}
+
+html, body {
+    height: 100%; /* Stellt sicher, dass der Body die volle Höhe einnimmt */
+    margin: 0; /* Entfernt den Standard-Margin */
+}
+
+#root, .container-fluid, .row {
+    height: 100%; /* Stellt sicher, dass React-Root und Bootstrap-Container die volle Höhe einnehmen */
+}

@@ -1,0 +1,47 @@
+{
+	"name": "@eduinteractive/uvc-common",
+	"version": "1.0.0",
+	"description": "",
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"files": [
+		"build/**/*"
+	],
+	"scripts": {
+		"clean": "del ./build/*",
+		"build": "npm run clean && tsc",
+		"stage": "npm version patch",
+		"publish": "npm run build && npm publish"
+	},
+	"author": "",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"@getbrevo/brevo": "catalog:",
+		"@types/multer": "^2.0.0",
+		"aws-sdk": "^2.1693.0",
+		"body-parser": "^2.2.2",
+		"cookie-parser": "catalog:uvc-express-boilerplate",
+		"cors": "^2.8.6",
+		"express-slow-down": "^3.0.1",
+		"helmet": "^8.1.0",
+		"jsonwebtoken": "catalog:uvc-express-boilerplate",
+		"multer": "2.0.2"
+	},
+	"devDependencies": {
+		"@types/body-parser": "^1.19.6",
+		"@types/cookie-parser": "catalog:uvc-express-boilerplate-dev",
+		"@types/cors": "^2.8.19",
+		"@types/express": "catalog:uvc-express-boilerplate-dev",
+		"@types/jsonwebtoken": "catalog:uvc-express-boilerplate-dev",
+		"@types/request": "^2.48.13",
+		"del-cli": "^7.0.0"
+	},
+	"peerDependencies": {
+		"axios": "catalog:uvc-express-boilerplate",
+		"express": "catalog:uvc-express-boilerplate",
+		"express-validator": "catalog:uvc-express-boilerplate",
+		"mongodb": "catalog:uvc-express-boilerplate",
+		"mongoose": "catalog:uvc-express-boilerplate",
+		"redis": "catalog:uvc-express-boilerplate"
+	}
+}

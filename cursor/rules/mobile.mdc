@@ -1,0 +1,12 @@
+---
+description: 
+globs: mobile/**/*.tsx
+alwaysApply: false
+---
+# Agent Behavior
+- Scan the codebase for patterns regarding Data fetching and updating and use this
+- Scan the mobile/api directory for the data types and api calls
+- Scan the available components and never use gluestack ui components or mantine components
+- Use our own library @eduinteractive/balladui located in mobile/node_modules/@eduinteractive/balladui for UI Components
+- Scan the other pages for how @eduinteractive/balladui is used and use this pattern in UI implementations
+- You can use the core/svh-web microservice as a reference which data is in which way displayed but never use the same components because these are web components

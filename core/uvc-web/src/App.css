@@ -1,0 +1,61 @@
+p {
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
+.groupButton {
+    display: block;
+    width: 100%;
+    padding: var(--mantine-spacing-md);
+    padding-top: var(--mantine-spacing-sm);
+    padding-bottom: var(--mantine-spacing-sm);
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
+    border-top: 1px solid var(--mantine-color-gray-3);
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+  
+    @mixin hover {
+      background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+    }
+}
+
+.rt_table {
+    width: 100%;
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    border-spacing: 0px !important;
+}
+
+.rt_table table {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    border-spacing: 0px !important;
+}
+
+.rt_table th {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    padding: 5px 10px;
+}
+
+.rt_table td {
+    border: 1px solid #dfe1e5;
+    border-collapse: collapse;
+    padding: 5px 10px;
+}
+
+.edi_gray_hover {
+    cursor: pointer;
+    @mixin hover {
+        background-color: var(--mantine-color-gray-0) !important;
+    }
+}
+
+.svh_box_shadow_hover {
+    @mixin hover {
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+    }
+}
+
+.mantine-Indicator-indicator {
+    z-index: 100;
+}

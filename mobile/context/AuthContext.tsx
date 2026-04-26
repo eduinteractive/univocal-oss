@@ -1,0 +1,200 @@
+import { AuthData, checkAuth, login, logout, register, resetPassword, refresh } from "@/api/Auth";
+import { onSignUpBody } from "@/components/features/auth/SignUpForm";
+import { useStorageState } from "@/hooks/useStorageState";
+import { NotificationHandler } from "@/utils/NotificationHandler";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useContext, createContext, type PropsWithChildren, useState, useEffect } from "react";
+import { eventEmitter } from "@/api/APIHandler";
+
+const AuthContext = createContext<{
+	signIn: (mail: string, password: string) => Promise<void>;
+	signOut: () => void;
+	signUp: (body: onSignUpBody) => Promise<void>;
+	forgetPassword: (mail: string) => Promise<void>;
+	refresh: () => Promise<any>;
+	authData?: AuthData | null;
+	authToken?: string | null;
+	isLoading: boolean;
+}>({
+	signIn: () => new Promise(() => null),
+	signOut: () => null,
+	signUp: () => new Promise(() => null),
+	forgetPassword: () => new Promise(() => null),
+	refresh: () => new Promise(() => null),
+	authData: null,
+	isLoading: false,
+});
+
+// This hook can be used to access the user info.
+export const useAuth = () => {
+	const value = useContext(AuthContext);
+	if (process.env.NODE_ENV !== "production") {
+		if (!value) {
+			throw new Error("useSession must be wrapped in a <SessionProvider />");
+		}
+	}
+
+	return value;
+};
+
+export const SessionProvider = ({ children }: PropsWithChildren) => {
+	const [[_aLoading, authToken], setAuthToken] = useStorageState("authToken");
+	const [[_rLoading, refreshToken], setRefreshToken] = useStorageState("refreshToken");
+	const [authData, setAuthData] = useState<AuthData | null>(null);
+    const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+	const authQuery = useQuery<AuthData, Error>({
+		queryFn: checkAuth,
+		queryKey: ["checkAuth", authToken, refreshToken],
+        retry: (_, error) => {
+            if (error instanceof Response) {
+                return error.status === 401;
+            }
+            return false;
+        },
+	});
+
+	const loginMutation = useMutation({
+		mutationFn: login,
+		onSuccess: (data) => {
+			setAuthToken(data.authToken);
+			setRefreshToken(data.refreshToken);
+			setAuthData(data);
+			authQuery.refetch();
+			router.replace("/dashboard");
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const registerMutation = useMutation({
+		mutationFn: register,
+		onSuccess: () => {
+			NotificationHandler.showSuccess(
+				"Du hast dich erfolgreich registriert! Du kannst dich jetzt anmelden"
+			);
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const logoutMutation = useMutation({
+		mutationFn: logout,
+		onSuccess: async () => {
+			setAuthToken(null);
+			setRefreshToken(null);
+			setAuthData(null);
+            router.replace("/auth");
+            setIsLoggedOut(true);
+			setTimeout(() => {
+                setIsLoggedOut(false);
+			}, 1000);
+		},
+		onError: (err) => {
+			setAuthToken(null);
+			setRefreshToken(null);
+			setAuthData(null);
+			authQuery.refetch();
+			router.replace("/auth");
+		},
+	});
+
+	const forgetPasswordMutation = useMutation({
+		mutationFn: resetPassword,
+		onSuccess: () => {
+			NotificationHandler.showSuccess(
+				"Wir haben dir eine E-Mail mit einem Link zum Zurücksetzen deines Passworts geschickt."
+			);
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const refreshMutation = useMutation({
+		mutationFn: refresh,
+		onSuccess: (data) => {
+			setAuthToken((data as any).authToken);
+			setRefreshToken((data as any).refreshToken);
+			setAuthData(data as AuthData);
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	// Handle unauthorized event
+	useEffect(() => {
+		const handleUnauthorized = async () => {
+            authQuery.refetch();
+		};
+
+		eventEmitter.on('unauthorized', handleUnauthorized);
+
+		return () => {
+			eventEmitter.off('unauthorized', handleUnauthorized);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (authQuery.data && !isLoggedOut) {
+			setAuthToken((authQuery.data as any).authToken);
+			setRefreshToken((authQuery.data as any).refreshToken);
+			setAuthData(authQuery.data);
+		}
+	}, [authQuery.data]);
+
+    useEffect(() => {
+        if (!isLoggedOut) {
+            authQuery.refetch();
+        }
+    }, [isLoggedOut]);
+
+    useEffect(() => {
+        if (authQuery.error) {
+            const error = authQuery.error as any;
+            if (error?.response?.status === 401) {
+                setAuthToken(null);
+                setRefreshToken(null);
+                setAuthData(null);
+                router.replace("/auth");
+            }
+        }
+    }, [authQuery.error]);
+        
+	return (
+		<AuthContext.Provider
+			value={{
+				signIn: (mail, password) =>
+					loginMutation.mutateAsync({
+						body: {
+							mail,
+							password,
+						},
+					}),
+				signOut: () => {
+					logoutMutation.mutateAsync();
+				},
+				signUp: (body) =>
+					registerMutation.mutateAsync({
+						body: {
+							mail: body.mail,
+							password: body.password,
+							contact: {
+								first_name: body.contact.first_name,
+								last_name: body.contact.last_name,
+								phone: body.contact.phone,
+							},
+						},
+					}),
+				forgetPassword: (mail) =>
+					forgetPasswordMutation.mutateAsync({
+						body: {
+							mail,
+						},
+					}),
+				refresh: () => refreshMutation.mutateAsync(),
+				authData,
+				isLoading: authQuery.isLoading,
+				authToken,
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
+	);
+};

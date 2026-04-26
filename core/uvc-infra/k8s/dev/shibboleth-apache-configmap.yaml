@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shibboleth-apache-config
+data:
+  shib-proxy.conf: |
+    ServerName ${SHIB_APACHE_SERVER_NAME}
+    UseCanonicalName On
+
+    ProxyPreserveHost On
+
+    <Location /Shibboleth.sso>
+      SetHandler shib
+      Require all granted
+    </Location>
+
+    <Location /api/auth/public/dfn/login>
+      AuthType shibboleth
+      ShibRequestSetting requireSession 1
+      Require valid-user
+    </Location>
+
+    <Location /api/auth/public/dfn/bridge>
+      AuthType shibboleth
+      ShibRequestSetting requireSession 1
+      Require valid-user
+    </Location>
+
+    RequestHeader unset X-Remote-User
+    RequestHeader unset X-Mail
+    RequestHeader unset X-Given-Name
+    RequestHeader unset X-Sn
+    RequestHeader unset X-Pairwise-Id
+
+    RequestHeader set X-Remote-User %{REMOTE_USER}e
+    RequestHeader set X-Mail %{mail}e
+    RequestHeader set X-Given-Name %{givenName}e
+    RequestHeader set X-Sn %{sn}e
+    RequestHeader set X-Pairwise-Id %{pairwise-id}e
+
+    ProxyPass        /api/auth/public/dfn/login http://uvc-auth-srv:3001/api/auth/public/dfn/login
+    ProxyPassReverse /api/auth/public/dfn/login http://uvc-auth-srv:3001/api/auth/public/dfn/login
+    ProxyPass        /api/auth/public/dfn/bridge http://uvc-auth-srv:3001/api/auth/public/dfn/bridge
+    ProxyPassReverse /api/auth/public/dfn/bridge http://uvc-auth-srv:3001/api/auth/public/dfn/bridge

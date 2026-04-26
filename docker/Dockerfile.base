@@ -1,0 +1,28 @@
+FROM node:20-alpine as base
+
+WORKDIR /service
+
+RUN npm install -g pnpm
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+
+# Alle package.json der lib + core für Caching
+COPY lib ./lib
+COPY core ./core
+
+RUN pnpm install --frozen-lockfile --include-workspace-root --shamefully-hoist
+RUN pnpm --filter ./lib/... run build
+
+# Finales Base-Image
+FROM node:20-alpine as uvc-base
+
+WORKDIR /service
+
+RUN npm install -g pnpm
+
+COPY --from=base /service/node_modules ./node_modules
+COPY --from=base /service/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=base /service/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=base /service/package.json ./package.json
+COPY --from=base /service/lib ./lib
+COPY --from=base /service/core/*/package.json ./core/

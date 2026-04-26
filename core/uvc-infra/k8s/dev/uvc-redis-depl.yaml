@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uvc-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uvc-redis
+  template:
+    metadata:
+      labels:
+        app: uvc-redis
+    spec:
+      containers:
+      - name: uvc-redis
+        image: redis:latest
+        resources:
+          requests:
+            cpu: '250m'
+            memory: '1Gi'
+          limits:
+            cpu: '500m'
+            memory: '2Gi'
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-redis-srv
+spec:
+  selector:
+    app: uvc-redis
+  ports:
+    - name: uvc-redis
+      protocol: TCP
+      port: 6379
+      targetPort: 6379

@@ -1,0 +1,31 @@
+# syntax=docker/dockerfile:1.7
+# -------- Builder --------
+FROM node:20-alpine AS builder
+WORKDIR /service
+RUN npm i -g pnpm
+
+# NUR im Builder verwenden (kommt nicht ins Runtime-Image)
+ARG NPM_TOKEN
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+RUN pnpm config set inject-workspace-packages true --location project
+
+# Diese COPYs erwarten, dass der Build-Kontext das Repo-Root ist (Skaffold: context: .)
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY lib ./lib
+COPY core/uvc-web ./core/uvc-web
+
+RUN pnpm install --include-workspace-root --shamefully-hoist
+RUN pnpm run build:libs
+
+# Build nur für das Zielpaket
+RUN pnpm --filter ./core/uvc-web run build
+
+# Serve Stage
+FROM nginx:alpine
+
+COPY --from=builder /service/core/uvc-web/dist /usr/share/nginx/html
+COPY --from=builder /service/core/uvc-web/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

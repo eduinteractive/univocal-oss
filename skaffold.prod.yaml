@@ -1,0 +1,70 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+deploy:
+  kubectl: {}
+profiles:
+- name: prod
+  build:
+    tagPolicy:
+      gitCommit: {}
+    local:
+      push: true
+    artifacts:
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-web
+        context: .
+        docker:
+          dockerfile: core/uvc-web/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-auth
+        context: .
+        docker:
+          dockerfile: core/uvc-auth/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-tenant
+        context: .
+        docker:
+          dockerfile: core/uvc-tenant/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-profile
+        context: .
+        docker:
+          dockerfile: core/uvc-profile/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-calendar
+        context: .
+        docker:
+          dockerfile: core/uvc-calendar/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-chat
+        context: .
+        docker:
+          dockerfile: core/uvc-chat/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-knowledge
+        context: .
+        docker:
+          dockerfile: core/uvc-knowledge/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-survey
+        context: .
+        docker:
+          dockerfile: core/uvc-survey/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-event
+        context: .
+        docker:
+          dockerfile: core/uvc-event/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-project
+        context: .
+        docker:
+          dockerfile: core/uvc-project/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-landing
+        context: .
+        docker:
+          dockerfile: core/uvc-landing/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-shibboleth
+        context: core/uvc-shibboleth
+        docker:
+          dockerfile: Dockerfile
+  deploy:
+    kubectl: {}
+  manifests:
+    rawYaml:
+      - ./core/uvc-infra/k8s/prod/secrets/*
+    kustomize:
+      paths:
+        - ./core/uvc-infra/k8s/prod
+      buildArgs:
+        - --load-restrictor=LoadRestrictionsNone

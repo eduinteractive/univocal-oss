@@ -1,0 +1,26 @@
+.wrapper {
+    min-height: 100%;
+    background-size: cover;
+    background-image: url(https://medienzentrum-frankfurt.de/images/easyblog_articles/1282/SV-Hub_202303_1024x768Px_72ppi.png);
+    background-position: left center;
+    background-filter: blur(5px);
+}
+
+.form {
+    border-right: rem(1px) solid
+        light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+    min-height: 100vh;
+    max-width: rem(450px);
+    padding-top: rem(80px);
+
+    @media (max-width: $mantine-breakpoint-sm) {
+        max-width: 100%;
+    }
+}
+
+.title {
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    font-family:
+        Greycliff CF,
+        var(--mantine-font-family);
+}

@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.7
+# -------- Builder --------
+FROM node:20-alpine AS builder
+WORKDIR /service
+RUN npm i -g pnpm
+
+# NUR im Builder verwenden (kommt nicht ins Runtime-Image)
+ARG NPM_TOKEN
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+RUN pnpm config set inject-workspace-packages true --location project
+
+# Diese COPYs erwarten, dass der Build-Kontext das Repo-Root ist (Skaffold: context: .)
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY lib ./lib
+
+RUN pnpm install --filter ./lib/*
+RUN pnpm run build:libs
+
+COPY core/uvc-project/src ./core/uvc-project/src
+COPY core/uvc-project/migrations ./core/uvc-project/migrations
+COPY core/uvc-project/migrate-mongo-config.js ./core/uvc-project/migrate-mongo-config.js
+COPY core/uvc-project/tsconfig.prod.json ./core/uvc-project/tsconfig.prod.json
+COPY core/uvc-project/package.json ./core/uvc-project/package.json
+
+# Nur das Zielpaket + transitive Workspace-Deps installieren
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile --filter ./core/uvc-project...
+
+# Build nur für das Zielpaket
+RUN pnpm --filter ./core/uvc-project run build:prod
+
+# Deployment-Paket mit NUR Prod-Deps erzeugen
+RUN pnpm --filter ./core/uvc-project deploy --prod /opt/app
+
+# -------- Runtime --------
+FROM node:20-alpine AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Nur das minimal nötige Artefakt kopieren
+COPY --from=builder /opt/app ./
+COPY --from=builder /service/core/uvc-project/migrations ./migrations
+
+ENV npm_package_name=uvc-project
+
+EXPOSE 3009
+# Passe an dein start-Script an (empfohlen "start" statt "dev")
+CMD ["node", "build/src/service.js"]
+                
+    

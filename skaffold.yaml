@@ -1,0 +1,106 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+deploy:
+  kubectl: {}
+profiles:
+- name: dev
+  build:
+    local:
+      push: false
+      useBuildkit: true
+    artifacts:
+      - image: uvc/uvc-web
+        context: .
+        docker:
+          dockerfile: core/uvc-web/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-web/**/*"
+      - image: uvc/uvc-auth
+        context: .
+        docker:
+          dockerfile: core/uvc-auth/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-auth/**/*.ts"
+      - image: uvc/uvc-tenant
+        context: .
+        docker:
+          dockerfile: core/uvc-tenant/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-tenant/**/*.ts"
+      - image: uvc/uvc-profile
+        context: .
+        docker:
+          dockerfile: core/uvc-profile/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-profile/**/*.ts"
+      - image: uvc/uvc-calendar
+        context: .
+        docker:
+          dockerfile: core/uvc-calendar/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-calendar/**/*.ts"
+      - image: uvc/uvc-chat
+        context: .
+        docker:
+          dockerfile: core/uvc-chat/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-chat/**/*.ts"
+      - image: uvc/uvc-knowledge
+        context: .
+        docker:
+          dockerfile: core/uvc-knowledge/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-knowledge/**/*.ts"
+      - image: uvc/uvc-survey
+        context: .
+        docker:
+          dockerfile: core/uvc-survey/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-survey/**/*.ts"
+      - image: uvc/uvc-event
+        context: .
+        docker:
+          dockerfile: core/uvc-event/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-event/**/*.ts"
+      - image: uvc/uvc-project
+        context: .
+        docker:
+          dockerfile: core/uvc-project/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-project/**/*.ts"
+      - image: uvc/uvc-landing
+        context: .
+        docker:
+          dockerfile: core/uvc-landing/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-landing/app/**/*"
+            - "core/uvc-landing/public/**/*"
+            - "core/uvc-landing/components/**/*"
+            - "core/uvc-landing/assets/**/*"
+            - "core/uvc-landing/constants/**/*"
+      - image: uvc/uvc-shibboleth
+        context: core/uvc-shibboleth
+        docker:
+          dockerfile: core/uvc-shibboleth/Dockerfile
+  deploy:
+    kubectl: {}
+  manifests:
+    rawYaml:
+      - ./core/uvc-infra/k8s/dev/secrets/*
+    kustomize:
+      paths:
+        - ./core/uvc-infra/k8s/dev
+      buildArgs:
+        - --load-restrictor=LoadRestrictionsNone

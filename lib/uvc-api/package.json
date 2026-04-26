@@ -1,0 +1,25 @@
+{
+	"name": "@eduinteractive/uvc-api",
+	"version": "1.0.0",
+	"description": "",
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"files": [
+		"build/**/*"
+	],
+	"scripts": {
+		"clean": "rimraf build",
+		"build": "pnpm clean && tsc",
+		"dev": "tsc --watch",
+		"type-check": "tsc --noEmit"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "Apache-2.0",
+	"devDependencies": {
+		"rimraf": "^5.0.10"
+	},
+	"peerDependencies": {
+		"axios": "catalog:uvc-express-boilerplate"
+	}
+}

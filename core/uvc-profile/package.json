@@ -1,0 +1,52 @@
+{
+	"name": "uvc-profile",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon",
+		"start": "npm run build && node ./build/src/service.js",
+		"build": "rimraf ./build && tsc && copyfiles -u 1 src/assets/**/* ./build",
+		"build:prod": "rimraf ./build && tsc -p tsconfig.prod.json && copyfiles -u 1 src/assets/**/* ./build",
+		"test": "nyc mocha --timeout 150000 --require esbuild-register --require ./__test__/Setup.ts './__test__/**/!(Setup).ts' --exit --exit --parallel=1 --retries 2",
+		"migrate-up": "migrate-mongo up"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "Apache-2.0",
+	"devDependencies": {
+		"@types/chai": "catalog:uvc-express-boilerplate-dev",
+		"@types/express": "catalog:uvc-express-boilerplate-dev",
+		"@types/jsonwebtoken": "catalog:uvc-express-boilerplate-dev",
+		"@types/mocha": "catalog:uvc-express-boilerplate-dev",
+		"@types/multer": "catalog:uvc-express-boilerplate-dev",
+		"@types/proxyquire": "catalog:uvc-express-boilerplate-dev",
+		"@types/semver": "catalog:uvc-express-boilerplate-dev",
+		"@types/sinon": "catalog:uvc-express-boilerplate-dev",
+		"@types/supertest": "catalog:uvc-express-boilerplate-dev",
+		"chai": "catalog:uvc-express-boilerplate-dev",
+		"copyfiles": "catalog:uvc-express-boilerplate-dev",
+		"esbuild-register": "catalog:uvc-express-boilerplate-dev",
+		"mocha": "catalog:uvc-express-boilerplate-dev",
+		"mongodb-memory-server": "catalog:uvc-express-boilerplate-dev",
+		"nodemon": "catalog:uvc-express-boilerplate-dev",
+		"nyc": "catalog:uvc-express-boilerplate-dev",
+		"proxyquire": "catalog:uvc-express-boilerplate-dev",
+		"rimraf": "catalog:uvc-express-boilerplate-dev",
+		"sinon": "catalog:uvc-express-boilerplate-dev",
+		"supertest": "catalog:uvc-express-boilerplate-dev",
+		"ts-node": "catalog:uvc-express-boilerplate-dev",
+		"tsx": "catalog:uvc-express-boilerplate-dev"
+	},
+	"dependencies": {
+		"@eduinteractive/uvc-common": "workspace:*",
+		"axios": "catalog:uvc-express-boilerplate",
+		"express": "catalog:uvc-express-boilerplate",
+		"express-validator": "catalog:uvc-express-boilerplate",
+		"jsonwebtoken": "catalog:uvc-express-boilerplate",
+		"migrate-mongo": "catalog:uvc-express-boilerplate",
+		"mongodb": "catalog:uvc-express-boilerplate",
+		"mongoose": "catalog:uvc-express-boilerplate",
+		"redis": "catalog:uvc-express-boilerplate"
+	}
+}
