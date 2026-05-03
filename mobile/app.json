@@ -5,13 +5,16 @@
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"scheme": "UnivocalUVC",
+		"scheme": "univocal",
 		"userInterfaceStyle": "light",
-		"newArchEnabled": true,
 		"ios": {
 			"userInterfaceStyle": "light",
 			"supportsTablet": true,
-			"bundleIdentifier": "de.saukels.univocal"
+			"bundleIdentifier": "de.saukels.univocal",
+            "infoPlist": {
+                "UIDesignRequiresCompatibility": true
+            },
+            "icon": "./assets/images/app.icon"
 		},
 		"android": {
 			"userInterfaceStyle": "light",
@@ -40,7 +43,8 @@
 			"expo-secure-store",
 			"expo-font",
 			"expo-web-browser",
-            "expo-notifications"
+            "expo-notifications",
+            "@react-native-community/datetimepicker"
 		],
 		"experiments": {
 			"typedRoutes": true
