@@ -5,7 +5,7 @@ import { useTenant } from "@/context/TenantContext";
 import { useState, useLayoutEffect } from "react";
 import { RichText, useEditorBridge, Toolbar, PlaceholderBridge, TenTapStartKit } from "@10play/tentap-editor";
 import { KeyboardAvoidingView, Platform } from "react-native";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { applyColor, Box, Button, Flex, Text } from "@eduinteractive/balladui";
 import { IconCheck } from "@/assets/icons/Icon";
@@ -100,7 +100,7 @@ export default function EditProgram() {
 	}, [navigation, content, materials, updateMutation.isPending, eventQuery.data]);
 
 	if (eventQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (eventQuery.error) {

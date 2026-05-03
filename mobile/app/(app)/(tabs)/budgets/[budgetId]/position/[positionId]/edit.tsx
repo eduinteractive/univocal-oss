@@ -8,7 +8,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Alert } from "react-native"
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Button, Flex, TextInput, Text } from "@eduinteractive/balladui";
 import { applyColor } from "@eduinteractive/balladui";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { IconTrash } from "@/assets/icons/Icon";
 
 export default () => {
@@ -162,7 +162,7 @@ export default () => {
 	};
 
 	if (budgetQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!position) {

@@ -1,7 +1,7 @@
 {
-  "name": "sv-hub",
+  "name": "univocal",
   "main": "expo-router/entry",
-  "version": "1.1.2",
+  "version": "1.0.0",
   "scripts": {
     "start": "expo run:ios --device",
     "reset-project": "node ./scripts/reset-project.js",

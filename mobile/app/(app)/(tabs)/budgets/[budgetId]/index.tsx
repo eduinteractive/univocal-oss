@@ -1,6 +1,6 @@
 import { RelativePathString, router, useLocalSearchParams, useNavigation } from "expo-router";
 import { ScrollView, RefreshControl, Alert } from "react-native";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { deleteBudget, getBudget } from "@/api/Budget";
 import { BudgetPosition, BudgetPositionType } from "@/api/Budget";
 import { useTenant } from "@/context/TenantContext";
@@ -78,7 +78,7 @@ export default () => {
 	}, [budgetQuery.data, navigation]);
 
 	if (budgetQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!budgetQuery.data) {

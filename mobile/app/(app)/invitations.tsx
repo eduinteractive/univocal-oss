@@ -10,7 +10,7 @@ import {
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { useAuth } from "@/context/AuthContext";
 import { Button, Card, Flex, Text } from "@eduinteractive/balladui";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 
 const InvitationsScreen = () => {
 	const { refresh } = useAuth();
@@ -97,7 +97,7 @@ const InvitationsScreen = () => {
 	);
 
 	if (!invitationsQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

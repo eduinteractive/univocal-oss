@@ -1,15 +1,15 @@
 import React, { useLayoutEffect } from "react";
 import { deleteCalendarEvent, getCalendarEvent } from "@/api/Calendar";
 import { useTenant } from "@/context/TenantContext";
-import { getMemberRoles } from "@/utils/Parser";
+import { getGroupPermissionLabel } from "@/utils/Parser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Alert, ScrollView } from "react-native";
 import * as Linking from "expo-linking";
 import { useCallback } from "react";
-import SVHLoader from "@/components/common/SVHLoader";
-import SVHMaterials from "@/components/common/SVHMaterials";
+import UVCLoader from "@/components/common/UVCLoader";
+import UVCMaterials from "@/components/common/UVCMaterials";
 import { Box, Text, Flex, Divider, applyColor } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
@@ -89,7 +89,7 @@ const CalendarItemViewScreen = () => {
 	};
 
 	if (calendarEventQuery.isLoading || !calendarEventQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	const event = calendarEventQuery.data;
@@ -159,15 +159,7 @@ const CalendarItemViewScreen = () => {
 							>
 								<Text fw="bold">Sichtbarkeit:</Text>
 								<Text>
-									{
-										getMemberRoles(
-											currentTenant?.type
-										).find(
-											(role) =>
-												role.value ===
-												event!.viewAccess
-										)?.label
-									}
+									{getGroupPermissionLabel(event!.viewAccess)}
 								</Text>
 							</Flex>
 						</>
@@ -177,7 +169,7 @@ const CalendarItemViewScreen = () => {
 						<>
 							<Divider />
 							<Text fw="bold">Materialien:</Text>
-							<SVHMaterials
+							<UVCMaterials
 								materials={event.materials}
 								onPress={(material) =>
 									Linking.openURL(

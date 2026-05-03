@@ -1,6 +1,6 @@
 import { getProjects } from "@/api/Project";
 import { IconPlus } from "@/assets/icons/Icon";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import { useTenant } from "@/context/TenantContext";
 import { Box, FAB, Flex, Text } from "@eduinteractive/balladui";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ export default () => {
 
 	return (
         <Box flex={1}>
-            <SVHMetaCards
+            <UVCMetaCards
                 permissionPrefix="projects"
                 data={projectsQuery.data || []}
                 onOpen={(projectId) =>

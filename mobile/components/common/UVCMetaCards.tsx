@@ -1,7 +1,6 @@
 import { FlatList, FlatListProps, Image, RefreshControl, TouchableOpacity } from "react-native";
 import { BASE_URL } from "@/api/APIHandler";
-import { getMemberRoles } from "@/utils/Parser";
-import { useTenant } from "@/context/TenantContext";
+import { getGroupPermissionLabel } from "@/utils/Parser";
 import { useState } from "react";
 import { Alert } from "react-native";
 import React from "react";
@@ -10,7 +9,7 @@ import { IconTrash } from "@/assets/icons/Icon";
 import { TenantDashboardItemType } from "@/api/Tenant";
 import { TENANT_DASHBOARD_ITEM_TYPES_STRINGS } from "@/constants/Enums";
 
-interface SVHMetaCardsProps {
+interface UVCMetaCardsProps {
 	data: {
 		_id?: string;
 		title: string;
@@ -34,11 +33,10 @@ interface SVHMetaCardsProps {
 	onOpen?: (metaId: string, type?: TenantDashboardItemType) => void;
 	onDelete?: (metaId: string) => void;
 
-    FlatListProps?: Partial<FlatListProps<any>>;
+	FlatListProps?: Partial<FlatListProps<any>>;
 }
 
-const SVHMetaCards = (props: SVHMetaCardsProps) => {
-	const { currentTenant } = useTenant();
+const UVCMetaCards = (props: UVCMetaCardsProps) => {
 	const [selectedItem, setSelectedItem] = useState<string | null>(null);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -114,7 +112,9 @@ const SVHMetaCards = (props: SVHMetaCardsProps) => {
 											: "https://dummyimage.com/150"
 									}
 									alt="Project"
-									className="w-full"
+									style={{
+                                        width: "100%"
+                                    }}
 								/>
 							)}
 							{props.prefixKey && (
@@ -170,15 +170,7 @@ const SVHMetaCards = (props: SVHMetaCardsProps) => {
 									c="gray.4"
 								>
 									Sichtbarkeit:{" "}
-									{
-										getMemberRoles(
-											currentTenant?.type
-										).find(
-											(role) =>
-												role.value ===
-												item.viewAccess
-										)?.label
-									}
+									{getGroupPermissionLabel(item.viewAccess)}
 								</Text>
 							)}
 							<Divider
@@ -231,4 +223,4 @@ const SVHMetaCards = (props: SVHMetaCardsProps) => {
 	);
 };
 
-export default SVHMetaCards;
+export default UVCMetaCards;

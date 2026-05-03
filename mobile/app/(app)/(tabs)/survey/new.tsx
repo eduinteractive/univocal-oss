@@ -5,7 +5,7 @@ import { useTenant } from "@/context/TenantContext";
 import { useState, useLayoutEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHMetaForm from "@/components/common/SVHMetaForm";
+import UVCMetaForm from "@/components/common/UVCMetaForm";
 import { Select } from "@eduinteractive/balladui";
 
 const SURVEY_EXECUTION_MODE_STRINGS = {
@@ -65,7 +65,7 @@ export default () => {
 			style={{ flex: 1 }}
 			keyboardVerticalOffset={Platform.OS === "ios" ? 96 : 0}
 		>
-			<SVHMetaForm
+			<UVCMetaForm
 				data={null}
 				loading={loading}
 				onSubmit={handleSubmit}
@@ -86,7 +86,7 @@ export default () => {
 						setExecutionMode(value as SurveyExecutionMode);
 					}}
 				/>
-			</SVHMetaForm>
+			</UVCMetaForm>
 		</KeyboardAvoidingView>
 	);
 };

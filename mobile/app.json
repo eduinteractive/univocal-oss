@@ -1,17 +1,17 @@
 {
 	"expo": {
-		"name": "SV-Hub",
-		"slug": "svhub",
-		"version": "1.1.1",
+		"name": "univocal",
+		"slug": "univocal",
+		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"scheme": "SVHub",
+		"scheme": "UnivocalUVC",
 		"userInterfaceStyle": "light",
 		"newArchEnabled": true,
 		"ios": {
 			"userInterfaceStyle": "light",
 			"supportsTablet": true,
-			"bundleIdentifier": "de.saukels.svhub"
+			"bundleIdentifier": "de.saukels.univocal"
 		},
 		"android": {
 			"userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
 			},
-			"package": "de.saukels.svhub"
+			"package": "de.saukels.univocal"
 		},
 		"web": {
 			"bundler": "metro",
@@ -46,10 +46,7 @@
 			"typedRoutes": true
 		},
 		"extra": {
-			"router": {},
-			"eas": {
-				"projectId": "5f39ce5b-a681-476c-a1d9-76787088e133"
-			}
+			"router": {}
 		}
 	}
 }

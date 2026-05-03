@@ -1,4 +1,4 @@
-import APIHandler, { getSVHFilterParams, SVHFilterObject, SVHMetadata } from "./APIHandler";
+import APIHandler, { getUVCFilterParams, UVCFilterObject, UVCMetadata } from "./APIHandler";
 import { CalendarEvent } from "./Calendar";
 import { Domain } from "./Domain";
 
@@ -11,19 +11,12 @@ export enum TenantDashboardItemType {
     SURVEY = "SURVEY",
 }
 
-export enum TenantType {
-    SV = "SV",
-    SSR = "SSR",
-    NETWORK = "NETWORK",
-}
-
 export type TenantVisibility = "PUBLIC" | "HIDDEN" | "ON_REQUEST";
 
 export interface Tenant {
     _id: string;
     title: string;
     description?: string;
-    type: TenantType;
     domain?: string | Domain;
     visibility: TenantVisibility;
     integrations: {
@@ -45,7 +38,6 @@ export interface TenantUser {
     lastName: string;
     group_id: string;
     group_permission: number;
-    group_type: TenantType;
 }
 
 export interface TenantInvitation {
@@ -58,7 +50,6 @@ export interface TenantInvitation {
 interface getTenantsRequest {
     params?: {
         domain?: string;
-        type?: TenantType;
         visibility?: TenantVisibility;
     }
 }
@@ -77,7 +68,7 @@ export const getUserTenants = async () => {
 
 interface getTenantRequest {
     id?: string;
-    params?: SVHFilterObject | null;
+    params?: UVCFilterObject | null;
 }
 
 export interface getTenantResponse {
@@ -88,7 +79,7 @@ export interface getTenantResponse {
 export const getTenant = async (req: getTenantRequest) => {
     if (!req.id) throw new Error('No Tenant id provided');
     const response = await APIHandler.get(`/tenant/tenant/${req.id}`, {
-        params: getSVHFilterParams(req.params || null),
+        params: getUVCFilterParams(req.params || null),
     });
     return response.data as getTenantResponse;
 }
@@ -101,7 +92,7 @@ export const getTenantDashboard = async (req: getTenantDashboardRequest) => {
     const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/dashboard`);
     return response.data as {
         calendarEvents: CalendarEvent[];
-        dashboardItems: (SVHMetadata & { type: TenantDashboardItemType })[];
+        dashboardItems: (UVCMetadata & { type: TenantDashboardItemType })[];
     };
 }
 
@@ -180,7 +171,6 @@ export interface updateTenantRequest {
     body: {
         title?: string;
         description?: string;
-        type?: string;
         domain?: string;
         visibility?: TenantVisibility;
         integrations?: {

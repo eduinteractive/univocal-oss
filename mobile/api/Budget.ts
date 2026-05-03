@@ -1,6 +1,6 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from './APIHandler';
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from './APIHandler';
 
-export interface Budget extends SVHMetadata {
+export interface Budget extends UVCMetadata {
     _id: string;
     year?: number;
     ist_active?: boolean;
@@ -29,11 +29,11 @@ export interface BudgetPosition {
 
 interface getBudgetsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getBudgets = async (req: getBudgetsRequest): Promise<Budget[]> => {
-    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget`, { params: getSVHFilterParams(req.params) });
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget`, { params: getUVCFilterParams(req.params) });
     return response.data;
 }
 
@@ -49,7 +49,7 @@ export const getBudget = async (req: getBudgetRequest): Promise<{ budget: Budget
 
 interface createBudgetRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs & {
+    body: createUVCMetadataAttrs & {
         year?: number;
     }
 }
@@ -62,7 +62,7 @@ export const createBudget = async (req: createBudgetRequest): Promise<Budget> =>
 interface updateBudgetRequest {
     tenantId: string;
     budgetId: string;
-    body: updateSVHMetadataAttrs & {
+    body: updateUVCMetadataAttrs & {
         year?: number;
         ist_active?: boolean;
     }

@@ -6,31 +6,7 @@ import { useState, useLayoutEffect, useRef } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Keyboard, TextInputProps } from "react-native";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { Card, Flex, Text, TextInput, Button, Select } from "@eduinteractive/balladui";
-import { SV_PERMISSION_LEVEL, NETWORK_PERMISSION_LEVEL, SSR_PERMISSION_LEVEL } from "@/api/Auth";
-import { TenantType } from "@/api/Tenant";
-
-// Permission level strings for different tenant types
-const SV_PERMISSION_STRINGS = {
-	[SV_PERMISSION_LEVEL.GUEST]: "Gast",
-	[SV_PERMISSION_LEVEL.CLASS_SPEAKER]: "Klassensprecher*in",
-	[SV_PERMISSION_LEVEL.SV_MEMBER]: "SV-Mitglied",
-	[SV_PERMISSION_LEVEL.SV_BOARD]: "SV-Vorstand",
-	[SV_PERMISSION_LEVEL.SV_TEACHER]: "SV-Lehrer*in",
-	[SV_PERMISSION_LEVEL.SV_ADMIN]: "SV-Administrator*in",
-};
-
-const NETWORK_PERMISSION_STRINGS = {
-	[NETWORK_PERMISSION_LEVEL.GUEST]: "Gast",
-	[NETWORK_PERMISSION_LEVEL.NETWORK_MEMBER]: "Netzwerk-Mitglied",
-	[NETWORK_PERMISSION_LEVEL.NETWORK_ADMIN]: "Netzwerk-Administrator*in",
-};
-
-const SSR_PERMISSION_STRINGS = {
-	[SSR_PERMISSION_LEVEL.GUEST]: "Gast",
-	[SSR_PERMISSION_LEVEL.SSR_MEMBER]: "SSR-Mitglied",
-	[SSR_PERMISSION_LEVEL.SSR_BOARD]: "SSR-Vorstand",
-	[SSR_PERMISSION_LEVEL.SSR_ADMIN]: "SSR-Administrator*in",
-};
+import { GROUP_PERMISSION_LEVEL, GROUP_PERMISSION_OPTIONS } from "@/api/Auth";
 
 export default () => {
 	const { currentTenant } = useTenant();
@@ -40,7 +16,7 @@ export default () => {
 
 	// Form state
 	const [email, setEmail] = useState("");
-	const [permissionLevel, setPermissionLevel] = useState<number>(0);
+	const [permissionLevel, setPermissionLevel] = useState<number>(GROUP_PERMISSION_LEVEL.GUEST);
 
 	// Refs for form navigation
 	const emailRef = useRef<TextInputProps>(null);
@@ -87,30 +63,11 @@ export default () => {
 		});
 	};
 
-	// Get permission options based on tenant type
-	const getPermissionOptions = () => {
-		if (!currentTenant?.tenant) return [];
-
-		switch (currentTenant.tenant.type) {
-			case TenantType.SV:
-				return Object.entries(SV_PERMISSION_STRINGS).map(([key, label]) => ({
-					label,
-					value: key,
-				}));
-			case TenantType.NETWORK:
-				return Object.entries(NETWORK_PERMISSION_STRINGS).map(([key, label]) => ({
-					label,
-					value: key,
-				}));
-			case TenantType.SSR:
-				return Object.entries(SSR_PERMISSION_STRINGS).map(([key, label]) => ({
-					label,
-					value: key,
-				}));
-			default:
-				return [];
-		}
-	};
+	const getPermissionOptions = () =>
+		GROUP_PERMISSION_OPTIONS.map(({ value, label }) => ({
+			label,
+			value: String(value),
+		}));
 
 	return (
 		<KeyboardAvoidingView

@@ -6,7 +6,7 @@ import { useTenant } from "../../../../context/TenantContext";
 import { TenantUser } from "../../../../api/Tenant";
 import { RelativePathString, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { ActionSheet, Box, Card, FAB, Flex, Text } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { IconEdit, IconPlus } from "@/assets/icons/Icon";
@@ -149,7 +149,7 @@ export default () => {
 	);
 
 	if (!tenantMemberQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (
