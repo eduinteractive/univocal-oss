@@ -9,7 +9,7 @@ module.exports = {
     async down(db) {
         await db.collection("useraccounts").updateMany(
             {},
-            { $unset: { authProvider: "", pairwiseId: "", schacHomeOrganization: "" } }
+            { $unset: { authProvider: "", subjectId: "", schacHomeOrganization: "" } }
         );
     },
 };

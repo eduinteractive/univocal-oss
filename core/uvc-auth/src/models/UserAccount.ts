@@ -1,7 +1,7 @@
 import { Schema, Types, Document, model, Model } from "mongoose";
 import { UserContactDoc } from "./UserContact";
 import { GROUP_PERMISSION_LEVEL, PERMISSION_LEVEL } from "@eduinteractive/uvc-common";
-import { schacHomeOrganizationFromPairwiseId } from "../utils/schacHomeOrganizationFromPairwiseId";
+import { schacHomeOrganizationFromSubjectId } from "../utils/schacHomeOrganizationFromSubjectId";
 
 export enum ActivationStatus {
     NOT_VERIFIED = "NOT_VERIFIED",
@@ -9,7 +9,7 @@ export enum ActivationStatus {
     BANNED = "BANNED",
 }
 
-/** How the account was created / primary login method. LOCAL users may later link DFN (pairwiseId set). */
+/** How the account was created / primary login method. LOCAL users may later link DFN (subjectId set). */
 export enum AuthProvider {
     LOCAL = "LOCAL",
     DFN_AAI = "DFN_AAI",
@@ -57,8 +57,8 @@ interface UserAccountAttrs {
         pushToken: string;
     }[];
     authProvider?: AuthProvider;
-    /** Stable DFN-AAI pairwise identifier (SAML pairwise-id). */
-    pairwiseId?: string;
+    /** Stable DFN-AAI principal (SAML subject-id / Subject Identifier). */
+    subjectId?: string;
 }
 
 interface UserAccountModel extends Model<UserAccountDoc> {
@@ -87,7 +87,7 @@ export interface UserAccountDoc extends Document {
         pushToken: string;
     }[];
     authProvider: AuthProvider;
-    pairwiseId?: string;
+    subjectId?: string;
     schacHomeOrganization?: string;
 }
 
@@ -116,7 +116,7 @@ const UserAccountSchema = new Schema({
         _id: false
     },
     authProvider: { type: String, required: true, enum: Object.values(AuthProvider), default: AuthProvider.LOCAL },
-    pairwiseId: { type: String, required: false, unique: true, sparse: true },
+    subjectId: { type: String, required: false, unique: true, sparse: true },
 });
 
 UserAccountSchema.statics.build = (attrs: UserAccountAttrs) => {
@@ -133,7 +133,7 @@ UserAccountSchema.statics.normalize = (user: UserAccountDoc, contact?: UserConta
         dataProtectionAgreement: user.dataProtectionAgreement,
         activationStatus: user.activationStatus,
         authProvider: user.authProvider,
-        schacHomeOrganization: schacHomeOrganizationFromPairwiseId(user.pairwiseId),
+        schacHomeOrganization: schacHomeOrganizationFromSubjectId(user.subjectId),
         lastSignDate: user.lastSignDate,
         registerDate: user.registerDate,
         contact: contact ? contact : user.contact
