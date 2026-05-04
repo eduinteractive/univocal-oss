@@ -6,7 +6,7 @@ import { sign, verify } from "jsonwebtoken";
 import UserContact, { UserContactDoc } from "../models/UserContact";
 import { AuthentificationError, BadRequestError, ForbiddenError, NotFoundError, RedisClient, REQ_CLIENT, sendBrevoTemplateMail } from "@eduinteractive/uvc-common";
 import { normalizeUserData, setAuthCookie } from "../services/Authentification";
-import { schacHomeOrganizationFromPairwiseId } from "../utils/schacHomeOrganizationFromPairwiseId";
+import { schacHomeOrganizationFromSubjectId } from "../utils/schacHomeOrganizationFromSubjectId";
 
 interface LoginRequest {
     mail: string;
@@ -30,6 +30,13 @@ const normalizeShibHeaderValue = (value: string | undefined): string | undefined
     const lower = v.toLowerCase();
     if (lower === "(null)" || lower === "null") return undefined;
     return v;
+};
+
+/** DFN-AAI: SAML subject-id (X-Subject-Id) bzw. REMOTE_USER = subject-id (Apache/Shibboleth). */
+const getDfnPrincipalFromRequest = (req: Request): string | undefined => {
+    return normalizeShibHeaderValue(
+        getHeader(req, "x-subject-id") || getHeader(req, "x-remote-user")
+    );
 };
 
 /**
@@ -168,14 +175,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const dfnLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const pairwiseId = normalizeShibHeaderValue(
-            getHeader(req, "x-pairwise-id") || getHeader(req, "x-remote-user")
-        );
+        const principal = getDfnPrincipalFromRequest(req);
         const mail = normalizeShibHeaderValue(getHeader(req, "x-mail"));
         const givenName = normalizeShibHeaderValue(getHeader(req, "x-given-name"));
         const sn = normalizeShibHeaderValue(getHeader(req, "x-sn"));
 
-        if (!pairwiseId) {
+        if (!principal) {
             clearShibbolethSessionCookiesIfWeb(req, res);
             return res.redirect(`/?status=4001`)
         }
@@ -184,7 +189,9 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
             return res.redirect(`/?status=4002`)
         }
 
-        let userAccount = await UserAccount.findOne({ pairwiseId }) as UserAccountDoc | null;
+        let userAccount = (await UserAccount.findOne({
+            subjectId: principal,
+        })) as UserAccountDoc | null;
 
         if (!userAccount) {
             userAccount = await UserAccount.findOne({
@@ -197,7 +204,7 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
         }
 
         if (userAccount) {
-            if (userAccount.pairwiseId && userAccount.pairwiseId !== pairwiseId) {
+            if (userAccount.subjectId && userAccount.subjectId !== principal) {
                 throw new ForbiddenError("Dieser Account ist mit einer anderen Hochschul-Identität verknüpft.");
             }
             if (userAccount.activationStatus === ActivationStatus.BANNED) {
@@ -209,8 +216,8 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
                 userAccount.activationToken = undefined;
             }
 
-            if (!userAccount.pairwiseId) {
-                userAccount.pairwiseId = pairwiseId;
+            if (!userAccount.subjectId) {
+                userAccount.subjectId = principal;
             }
 
             const contact = await UserContact.findById(userAccount.contact);
@@ -248,7 +255,7 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
                 contact: userContact._id,
                 devices: [],
                 authProvider: AuthProvider.DFN_AAI,
-                pairwiseId,
+                subjectId: principal,
             });
             await userAccount.save();
         }
@@ -429,7 +436,8 @@ export const check = async (req: Request, res: Response, next: NextFunction) => 
                 JSON.stringify(decodedToken.domains) !== JSON.stringify(userAccount.domains) ||
                 JSON.stringify(decodedToken.contact) !== JSON.stringify(userAccount.contact) ||
                 decodedToken.authProvider !== userAccount.authProvider ||
-                decodedToken.schacHomeOrganization !== schacHomeOrganizationFromPairwiseId(userAccount.pairwiseId)
+                decodedToken.schacHomeOrganization !==
+                    schacHomeOrganizationFromSubjectId(userAccount.subjectId)
             ) {
                 userPublicData = normalizeUserData(userAccount);
 

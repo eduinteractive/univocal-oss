@@ -63,7 +63,7 @@ const Authentification = (props: AuthentificationProps) => {
         <AuthWrapper>
             {statusParam === '4001' && (
                 <Alert color="red" variant="light" radius="md" mb="md" ta="center">
-                    Die Anwendung ist für deine Hochschule nicht freigegeben (DFN-AAI: kPID).
+                    Die Anwendung ist für deine Hochschule nicht freigegeben (DFN-AAI: kSID).
                 </Alert>
             )}
             {statusParam === '4002' && (

@@ -1,7 +1,7 @@
 import { Response } from "express"
 import { UserAccountDoc } from "../models/UserAccount";
 import { UserContactDoc } from "../models/UserContact";
-import { schacHomeOrganizationFromPairwiseId } from "../utils/schacHomeOrganizationFromPairwiseId";
+import { schacHomeOrganizationFromSubjectId } from "../utils/schacHomeOrganizationFromSubjectId";
 
 export const setAuthCookie = (res: Response, token: string, refreshToken?: string) => {
     if (process.env.ENVIRONMENT === "PRODUCTION") {
@@ -43,7 +43,7 @@ export const normalizeUserData = (data: UserAccountDoc & { contact: UserContactD
         dataProtectionAgreement: data.dataProtectionAgreement,
         activationStatus: data.activationStatus,
         authProvider: data.authProvider,
-        schacHomeOrganization: schacHomeOrganizationFromPairwiseId(data.pairwiseId),
+        schacHomeOrganization: schacHomeOrganizationFromSubjectId(data.subjectId),
         lastSignDate: data.lastSignDate,
         registerDate: data.registerDate,
         contact: data.contact,
