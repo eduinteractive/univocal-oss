@@ -12,7 +12,7 @@ import { COLORS } from "../constants/Colors";
 
 const TEXT = "#2d1b4e";
 
-const UVC_GITHUB_URL = process.env.NEXT_PUBLIC_UVC_GITHUB_URL ?? "https://github.com";
+const UVC_GITHUB_URL = "https://github.com/eduinteractive/univocal-oss";
 
 const UNIVOCAL_ABOUT_URL = "https://univocal.de/ueber-uns/";
 

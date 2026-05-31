@@ -30,13 +30,13 @@ data:
     RequestHeader unset X-Mail
     RequestHeader unset X-Given-Name
     RequestHeader unset X-Sn
-    RequestHeader unset X-Pairwise-Id
+    RequestHeader unset X-Subject-Id
 
     RequestHeader set X-Remote-User %{REMOTE_USER}e
     RequestHeader set X-Mail %{mail}e
     RequestHeader set X-Given-Name %{givenName}e
     RequestHeader set X-Sn %{sn}e
-    RequestHeader set X-Pairwise-Id %{pairwise-id}e
+    RequestHeader set X-Subject-Id %{subject-id}e
 
     ProxyPass        /api/auth/public/dfn/login http://uvc-auth-srv:3001/api/auth/public/dfn/login
     ProxyPassReverse /api/auth/public/dfn/login http://uvc-auth-srv:3001/api/auth/public/dfn/login

@@ -5,10 +5,6 @@ export const ImprintHTML = `
 <p><strong>Redaktionelle Verantwortlichkeit gem. &sect;55 Abs. 2 RStV:<br /></strong>Kevin Saukel</p>
 <p><strong>Umsatzsteuer-ID<br /></strong>Umsatzsteuer-Identifikationsnummer gem&auml;&szlig; &sect; 27 a Umsatzsteuergesetz:<br />DE321808812</p>
 <p><strong>Haftungsbeschr&auml;nkung:</strong><br />Die Inhalte und Links dieser Website werden mit gr&ouml;&szlig;tm&ouml;glicher Sorgfalt &uuml;berpr&uuml;ft. Wir &uuml;bernehmen dennoch keine Gew&auml;hr f&uuml;r Aktualit&auml;t, Richtigkeit und Vollst&auml;ndigkeit der Inhalte. Wir &uuml;bernehmen keine Haftung f&uuml;r die Inhalte oder Aktualit&auml;t externer Links. F&uuml;r den Inhalt der verlinkten Websites sind ausschlie&szlig;lich deren Betreiber verantwortlich.</p>
-<div class="woocommerce woocommerce-gzd woocommerce-gzd-complaints-shortcode">
-<h3>Alternative Dispute Resolution in accordance with Art. 14 (1) ODR-VO and &sect; 36 VSBG:</h3>
-<p>Die Europ&auml;ische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit, die du unter&nbsp;<a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a>&nbsp;findest. Zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle sind wir nicht verpflichtet und nicht bereit.</p>
-</div>
 </div>
 `
 
@@ -25,7 +21,7 @@ export const PrivacyHTML = `
                     <h4>Wer ist verantwortlich f&uuml;r die Datenerfassung auf dieser Website?</h4>
                     <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten k&ouml;nnen Sie dem Abschnitt &bdquo;Verantwortliche Stelle&ldquo; in dieser Datenschutzerkl&auml;rung entnehmen.</p>
                     <h4>Wie erfassen wir Ihre Daten?</h4>
-                    <p>Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z.&nbsp;B. um Daten handeln, die Sie in ein Kontaktformular oder bei der Nutzung unseres Online-Shops eingeben.</p>
+                    <p>Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen, etwa bei der Registrierung, bei der Nutzung unserer Plattform &bdquo;univocal&ldquo; oder &uuml;ber ein Kontaktformular. Bei Anmeldung &uuml;ber den Hochschulaccount (DFN-AAI) werden bestimmte Daten von Ihrer Hochschule bzw. dem dort eingesetzten Identity Provider an uns &uuml;bermittelt (siehe Abschnitt&nbsp;4, DFN-AAI-Anmeldung).</p>
                     <p>Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z.&nbsp;B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
                     <h4>Wof&uuml;r nutzen wir Ihre Daten?</h4>
                     <p>Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gew&auml;hrleisten. Andere Daten k&ouml;nnen zur Analyse Ihres Nutzerverhaltens verwendet werden.</p>
@@ -43,7 +39,7 @@ export const PrivacyHTML = `
     <div>
         <h3>Externes Hosting</h3>
         <p>Diese Website wird bei einem externen Dienstleister gehostet (Hoster). Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Hierbei kann es sich v.&nbsp;a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die &uuml;ber eine Website generiert werden, handeln.</p>
-        <p>Der Einsatz des Hosters erfolgt zum Zwecke der Vertragserf&uuml;llung gegen&uuml;ber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO). Sofern eine entsprechende Einwilligung abgefragt wurde, erfolgt die Verarbeitung ausschlie&szlig;lich auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO und &sect; 25 Abs. 1 TTDSG, soweit die Einwilligung die Speicherung von Cookies oder den Zugriff auf Informationen im Endger&auml;t des Nutzers (z.&nbsp;B. Device-Fingerprinting) im Sinne des TTDSG umfasst. Die Einwilligung ist jederzeit widerrufbar.</p>
+        <p>Der Einsatz des Hosters erfolgt zum Zwecke der Vertragserf&uuml;llung gegen&uuml;ber unseren potenziellen und bestehenden Nutzerinnen und Nutzern (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO). Sofern eine entsprechende Einwilligung abgefragt wurde, erfolgt die Verarbeitung ausschlie&szlig;lich auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO und &sect; 25 Abs. 1 TTDSG, soweit die Einwilligung die Speicherung von Cookies oder den Zugriff auf Informationen im Endger&auml;t des Nutzers (z.&nbsp;B. Device-Fingerprinting) im Sinne des TTDSG umfasst. Die Einwilligung ist jederzeit widerrufbar.</p>
         <p>Unser Hoster wird Ihre Daten nur insoweit verarbeiten, wie dies zur Erf&uuml;llung seiner Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.</p>
         <p>Wir setzen folgenden Hoster ein:</p>
         <p>IONOS SE<br>Elgendorfer Str. 57<br>56410 Montabaur</p>
@@ -86,43 +82,40 @@ export const PrivacyHTML = `
         </ul>
         <p>Wenn Sie die Verarbeitung Ihrer personenbezogenen Daten eingeschr&auml;nkt haben, d&uuml;rfen diese Daten &ndash; von ihrer Speicherung abgesehen &ndash; nur mit Ihrer Einwilligung oder zur Geltendmachung, Aus&uuml;bung oder Verteidigung von Rechtsanspr&uuml;chen oder zum Schutz der Rechte einer anderen nat&uuml;rlichen oder juristischen Person oder aus Gr&uuml;nden eines wichtigen &ouml;ffentlichen Interesses der Europ&auml;ischen Union oder eines Mitgliedstaats verarbeitet werden.</p>
         <h3>SSL- bzw. TLS-Verschl&uuml;sselung</h3>
-        <p>Diese Seite nutzt aus Sicherheitsgr&uuml;nden und zum Schutz der &Uuml;bertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschl&uuml;sselung. Eine verschl&uuml;sselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von &bdquo;http://&ldquo; auf &bdquo;https://&ldquo; wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
+        <p>Diese Seite nutzt aus Sicherheitsgr&uuml;nden und zum Schutz der &Uuml;bertragung vertraulicher Inhalte, wie z.&nbsp;B. Anfragen oder Zugangsdaten, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschl&uuml;sselung. Eine verschl&uuml;sselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von &bdquo;http://&rdquo; auf &bdquo;https://&rdquo; wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
         <p>Wenn die SSL- bzw. TLS-Verschl&uuml;sselung aktiviert ist, k&ouml;nnen die Daten, die Sie an uns &uuml;bermitteln, nicht von Dritten mitgelesen werden.</p>
         <h3>Widerspruch gegen Werbe-E-Mails</h3>
         <p>Der Nutzung von im Rahmen der Impressumspflicht ver&ouml;ffentlichten Kontaktdaten zur &Uuml;bersendung von nicht ausdr&uuml;cklich angeforderter Werbung und Informationsmaterialien wird hiermit widersprochen. Die Betreiber der Seiten behalten sich ausdr&uuml;cklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-E-Mails, vor.</p>
     </div>
-    <h2>4. Datenerfasssung auf dieser Website</h2>
+    <h2>4. Datenerfassung auf dieser Website und in der Plattform</h2>
     <div>
-        <h3>Was wir sammeln und speichern</h3>
-        <p>W&auml;hrend Sie unsere Website besuchen, zeichnen wir auf:</p>
+        <h3>Anmeldung &uuml;ber DFN-AAI (Hochschulaccount)</h3>
+        <p>Wenn Sie sich bei der Plattform &bdquo;univocal&ldquo; &uuml;ber den Hochschulaccount anmelden, nutzen wir die <strong>DFN-AAI</strong> (Authentication and Authorization Infrastructure). Dabei verarbeiten wir personenbezogene Daten, die im Rahmen der SAML-Authentifizierung von Ihrem Identity Provider (IdP) bzw. Ihrer Hochschule an unsere Anwendung &uuml;bermittelt werden &ndash; soweit vom IdP freigegeben und von Ihnen dort bewilligt. In der Regel sind das insbesondere:</p>
         <ul>
-            <li>Standort, IP-Adresse und Browser-Typ: Wir verwenden dies f&uuml;r Zwecke wie die Sch&auml;tzung von Steuern und Versandkosten</li>
+            <li>ein f&ouml;derationsweiter, nicht nennenspezifischer Identifikator (<strong>SAML subject-id</strong>), den wir in unserem System als <strong>subjectId</strong> speichern,</li>
+            <li>Ihre Hochschul-<strong>E-Mail-Adresse</strong>,</li>
+            <li><strong>Vorname</strong> und <strong>Nachname</strong>.</li>
         </ul>
-        <p>Wenn Sie unsere Software &quot;univocal&quot; benutzen, werden wir Sie auffordern, Informationen wie Ihren Namen, Ihre Rechnungsadresse, Ihre E-Mail-Adresse und Ihre Telefonnummer, Kreditkartendaten/Zahlungsdetails sowie optionale Kontoinformationen wie Benutzername und Kennwort anzugeben. Wir nutzen diese Informationen f&uuml;r folgende Zwecke:</p>
+        <p>Zweck ist die Identifikation, die Anlage bzw. der Login Ihres Nutzerkontos sowie die Bereitstellung der vertraglich geschuldeten Plattformleistungen (Art. 6 Abs. 1 lit. b DSGVO). &Uuml;ber die DFN-AAI-Anmeldung erfolgt <strong>kein</strong> Online-Handel und <strong>keine</strong> Erfassung von Zahlungsdaten.</p>
+        <p>Weitere Informationen zur DFN-AAI: <a href="https://www.aai.dfn.de/" target="_blank" rel="noopener noreferrer">DFN-Verein</a>. F&uuml;r die Daten, die Ihr IdP freigibt, ist Ihre Hochschule bzw. der dort betriebene Identity Provider gegen&uuml;ber Ihnen in der Regel die erste Anlaufstelle f&uuml;r Auskunft und Widerruf.</p>
+        <h3>Registrierung und Nutzung von &bdquo;univocal&ldquo; (lokales Konto)</h3>
+        <p>Bei Registrierung mit E-Mail und Passwort erheben wir die von Ihnen angegebenen Daten (z.&nbsp;B. Name, E-Mail-Adresse) sowie technisch erforderliche Kontoinformationen. Diese Daten verwenden wir zur Vertragserf&uuml;llung, zur Kommunikation im Zusammenhang mit Ihrem Konto und zur Sicherheit der Plattform (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO). Eine Verarbeitung im Sinne eines Online-Shops (Warenkorb, Versand, Zahlungsabwicklung auf dieser Website) findet nicht statt.</p>
+        <h3>Server-Log-Dateien</h3>
+        <p>Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server-Log-Dateien, die Ihr Browser &uuml;bermittelt. Dies sind insbesondere:</p>
         <ul>
-            <li>Zusenden von Informationen &uuml;ber Ihr Konto und Bestellung</li>
-            <li>Antwort auf Ihre Anfragen, inklusive Erstattungen und Beschwerden</li>
-            <li>Bearbeitung von Zahlungsvorg&auml;ngen und Verhinderung von Betrug</li>
-            <li>Senden von Marketing-Nachrichten, wenn Sie diese erhalten m&ouml;chten</li>
+            <li>Browsertyp und Browserversion</li>
+            <li>verwendetes Betriebssystem</li>
+            <li>Referrer-URL</li>
+            <li>Hostname des zugreifenden Rechners</li>
+            <li>Uhrzeit der Serveranfrage</li>
+            <li>IP-Adresse</li>
         </ul>
-        <p>Wenn Sie ein Konto bei uns erstellen, speichern wir Ihren Namen, Ihre Adresse, Ihre E-Mail-Adresse und Ihre Telefonnummer. Diese Angaben werden bei k&uuml;nftigen Bestellungen zum Ausf&uuml;llen der Bezahlinformationen verwendet.</p>
-        <p>Wir speichern Informationen &uuml;ber Sie &uuml;blicherweise so lange, wie wir Sie f&uuml;r den Zweck der Erfassung und Nutzung ben&ouml;tigen und verpflichtet sind, sie zu speichern.&nbsp;</p>
+        <p>Eine Zusammenf&uuml;hrung dieser Daten mit anderen Datenquellen erfolgt nicht. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an technisch fehlerfreier Darstellung und Sicherheit der Website).</p>
         <div>
             <h4>Anfrage per E-Mail, Telefon oder Telefax</h4>
             <p>Wenn Sie uns per E-Mail, Telefon oder Telefax kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Anfrage) zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
-            <p>Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erf&uuml;llung eines Vertrags zusammenh&auml;ngt oder zur Durchf&uuml;hrung vorvertraglicher Ma&szlig;nahmen erforderlich ist. In allen &uuml;brigen F&auml;llen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde; die Einwilligung ist jederzeit widerrufbar.</p>
-            <p>Die von Ihnen an uns per Kontaktanfragen &uuml;bersandten Daten verbleiben bei uns, bis Sie uns zur L&ouml;schung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck f&uuml;r die Datenspeicherung entf&auml;llt (z.&nbsp;B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Bestimmungen &ndash; insbesondere gesetzliche Aufbewahrungsfristen &ndash; bleiben unber&uuml;hrt.Server-Log-Dateien</p>
-            <p>Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns &uuml;bermittelt. Dies sind:</p>
-            <ul>
-                <li>Browsertyp und Browserversion</li>
-                <li>verwendetes Betriebssystem</li>
-                <li>Referrer URL</li>
-                <li>Hostname des zugreifenden Rechners</li>
-                <li>Uhrzeit der Serveranfrage</li>
-                <li>IP-Adresse</li>
-            </ul>
-            <p>Eine Zusammenf&uuml;hrung dieser Daten mit anderen Datenquellen wird nicht vorgenommen.</p>
-            <p>Die Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes Interesse an der technisch fehlerfreien Darstellung und der Optimierung seiner Website &ndash; hierzu m&uuml;ssen die Server-Log-Files erfasst werden.</p>
+            <p>Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erf&uuml;llung eines Vertrags zusammenh&auml;ngt oder zur Durchf&uuml;hrung vorvertraglicher Ma&szlig;nahmen erforderlich ist. In allen &uuml;brigen F&auml;llen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), sofern diese abgefragt wurde; die Einwilligung ist jederzeit widerrufbar.</p>
+            <p>Die von Ihnen an uns &uuml;bersandten Daten verbleiben bei uns, bis Sie uns zur L&ouml;schung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck f&uuml;r die Datenspeicherung entf&auml;llt (z.&nbsp;B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Aufbewahrungsfristen bleiben unber&uuml;hrt.</p>
         </div>
     </div>
     <h2>5. Newsletter</h2>
@@ -134,7 +127,7 @@ export const PrivacyHTML = `
         <p>Sendinblue ist ein Dienst, mit dem u.a. der Versand von Newslettern organisiert und analysiert werden kann. Die von Ihnen zum Zwecke des Newsletterbezugs eingegeben Daten werden auf den Servern von Sendinblue in Deutschland gespeichert.</p>
         <h4>Datenanalyse durch Sendinblue</h4>
         <p>Mit Hilfe von Sendinblue ist es uns m&ouml;glich, unsere Newsletter-Kampagnen zu analysieren. So k&ouml;nnen wir z.&nbsp;B. sehen, ob eine Newsletter-Nachricht ge&ouml;ffnet und welche Links ggf. angeklickt wurden. Auf diese Weise k&ouml;nnen wir u.a. feststellen, welche Links besonders oft angeklickt wurden.</p>
-        <p>Au&szlig;erdem k&ouml;nnen wir erkennen, ob nach dem &Ouml;ffnen/ Anklicken bestimmte vorher definierte Aktionen durchgef&uuml;hrt wurden (Conversion-Rate). Wir k&ouml;nnen so z.&nbsp;B. erkennen, ob Sie nach dem Anklicken des Newsletters einen Kauf get&auml;tigt haben.</p>
+        <p>Au&szlig;erdem k&ouml;nnen wir erkennen, ob nach dem &Ouml;ffnen bzw. Anklicken bestimmte vorher definierte Aktionen durchgef&uuml;hrt wurden (Conversion-Rate), etwa ob ein verlinktes Angebot genutzt wurde.</p>
         <p>Sendinblue erm&ouml;glicht es uns auch, die Newsletter-Empf&auml;nger anhand verschiedener Kategorien zu unterteilen (&bdquo;clustern&ldquo;). Dabei lassen sich die Newsletterempf&auml;nger z.&nbsp;B. nach Alter, Geschlecht oder Wohnort unterteilen. Auf diese Weise lassen sich die Newsletter besser an die jeweiligen Zielgruppen anpassen.</p>
         <p>Wenn Sie keine Analyse durch Sendinblue wollen, m&uuml;ssen Sie den Newsletter abbestellen. Hierf&uuml;r stellen wir in jeder Newsletternachricht einen entsprechenden Link zur Verf&uuml;gung.</p>
         <p>Ausf&uuml;hrliche Informationen zum zu den Funktionen von Sendinblue entnehmen Sie folgendem Link: <a href="https://de.sendinblue.com/newsletter-software/" target="_blank" rel="noreferrer noopener">https://de.sendinblue.com/newsletter-software/</a>.</p>
@@ -146,14 +139,6 @@ export const PrivacyHTML = `
         <p>N&auml;heres entnehmen Sie den Datenschutzbestimmungen von Sendinblue unter: <a href="https://de.sendinblue.com/datenschutz-uebersicht/" target="_blank" rel="noreferrer noopener">https://de.sendinblue.com/datenschutz-uebersicht/</a>.</p>
         <h4>Auftragsverarbeitung</h4>
         <p>Wir haben einen Vertrag &uuml;ber Auftragsverarbeitung (AVV) mit dem oben genannten Anbieter geschlossen. Hierbei handelt es sich um einen datenschutzrechtlich vorgeschriebenen Vertrag, der gew&auml;hrleistet, dass dieser die personenbezogenen Daten unserer Websitebesucher nur nach unseren Weisungen und unter Einhaltung der DSGVO verarbeitet.</p>
-    </div>
-    <h2>6. eCommerce und Zahlungs&shy;anbieter</h2>
-    <div>
-        <h3>Verarbeiten von Kunden- und Vertragsdaten</h3>
-        <p>Wir erheben, verarbeiten und nutzen personenbezogene Kunden- und Vertragsdaten zur Begr&uuml;ndung, inhaltlichen Ausgestaltung und &Auml;nderung unserer Vertragsbeziehungen. Personenbezogene Daten &uuml;ber die Inanspruchnahme dieser Website (Nutzungsdaten) erheben, verarbeiten und nutzen wir nur, soweit dies erforderlich ist, um dem Nutzer die Inanspruchnahme des Dienstes zu erm&ouml;glichen oder abzurechnen. Rechtsgrundlage hierf&uuml;r ist Art. 6 Abs. 1 lit. b DSGVO.</p>
-        <p>Die erhobenen Kundendaten werden nach Abschluss des Auftrags oder Beendigung der Gesch&auml;ftsbeziehung und Ablauf der ggf. bestehenden gesetzlichen Aufbewahrungsfristen gel&ouml;scht. Gesetzliche Aufbewahrungsfristen bleiben unber&uuml;hrt.</p>
-        <h3>Zahlungsdienste</h3>
-        <p>Wir binden Zahlungsdienste von Drittunternehmen auf unserer Website ein. Wenn Sie einen Kauf bei uns t&auml;tigen, werden Ihre Zahlungsdaten (z.&nbsp;B. Name, Zahlungssumme, Kontoverbindung, Kreditkartennummer) vom Zahlungsdienstleister zum Zwecke der Zahlungsabwicklung verarbeitet. F&uuml;r diese Transaktionen gelten die jeweiligen Vertrags- und Datenschutzbestimmungen der jeweiligen Anbieter. Der Einsatz der Zahlungsdienstleister erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragsabwicklung) sowie im Interesse eines m&ouml;glichst reibungslosen, komfortablen und sicheren Zahlungsvorgangs (Art. 6 Abs. 1 lit. f DSGVO). Soweit f&uuml;r bestimmte Handlungen Ihre Einwilligung abgefragt wird, ist Art. 6 Abs. 1 lit. a DSGVO Rechtsgrundlage der Datenverarbeitung; Einwilligungen sind jederzeit f&uuml;r die Zukunft widerrufbar.</p>
     </div>
 </header>
 `
