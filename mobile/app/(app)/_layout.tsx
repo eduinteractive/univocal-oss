@@ -12,7 +12,7 @@ import { Image, Linking, ScrollView } from "react-native";
 
 const AppLayout = () => {
 	const router = useRouter();
-	const { authData, isLoading } = useAuth();
+	const { authData, isLoading, signOut } = useAuth();
 	const { currentTenant, userTenants, setCurrentTenant } = useTenant();
 
 	const drawerRef = useRef<any>(null);
@@ -55,7 +55,7 @@ const AppLayout = () => {
 							align="center"
 							fs="md"
 						>
-							Deine Plattform für digitale SV-Arbeit
+							Weil jede Meinung zählt
 						</Text>
 						<Divider my="md" />
 						<Flex
@@ -264,6 +264,35 @@ const AppLayout = () => {
 										c={"gray"}
 									>
 										Konto löschen
+									</Text>
+								</Flex>
+							</Button>
+                            <Button
+								variant="subtle"
+								style={{
+									alignContent: "flex-start",
+									justifyContent: "flex-start",
+								}}
+								my="sm"
+								py="sm"
+								px={0}
+								onPress={() => signOut()}
+							>
+								<Flex
+									direction="row"
+									gap="sm"
+									align="center"
+								>
+									<IconExternalLink
+										size={20}
+										color="gray"
+									/>
+									<Text
+										align="left"
+										fw={"normal"}
+										c={"gray"}
+									>
+										Abmelden
 									</Text>
 								</Flex>
 							</Button>
