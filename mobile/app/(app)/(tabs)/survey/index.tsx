@@ -1,5 +1,5 @@
 import { deleteSurvey, getSurveys } from "@/api/Survey";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import { useTenant } from "@/context/TenantContext";
 import { Box, Flex, FAB, Text } from "@eduinteractive/balladui";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -32,7 +32,7 @@ export default () => {
 
 	return (
 		<Box flex={1}>
-			<SVHMetaCards
+			<UVCMetaCards
 				permissionPrefix="surveys"
 				data={surveysQuery.data || []}
 				onOpen={(surveyId) => router.navigate(`/survey/${surveyId}` as RelativePathString)}

@@ -13,7 +13,7 @@ import { KeyboardAvoidingView, Platform, Alert } from "react-native";
 import { useLayoutEffect } from "react";
 import { Button, Flex, Text } from "@eduinteractive/balladui";
 import { applyColor } from "@eduinteractive/balladui";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import SurveyComponentForm, { SurveyComponentFormData } from "@/components/features/survey/SurveyComponentForm";
 import { IconTrash } from "@/assets/icons/Icon";
 
@@ -117,7 +117,7 @@ export default () => {
 	};
 
 	if (surveyQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!component) {

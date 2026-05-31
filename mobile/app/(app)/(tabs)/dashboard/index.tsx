@@ -11,7 +11,7 @@ import {
 	IconUsers,
 	IconUserSquareRounded,
 } from "@/assets/icons/Icon";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import CalendarItem from "@/components/features/calendar/CalendarItem";
 import { FEATURE_COLORS } from "@/constants/Colors";
 import { useTenant } from "@/context/TenantContext";
@@ -178,7 +178,7 @@ const StartScreen = () => {
 					{TENANT_NAVIGATION_ITEMS.map((item) => renderNavigationItem(item))}
 				</View>
 			</ScrollView>
-			<SVHMetaCards
+			<UVCMetaCards
 				FlatListProps={{
 					ListHeaderComponent: () => (
 						<>

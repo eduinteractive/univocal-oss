@@ -1,5 +1,5 @@
 import { IconExternalLink, IconLogout, IconMail, IconUsers } from "@/assets/icons/Icon";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import HeaderBack from "@/components/layouts/HeaderBack";
 import { useAuth } from "@/context/AuthContext";
 import { useTenant } from "@/context/TenantContext";
@@ -18,7 +18,7 @@ const AppLayout = () => {
 	const drawerRef = useRef<any>(null);
 
 	if (isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!authData) {
@@ -110,17 +110,6 @@ const AppLayout = () => {
 											}
 										>
 											{tenant.title}
-										</Text>
-										<Text
-											fs="sm"
-											c={
-												currentTenant?._id ===
-												tenant._id
-													? "blue.4"
-													: "gray"
-											}
-										>
-											{tenant.type}
 										</Text>
 									</Flex>
 								</Button>

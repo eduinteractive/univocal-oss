@@ -8,7 +8,7 @@ import { useContext, createContext, type PropsWithChildren, useState, useEffect 
 import { eventEmitter } from "@/api/APIHandler";
 
 const AuthContext = createContext<{
-	signIn: (mail: string, password: string) => Promise<void>;
+	signIn: (mail: string, password: string) => Promise<any>;
 	signOut: () => void;
 	signUp: (body: onSignUpBody) => Promise<void>;
 	forgetPassword: (mail: string) => Promise<void>;
@@ -58,8 +58,8 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 	const loginMutation = useMutation({
 		mutationFn: login,
 		onSuccess: (data) => {
-			setAuthToken(data.authToken);
-			setRefreshToken(data.refreshToken);
+			setAuthToken(data.authToken ?? null);
+			setRefreshToken(data.refreshToken ?? null);
 			setAuthData(data);
 			authQuery.refetch();
 			router.replace("/dashboard");

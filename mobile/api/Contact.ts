@@ -1,6 +1,6 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "./APIHandler";
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
 
-export interface ContactGroup extends SVHMetadata{
+export interface ContactGroup extends UVCMetadata{
     _id: string;
 }
 
@@ -16,19 +16,19 @@ export interface Contact {
 
 interface getContacGroupsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getContactGroups = async (req: getContacGroupsRequest): Promise<ContactGroup[]> => {
     const response = await APIHandler.get(`/knowledge/tenant/${req.tenantId}/contactgroup`, {
-        params: getSVHFilterParams(req.params)
+        params: getUVCFilterParams(req.params)
     });
     return response.data;
 }
 
 interface createContactGroupRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs
+    body: createUVCMetadataAttrs
 }
 
 export const createContactGroup = async (req: createContactGroupRequest): Promise<ContactGroup> => {
@@ -39,12 +39,12 @@ export const createContactGroup = async (req: createContactGroupRequest): Promis
 interface getContactGroupRequest {
     tenantId: string;
     contactGroupId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getContactGroup = async (req: getContactGroupRequest): Promise<{contactGroup: ContactGroup, contacts: Contact[]}> => {
     const response = await APIHandler.get(`/knowledge/tenant/${req.tenantId}/contactgroup/${req.contactGroupId}`, {
-        params: getSVHFilterParams(req.params)
+        params: getUVCFilterParams(req.params)
     });
     return response.data;
 }
@@ -52,7 +52,7 @@ export const getContactGroup = async (req: getContactGroupRequest): Promise<{con
 interface updateContactGroupRequest {
     tenantId: string;
     contactGroupId: string;
-    body: updateSVHMetadataAttrs
+    body: updateUVCMetadataAttrs
 }
 
 export const updateContactGroup = async (req: updateContactGroupRequest): Promise<ContactGroup> => {

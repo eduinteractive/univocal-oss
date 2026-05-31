@@ -1,5 +1,5 @@
 import { getWiki, updateWiki } from "@/api/Wiki";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useTenant } from "@/context/TenantContext";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { RelativePathString, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
@@ -60,7 +60,7 @@ export default () => {
 	}, [wikiQuery.data]);
 
 	if (wikiQuery.isLoading || !wikiQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	const wiki = wikiQuery.data;

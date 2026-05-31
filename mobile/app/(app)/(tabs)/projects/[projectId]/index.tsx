@@ -5,7 +5,7 @@ import { applyColor, Avatar, Box, Button, Card, FAB, Flex, Text } from "@eduinte
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Project, ProjectTask, deleteProject, getProject, updateProject } from "@/api/Project";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import useTenantMembers from "@/hooks/useTenantMembers";
@@ -345,7 +345,7 @@ export default () => {
 	};
 
 	if (isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

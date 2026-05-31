@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { FlatList, TouchableOpacity } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { getUsersInSameGroups, User } from "@/api/User";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { Card, Text, Box } from "@eduinteractive/balladui";
 import { Flex } from "@eduinteractive/balladui";
 
@@ -47,7 +47,7 @@ export default function NewP2PChatScreen() {
 	};
 
 	if (usersQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

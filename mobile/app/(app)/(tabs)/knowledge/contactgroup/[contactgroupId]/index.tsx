@@ -5,7 +5,7 @@ import { applyColor, Box, Button, Card, FAB, Flex, Text } from "@eduinteractive/
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Contact, ContactGroup, deleteContactGroup, getContactGroup } from "@/api/Contact";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { IconEdit, IconPlus, IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
 
@@ -142,7 +142,7 @@ export default () => {
 	};
 
 	if (isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

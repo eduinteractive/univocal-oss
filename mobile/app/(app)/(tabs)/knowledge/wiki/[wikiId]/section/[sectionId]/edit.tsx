@@ -13,7 +13,7 @@ import {
     Images,
 } from "@10play/tentap-editor";
 import { KeyboardAvoidingView, Platform, TextInput } from "react-native";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { applyColor, applySizeProp, Box, Button, Flex, Text } from "@eduinteractive/balladui";
 import { IconCheck } from "@/assets/icons/Icon";
@@ -102,7 +102,7 @@ export default () => {
 	}, [navigation, content, title, updateMutation.isPending]);
 
 	if (wikiSectionQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (wikiSectionQuery.error) {

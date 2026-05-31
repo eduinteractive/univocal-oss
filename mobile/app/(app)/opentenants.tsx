@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { FlatList, TouchableOpacity, RefreshControl } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { getTenants, joinTenant, deleteUsersGroup, TenantType, Tenant } from "@/api/Tenant";
+import { getTenants, joinTenant, deleteUsersGroup, Tenant } from "@/api/Tenant";
 import { Box, Card, Flex, Text, Button } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 
 const OpenTenantsScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +16,6 @@ const OpenTenantsScreen = () => {
 		queryFn: () =>
 			getTenants({
 				params: {
-					type: TenantType.NETWORK,
 					visibility: "PUBLIC",
 				},
 			}),
@@ -137,7 +136,7 @@ const OpenTenantsScreen = () => {
 	};
 
 	if (tenantsQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

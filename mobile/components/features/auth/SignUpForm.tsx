@@ -168,7 +168,7 @@ const SignUpForm = (props: SignUpFormProps) => {
 				/>
 
                 <Checkbox
-                    label={<Text>Ich habe die <Text fw="bold" c="blue" onPress={() => Linking.openURL("https://sv-hub.de/nutzungsbedingungen")}>Nutzungsbedingungen</Text> gelesen und stimme diesen zu.</Text> as unknown as string}
+                    label={<Text>Ich habe die <Text fw="bold" c="blue" onPress={() => Linking.openURL("https://univocal.de/nutzungsbedingungen")}>Nutzungsbedingungen</Text> gelesen und stimme diesen zu.</Text> as unknown as string}
                     checked={terms}
                     onChange={(checked) => setTerms(checked)}
                 />

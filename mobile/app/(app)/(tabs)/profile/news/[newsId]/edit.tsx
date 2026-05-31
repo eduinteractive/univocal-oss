@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getNews, updateNews } from "@/api/News";
 import { useTenant } from "@/context/TenantContext";
 import ContentEditor from "@/components/common/ContentEditor";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { Flex, Text } from "@eduinteractive/balladui";
 
@@ -56,7 +56,7 @@ export default () => {
 	};
 
 	if (newsQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (newsQuery.error) {

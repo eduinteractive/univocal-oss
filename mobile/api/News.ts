@@ -1,5 +1,5 @@
 import { PROFILE_OBJECT_STATUS } from "../constants/Enums";
-import APIHandler, { getSVHFilterParams, SVHFilterObject } from "./APIHandler";
+import APIHandler, { getUVCFilterParams, UVCFilterObject } from "./APIHandler";
 
 export interface News {
     _id?: string;
@@ -16,11 +16,11 @@ export interface News {
 
 interface getAllNewsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getAllNews = async (req: getAllNewsRequest) => {
-    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/news`, { params: getSVHFilterParams(req.params) });
+    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/news`, { params: getUVCFilterParams(req.params) });
     return response.data as News[];
 }
 

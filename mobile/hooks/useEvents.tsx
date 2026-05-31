@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTenant } from '../context/TenantContext';
 import { useEffect, useState } from 'react';
-import { getEvents, SVHEvent } from '../api/Events';
+import { getEvents, UVCEvent } from '../api/Events';
 
 const useEvents = () => {
     const { currentTenant } = useTenant();
-    const [events, setEvents] = useState<SVHEvent[]>([]);
+    const [events, setEvents] = useState<UVCEvent[]>([]);
 
     const eventsQuery = useQuery({
         queryKey: ['events', currentTenant?._id, {}],

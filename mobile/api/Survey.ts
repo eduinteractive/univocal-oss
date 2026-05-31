@@ -1,4 +1,4 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "./APIHandler";
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
 
 export enum SurveyComponentNominalType {
     YESNO = "YESNO",
@@ -22,7 +22,7 @@ export enum SurveyExecutionMode {
     ANONYMOUS = "ANONYMOUS"
 }
 
-export interface SurveyMeta extends SVHMetadata {
+export interface SurveyMeta extends UVCMetadata {
     _id: string
     options: {
         executionMode: SurveyExecutionMode;
@@ -86,11 +86,11 @@ export interface SurveyComponentNominal extends SurveyComponent {
 
 interface getSurveysRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getSurveys = async (req: getSurveysRequest): Promise<SurveyMeta[]> => {
-    const response = await APIHandler.get(`/survey/tenant/${req.tenantId}/survey`, { params: getSVHFilterParams(req.params) });
+    const response = await APIHandler.get(`/survey/tenant/${req.tenantId}/survey`, { params: getUVCFilterParams(req.params) });
     return response.data;
 }
 
@@ -124,7 +124,7 @@ export const getPublicSurvey = async (req: getPublicSurveyRequest): Promise<{
 
 interface createSurveyRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs & {
+    body: createUVCMetadataAttrs & {
         options: {
             executionMode: SurveyExecutionMode;
         }
@@ -139,7 +139,7 @@ export const createSurvey = async (req: createSurveyRequest): Promise<SurveyMeta
 interface updateSurveyRequest {
     tenantId: string;
     surveyId: string;
-    body: updateSVHMetadataAttrs & {
+    body: updateUVCMetadataAttrs & {
         options?: {
             executionMode?: SurveyExecutionMode;
             isActive?: boolean;

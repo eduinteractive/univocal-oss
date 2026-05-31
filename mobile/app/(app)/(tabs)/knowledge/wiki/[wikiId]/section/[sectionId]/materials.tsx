@@ -1,7 +1,7 @@
 import { getWikiSection, updateWikiSection, WikiSection } from "@/api/Wiki";
 import { IconCheck } from "@/assets/icons/Icon";
-import SVHLoader from "@/components/common/SVHLoader";
-import SVHMaterialForm, { Material } from "@/components/common/SVHMaterialForm";
+import UVCLoader from "@/components/common/UVCLoader";
+import UVCMaterialForm, { Material } from "@/components/common/UVCMaterialForm";
 import { useTenant } from "@/context/TenantContext";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { applyColor, Button, Flex, Text } from "@eduinteractive/balladui";
@@ -80,7 +80,7 @@ export default () => {
 	}, [navigation, materials, title, updateMutation.isPending, newUploads]);
 
 	if (wikiSectionQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (wikiSectionQuery.error) {
@@ -132,7 +132,7 @@ export default () => {
 			>
 				{title}
 			</Text>
-			<SVHMaterialForm
+			<UVCMaterialForm
 				materials={materials}
 				setMaterials={setMaterials}
 				newUploads={newUploads}

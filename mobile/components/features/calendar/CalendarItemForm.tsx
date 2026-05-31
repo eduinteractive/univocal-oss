@@ -2,9 +2,9 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Platform } from "react-native";
 import DateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHMetaForm, { SVHMetaFormSubmit } from "@/components/common/SVHMetaForm";
+import UVCMetaForm, { UVCMetaFormSubmit } from "@/components/common/UVCMetaForm";
 import { DateInput, Flex, Select, Text, TextInput, TextInputProps, TimeInput } from "@eduinteractive/balladui";
-import SVHMaterialForm from "../../common/SVHMaterialForm";
+import UVCMaterialForm from "../../common/UVCMaterialForm";
 
 interface CalendarItemFormSubmit {
 	title: string;
@@ -87,7 +87,7 @@ const CalendarItemForm = (props: CalendarItemFormProps) => {
 		}
 	}, [props.data]);
 
-	const handleSubmit = (data: SVHMetaFormSubmit) => {
+	const handleSubmit = (data: UVCMetaFormSubmit) => {
 		if (!startDate || !endDate) {
 			return NotificationHandler.showError("Bitte fülle alle Pflichtfelder aus");
 		}
@@ -190,12 +190,12 @@ const CalendarItemForm = (props: CalendarItemFormProps) => {
 	];
 
 	return (
-		<SVHMetaForm
+		<UVCMetaForm
 			loading={isLoading}
 			data={props.data || null}
 			onSubmit={handleSubmit}
 			after={
-				<SVHMaterialForm
+				<UVCMaterialForm
 					materials={materials}
 					setMaterials={setMaterials}
 					newUploads={newUploads}
@@ -270,7 +270,7 @@ const CalendarItemForm = (props: CalendarItemFormProps) => {
 				onChange={(value) => setColor(value)}
 				renderOption={(option) => <Text c={option.value}>{option.label}</Text>}
 			/>
-		</SVHMetaForm>
+		</UVCMetaForm>
 	);
 };
 

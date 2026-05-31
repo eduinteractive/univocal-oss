@@ -9,14 +9,14 @@ export interface Material {
 	mimetype?: string;
 }
 
-interface SVHMaterialsProps {
-    isForm?: boolean;
+interface UVCMaterialsProps {
+	isForm?: boolean;
 	materials: Material[];
-    title?: string;
+	title?: string;
 	onPress?: (material: Material, index: number) => void;
 }
 
-const SVHMaterials: React.FC<SVHMaterialsProps> = ({ isForm, materials, onPress, title = "Materialien" }) => {
+const UVCMaterials: React.FC<UVCMaterialsProps> = ({ isForm, materials, onPress, title = "Materialien" }) => {
 	if (!materials || materials.length === 0) return null;
 
 	return (
@@ -56,18 +56,18 @@ const SVHMaterials: React.FC<SVHMaterialsProps> = ({ isForm, materials, onPress,
 									</Text>
 								)}
 							</Box>
-                            {!isForm && (
-                                <IconExternalLink
-                                    size={16}
-                                    color={applyColor("gray.5")}
-                                />
-                            )}
-                            {isForm && (
-                                <IconTrash
-                                    size={16}
-                                    color={applyColor("gray.5")}
-                                />
-                            )}
+							{!isForm && (
+								<IconExternalLink
+									size={16}
+									color={applyColor("gray.5")}
+								/>
+							)}
+							{isForm && (
+								<IconTrash
+									size={16}
+									color={applyColor("gray.5")}
+								/>
+							)}
 						</Flex>
 					</Card>
 				</TouchableOpacity>
@@ -76,4 +76,4 @@ const SVHMaterials: React.FC<SVHMaterialsProps> = ({ isForm, materials, onPress,
 	);
 };
 
-export default SVHMaterials;
+export default UVCMaterials;

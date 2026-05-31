@@ -3,7 +3,7 @@ import EventGeneral from "@/components/features/event/EventGeneral";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getEvent, updateEvent, deleteEvent } from "@/api/Events";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useLayoutEffect, useMemo } from "react";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { applyColor, Button, Tabs, Flex } from "@eduinteractive/balladui";
@@ -144,7 +144,7 @@ export default () => {
 	);
 
 	if (eventQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

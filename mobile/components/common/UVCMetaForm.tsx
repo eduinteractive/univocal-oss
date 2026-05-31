@@ -1,16 +1,16 @@
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import SVHViewAccessSelect from "./SVHViewAccessSelect";
+import UVCViewAccessSelect from "./UVCViewAccessSelect";
 import { Button, Flex, TextInput, TextInputProps } from "@eduinteractive/balladui";
 
-export interface SVHMetaFormSubmit {
+export interface UVCMetaFormSubmit {
 	title: string;
 	description?: string;
 	viewAccess: number;
 }
 
-interface SVHMetaFormProps {
+interface UVCMetaFormProps {
 	after?: ReactNode;
 	before?: ReactNode;
 	children?: ReactNode;
@@ -18,12 +18,12 @@ interface SVHMetaFormProps {
 		viewAccess?: boolean;
 		textEditor?: boolean;
 	};
-	data: SVHMetaFormSubmit | null;
+	data: UVCMetaFormSubmit | null;
 	loading?: boolean;
-	onSubmit: (data: SVHMetaFormSubmit) => void;
+	onSubmit: (data: UVCMetaFormSubmit) => void;
 }
 
-const SVHMetaForm = (props: SVHMetaFormProps) => {
+const UVCMetaForm = (props: UVCMetaFormProps) => {
 	const [title, setTitle] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const [viewAccess, setViewAccess] = useState<number>(0);
@@ -98,7 +98,7 @@ const SVHMetaForm = (props: SVHMetaFormProps) => {
 
 					{props.children}
 
-					<SVHViewAccessSelect
+					<UVCViewAccessSelect
 						initial={props.data?.viewAccess || null}
 						value={viewAccess}
 						onChange={(value) => setViewAccess(value)}
@@ -121,4 +121,4 @@ const SVHMetaForm = (props: SVHMetaFormProps) => {
 	);
 };
 
-export default SVHMetaForm;
+export default UVCMetaForm;

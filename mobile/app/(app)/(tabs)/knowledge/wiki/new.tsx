@@ -5,7 +5,7 @@ import { useTenant } from "../../../../../context/TenantContext";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHMetaForm from "@/components/common/SVHMetaForm";
+import UVCMetaForm from "@/components/common/UVCMetaForm";
 
 export default () => {
 	const { currentTenant } = useTenant();
@@ -45,7 +45,7 @@ export default () => {
 			style={{ flex: 1 }}
 			keyboardVerticalOffset={Platform.OS === "ios" ? 96 : 0}
 		>
-			<SVHMetaForm
+			<UVCMetaForm
 				data={null}
 				loading={loading}
 				onSubmit={handleSubmit}

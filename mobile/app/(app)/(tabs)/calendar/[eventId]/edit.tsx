@@ -1,5 +1,5 @@
 import { getCalendarEvent, updateCalendarEvent } from "@/api/Calendar";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import CalendarItemForm from "@/components/features/calendar/CalendarItemForm";
 import { useTenant } from "@/context/TenantContext";
 import { NotificationHandler } from "@/utils/NotificationHandler";
@@ -31,7 +31,7 @@ const CalendarEditItemScreen = () => {
 
 	if (calendarEventQuery.isLoading || !calendarEventQuery.data) {
 		return (
-			<SVHLoader />
+			<UVCLoader />
 		);
 	}
 

@@ -1,12 +1,12 @@
 import { Box, Text, Flex } from "@eduinteractive/balladui";
-import { SVHEvent, SVHEventAttendee, SVHEventRegistration } from "@/api/Events";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
 import dayjs from "dayjs";
 
 interface EventGeneralProps {
 	data?: {
-		event: SVHEvent;
-		attendees: SVHEventAttendee[];
-		registrations: SVHEventRegistration[];
+		event: UVCEvent;
+		attendees: UVCEventAttendee[];
+		registrations: UVCEventRegistration[];
 	};
 }
 

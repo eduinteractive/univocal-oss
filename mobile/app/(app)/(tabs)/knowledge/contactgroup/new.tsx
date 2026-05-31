@@ -3,8 +3,8 @@ import { useTenant } from "@/context/TenantContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContactGroup } from "@/api/Contact";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import { createSVHMetadataAttrs } from "@/api/APIHandler";
-import SVHMetaForm, { SVHMetaFormSubmit } from "@/components/common/SVHMetaForm";
+import { createUVCMetadataAttrs } from "@/api/APIHandler";
+import UVCMetaForm, { UVCMetaFormSubmit } from "@/components/common/UVCMetaForm";
 import { KeyboardAvoidingView } from "react-native";
 import { Platform } from "react-native";
 
@@ -26,8 +26,8 @@ export default () => {
 		onError: NotificationHandler.showAxiosError,
 	});
 
-	const handleSubmit = async (data: SVHMetaFormSubmit) => {
-		const body: createSVHMetadataAttrs = {
+	const handleSubmit = async (data: UVCMetaFormSubmit) => {
+		const body: createUVCMetadataAttrs = {
 			title: data.title,
 			description: data.description,
 			viewAccess: data.viewAccess,
@@ -45,7 +45,7 @@ export default () => {
 			style={{ flex: 1 }}
 			keyboardVerticalOffset={Platform.OS === "ios" ? 96 : 0}
 		>
-			<SVHMetaForm
+			<UVCMetaForm
 				data={null}
 				loading={createContactGroupMutation.isPending}
 				onSubmit={handleSubmit}

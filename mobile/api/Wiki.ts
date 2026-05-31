@@ -1,4 +1,4 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "./APIHandler";
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
 
 export interface WikiToc {
     title: string;
@@ -6,7 +6,7 @@ export interface WikiToc {
     children?: WikiToc[];
 }
 
-export interface Wiki extends SVHMetadata {
+export interface Wiki extends UVCMetadata {
     _id: string;
     tableOfContents: WikiToc[];
 }
@@ -25,12 +25,12 @@ export interface WikiSection {
 
 interface getWikisRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getWikis = async (req: getWikisRequest): Promise<Wiki[]> => {
     const response = await APIHandler.get(`/knowledge/tenant/${req.tenantId}/wiki`, {
-        params: getSVHFilterParams(req.params)
+        params: getUVCFilterParams(req.params)
     });
     return response.data;
 }
@@ -47,7 +47,7 @@ export const getWiki = async (req: getWikiRequest): Promise<Wiki> => {
 
 interface createWikiRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs
+    body: createUVCMetadataAttrs
 }
 
 export const createWiki = async (req: createWikiRequest): Promise<Wiki> => {
@@ -58,7 +58,7 @@ export const createWiki = async (req: createWikiRequest): Promise<Wiki> => {
 interface updateWikiRequest {
     tenantId: string;
     wikiId: string;
-    body: updateSVHMetadataAttrs & {
+    body: updateUVCMetadataAttrs & {
         tableOfContents?: WikiToc[];
     }
 }

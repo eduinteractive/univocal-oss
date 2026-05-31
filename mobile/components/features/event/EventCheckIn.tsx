@@ -1,14 +1,14 @@
 import React from "react";
-import { SVHEvent, SVHEventAttendee, SVHEventRegistration } from "@/api/Events";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
 import EventFieldsDisplay from "./EventFieldsDisplay";
 import { useMemo } from "react";
 import { BASE_URL } from "@/api/APIHandler";
 
 interface EventCheckInProps {
 	data?: {
-		event: SVHEvent;
-		attendees: SVHEventAttendee[];
-		registrations: SVHEventRegistration[];
+		event: UVCEvent;
+		attendees: UVCEventAttendee[];
+		registrations: UVCEventRegistration[];
 	};
 	onUpdate: (data: any) => void;
 }

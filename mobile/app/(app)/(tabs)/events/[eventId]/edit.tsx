@@ -5,7 +5,7 @@ import { useState, useLayoutEffect } from "react";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { getEvent, updateEvent } from "@/api/Events";
 import EventForm from "@/components/features/event/EventForm";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 
 export default () => {
 	const { eventId } = useLocalSearchParams<{ eventId: string }>();
@@ -69,7 +69,7 @@ export default () => {
 	};
 
 	if (eventQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!eventQuery.data) {

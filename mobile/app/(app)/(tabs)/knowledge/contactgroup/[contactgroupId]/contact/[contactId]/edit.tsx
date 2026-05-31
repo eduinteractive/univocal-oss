@@ -7,7 +7,7 @@ import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView } from "rea
 import { applyColor, Button, Flex, TextInput, TextInputProps } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { MAIL_REGEX } from "@/constants/General";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
 
@@ -147,7 +147,7 @@ export default () => {
 	};
 
 	if (contactGroupQuery.isLoading || !contactGroupQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (
