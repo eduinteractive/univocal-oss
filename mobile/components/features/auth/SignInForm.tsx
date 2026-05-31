@@ -8,10 +8,12 @@ import { IconArrowLeft, IconEye, IconEyeOff } from "@/assets/icons/Icon";
 interface SignInFormProps {
 	onFormChange: (formState: AuthFormState) => void;
 	onSignIn: (mail: string, password: string) => Promise<void>;
+	onUniversitySignIn: () => Promise<void>;
 }
 
 const SignInForm = (props: SignInFormProps) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const [isUniversityLoading, setIsUniversityLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
 	// --- State für E-Mail und Passwort
@@ -29,6 +31,11 @@ const SignInForm = (props: SignInFormProps) => {
 
 		setIsLoading(true);
 		props.onSignIn(mail, password).finally(() => setIsLoading(false));
+	};
+
+	const handleUniversitySignIn = () => {
+		setIsUniversityLoading(true);
+		props.onUniversitySignIn().finally(() => setIsUniversityLoading(false));
 	};
 
 	return (
@@ -99,8 +106,21 @@ const SignInForm = (props: SignInFormProps) => {
 				loadingText="Bitte warten..."
 				onPress={handleSignIn}
 				radius="xs"
+				disabled={isUniversityLoading}
 			>
 				Anmelden
+			</Button>
+
+			<Button
+				variant="filled"
+				color="violet"
+				loading={isUniversityLoading}
+				loadingText="Bitte warten..."
+				onPress={handleUniversitySignIn}
+				radius="xs"
+				disabled={isLoading}
+			>
+				Mit Hochschulaccount anmelden
 			</Button>
 
 			<Flex

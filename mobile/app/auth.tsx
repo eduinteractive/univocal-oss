@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Image, Keyboard, ScrollView, TouchableWithoutFeedback } from "react-native";
 
 const Auth = () => {
-	const { signIn, signUp, forgetPassword } = useAuth();
+	const { signIn, signInWithUniversity, signUp, forgetPassword } = useAuth();
 
 	const [formState, setFormState] = useState<AuthFormState>(AuthFormState.SignIn);
 
@@ -65,6 +65,7 @@ const Auth = () => {
 							<SignInForm
 								onFormChange={setFormState}
 								onSignIn={signIn}
+								onUniversitySignIn={signInWithUniversity}
 							/>
 						)}
 						{formState === AuthFormState.SignUp && (

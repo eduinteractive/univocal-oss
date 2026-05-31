@@ -22,7 +22,21 @@
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
 			},
-			"package": "de.saukels.univocal"
+			"package": "de.saukels.univocal",
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"autoVerify": false,
+					"data": [
+						{
+							"scheme": "univocal",
+							"host": "auth",
+							"pathPrefix": "/dfn"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
+			]
 		},
 		"web": {
 			"bundler": "metro",

@@ -1,7 +1,8 @@
-import { AuthData, checkAuth, login, logout, register, resetPassword, refresh } from "@/api/Auth";
+import { AuthData, AuthDataWithTokens, checkAuth, exchangeDfnCode, login, logout, register, resetPassword, refresh } from "@/api/Auth";
 import { onSignUpBody } from "@/components/features/auth/SignUpForm";
 import { useStorageState } from "@/hooks/useStorageState";
 import { NotificationHandler } from "@/utils/NotificationHandler";
+import { DfnLoginCancelledError, startDfnLogin } from "@/utils/dfnLogin";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useContext, createContext, type PropsWithChildren, useState, useEffect } from "react";
@@ -9,6 +10,7 @@ import { eventEmitter } from "@/api/APIHandler";
 
 const AuthContext = createContext<{
 	signIn: (mail: string, password: string) => Promise<any>;
+	signInWithUniversity: () => Promise<void>;
 	signOut: () => void;
 	signUp: (body: onSignUpBody) => Promise<void>;
 	forgetPassword: (mail: string) => Promise<void>;
@@ -18,6 +20,7 @@ const AuthContext = createContext<{
 	isLoading: boolean;
 }>({
 	signIn: () => new Promise(() => null),
+	signInWithUniversity: () => new Promise(() => null),
 	signOut: () => null,
 	signUp: () => new Promise(() => null),
 	forgetPassword: () => new Promise(() => null),
@@ -55,15 +58,23 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         },
 	});
 
+	const applyAuthSuccess = (data: AuthDataWithTokens) => {
+		setAuthToken(data.authToken ?? null);
+		setRefreshToken(data.refreshToken ?? null);
+		setAuthData(data);
+		authQuery.refetch();
+		router.replace("/dashboard");
+	};
+
 	const loginMutation = useMutation({
 		mutationFn: login,
-		onSuccess: (data) => {
-			setAuthToken(data.authToken ?? null);
-			setRefreshToken(data.refreshToken ?? null);
-			setAuthData(data);
-			authQuery.refetch();
-			router.replace("/dashboard");
-		},
+		onSuccess: applyAuthSuccess,
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const dfnExchangeMutation = useMutation({
+		mutationFn: exchangeDfnCode,
+		onSuccess: applyAuthSuccess,
 		onError: NotificationHandler.showAxiosError,
 	});
 
@@ -167,6 +178,27 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 							password,
 						},
 					}),
+				signInWithUniversity: async () => {
+					try {
+						const result = await startDfnLogin();
+						if (result.type === "error") {
+							NotificationHandler.showError(result.message);
+							return;
+						}
+						await dfnExchangeMutation.mutateAsync({
+							body: { code: result.code },
+						});
+					} catch (error) {
+						if (error instanceof DfnLoginCancelledError) {
+							return;
+						}
+						NotificationHandler.showError(
+							error instanceof Error
+								? error.message
+								: "Die Hochschul-Anmeldung ist fehlgeschlagen."
+						);
+					}
+				},
 				signOut: () => {
 					logoutMutation.mutateAsync();
 				},

@@ -13,10 +13,35 @@ interface LoginRequest {
     password: string;
 }
 
+const MOBILE_DFN_CALLBACK_URL = "univocal://auth/dfn";
+const DFN_MOBILE_EXCHANGE_TTL_SECONDS = 120;
+
 const getHeader = (req: Request, name: string): string | undefined => {
     const raw = req.headers[name.toLowerCase()];
     if (raw === undefined) return undefined;
     return Array.isArray(raw) ? raw[0] : raw;
+};
+
+const isMobileDfnFlow = (req: Request): boolean =>
+    req.client === REQ_CLIENT.MOBILE || req.query.client === "mobile";
+
+const redirectMobileDfn = (res: Response, params: Record<string, string>) => {
+    const query = new URLSearchParams(params).toString();
+    return res.redirect(`${MOBILE_DFN_CALLBACK_URL}?${query}`);
+};
+
+const createDfnMobileExchangeCode = async (
+    authToken: string,
+    refreshToken: string,
+    userData: PublicUserAccountAndContact
+): Promise<string> => {
+    const code = randomBytes(32).toString("hex");
+    await RedisClient.setEx(
+        `dfn_mobile_exchange_${code}`,
+        DFN_MOBILE_EXCHANGE_TTL_SECONDS,
+        JSON.stringify({ authToken, refreshToken, userData })
+    );
+    return code;
 };
 
 /**
@@ -175,6 +200,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const dfnLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const mobileFlow = isMobileDfnFlow(req);
+        const pairwiseId = normalizeShibHeaderValue(
+            getHeader(req, "x-pairwise-id") || getHeader(req, "x-remote-user")
+        );
         const principal = getDfnPrincipalFromRequest(req);
         const mail = normalizeShibHeaderValue(getHeader(req, "x-mail"));
         const givenName = normalizeShibHeaderValue(getHeader(req, "x-given-name"));
@@ -182,10 +211,16 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
 
         if (!principal) {
             clearShibbolethSessionCookiesIfWeb(req, res);
+            if (mobileFlow) {
+                return redirectMobileDfn(res, { status: "4001" });
+            }
             return res.redirect(`/?status=4001`)
         }
         if (!mail || !givenName || !sn) {
             clearShibbolethSessionCookiesIfWeb(req, res);
+            if (mobileFlow) {
+                return redirectMobileDfn(res, { status: "4002" });
+            }
             return res.redirect(`/?status=4002`)
         }
 
@@ -265,22 +300,27 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
 
         const token = sign(formattedResponse,
             process.env.JWT_ENCRYPTION_KEY as string,
-            { expiresIn: req.client === REQ_CLIENT.MOBILE ? "7d" : "1h" }
+            { expiresIn: mobileFlow ? "7d" : "1h" }
         );
 
         const refreshToken = sign(
             { _id: userAccount._id },
             process.env.JWT_ENCRYPTION_KEY as string,
-            { expiresIn: req.client === REQ_CLIENT.MOBILE ? "31d" : "7d" }
+            { expiresIn: mobileFlow ? "31d" : "7d" }
         );
 
         userAccount.refreshToken = refreshToken;
         userAccount.refreshTokenExpire = new Date(Date.now() +
-            (req.client === REQ_CLIENT.MOBILE ? 31 : 7) * 24 * 60 * 60 * 1000
+            (mobileFlow ? 31 : 7) * 24 * 60 * 60 * 1000
         );
 
         await RedisClient.del("auth_invalidate_" + userAccount._id);
         await userAccount.save();
+
+        if (mobileFlow) {
+            const code = await createDfnMobileExchangeCode(token, refreshToken, formattedResponse);
+            return redirectMobileDfn(res, { code });
+        }
 
         if (req.client === REQ_CLIENT.WEB) {
             setAuthCookie(res, token, refreshToken);
@@ -296,6 +336,45 @@ export const dfnLogin = async (req: Request, res: Response, next: NextFunction) 
         next(err);
     }
 }
+
+interface DfnExchangeRequest {
+    code: string;
+}
+
+export const dfnExchange = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (req.client !== REQ_CLIENT.MOBILE) {
+            throw new ForbiddenError("Dieser Endpunkt ist nur für die mobile App verfügbar.");
+        }
+
+        const body = req.body as DfnExchangeRequest;
+        if (!body.code?.trim()) {
+            throw new BadRequestError("Ungültiger Anmeldecode.");
+        }
+
+        const redisKey = `dfn_mobile_exchange_${body.code.trim()}`;
+        const stored = await RedisClient.get(redisKey);
+        if (!stored) {
+            throw new AuthentificationError("Der Anmeldecode ist ungültig oder abgelaufen.");
+        }
+
+        await RedisClient.del(redisKey);
+
+        const { authToken, refreshToken, userData } = JSON.parse(stored) as {
+            authToken: string;
+            refreshToken: string;
+            userData: PublicUserAccountAndContact;
+        };
+
+        res.status(200).json({
+            ...userData,
+            authToken,
+            refreshToken,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
 
 /** Same Shibboleth session + JWT handoff as `dfnLogin` (optional second path for Apache/proxy setups). */
 export const dfnBridge = dfnLogin;
