@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import { FlatList, TouchableOpacity, Alert } from "react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getTenant, getInvitationsByTenant, TenantInvitation, deleteTenantInvitation } from "../../../../api/Tenant";
+import {
+	getTenant,
+	getInvitationsByTenant,
+	TenantInvitation,
+	deleteTenantInvitation,
+	getTenantJoinRequests,
+	acceptTenantJoinRequest,
+	rejectTenantJoinRequest,
+	TenantRequest,
+} from "../../../../api/Tenant";
 import { useTenant } from "../../../../context/TenantContext";
 import { TenantUser } from "../../../../api/Tenant";
 import { RelativePathString, useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
+import { GROUP_PERMISSION_LEVEL } from "@/api/Auth";
 import UVCLoader from "@/components/common/UVCLoader";
-import { ActionSheet, Box, Card, FAB, Flex, Text } from "@eduinteractive/balladui";
+import { ActionSheet, Box, Button, Card, FAB, Flex, Text } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { IconEdit, IconPlus } from "@/assets/icons/Icon";
 
@@ -32,11 +42,40 @@ export default () => {
 		enabled: !!currentTenant?._id,
 	});
 
+	const isAdmin = currentTenant?.permissionLevel === GROUP_PERMISSION_LEVEL.ADMIN;
+
+	const joinRequestsQuery = useQuery({
+		queryKey: ["tenantJoinRequests", currentTenant?._id],
+		queryFn: () => getTenantJoinRequests({ tenantId: currentTenant!._id }),
+		enabled: !!currentTenant?._id && isAdmin,
+	});
+
 	const deleteInvitationMutation = useMutation({
 		mutationFn: deleteTenantInvitation,
 		onSuccess: () => {
 			NotificationHandler.showSuccess("Einladung erfolgreich gelöscht");
 			queryClient.invalidateQueries({ queryKey: ["tenantInvitations", currentTenant?._id] });
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const acceptJoinRequestMutation = useMutation({
+		mutationFn: acceptTenantJoinRequest,
+		onSuccess: () => {
+			NotificationHandler.showSuccess(
+				"Anfrage angenommen. Der Benutzer wurde zur Gruppe hinzugefügt."
+			);
+			queryClient.invalidateQueries({ queryKey: ["tenantJoinRequests", currentTenant?._id] });
+			queryClient.invalidateQueries({ queryKey: ["tenant", currentTenant?._id] });
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const rejectJoinRequestMutation = useMutation({
+		mutationFn: rejectTenantJoinRequest,
+		onSuccess: () => {
+			NotificationHandler.showSuccess("Anfrage abgelehnt.");
+			queryClient.invalidateQueries({ queryKey: ["tenantJoinRequests", currentTenant?._id] });
 		},
 		onError: NotificationHandler.showAxiosError,
 	});
@@ -148,6 +187,56 @@ export default () => {
 		</Card>
 	);
 
+	const renderJoinRequestItem = ({ item }: { item: TenantRequest }) => (
+		<Card
+			variant="outline"
+			bg="white"
+			radius={0}
+			style={{ borderTopWidth: 0.25, borderBottomWidth: 0.25 }}
+			p="md"
+		>
+			<Flex direction="column" gap="sm">
+				<Box>
+					<Text fs="sm" fw="bold">
+						{item.mail}
+					</Text>
+					<Text fs="xs" c="gray.5">
+						Angefragt am {new Date(item.date).toLocaleDateString()}
+					</Text>
+				</Box>
+				<Flex direction="row" gap="sm" justify="flex-end">
+					<Button
+						variant="filled"
+						size="sm"
+						onPress={() =>
+							acceptJoinRequestMutation.mutate({
+								tenantId: currentTenant!._id,
+								requestId: item._id,
+							})
+						}
+						loading={acceptJoinRequestMutation.isPending}
+					>
+						Annehmen
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onPress={() =>
+							rejectJoinRequestMutation.mutate({
+								tenantId: currentTenant!._id,
+								requestId: item._id,
+							})
+						}
+						loading={rejectJoinRequestMutation.isPending}
+						style={{ borderWidth: 1 }}
+					>
+						Ablehnen
+					</Button>
+				</Flex>
+			</Flex>
+		</Card>
+	);
+
 	if (!tenantMemberQuery.data) {
 		return <UVCLoader />;
 	}
@@ -163,25 +252,46 @@ export default () => {
 					renderItem={renderMemberItem}
 					keyExtractor={(item) => item._id}
 					ListFooterComponent={
-						invitationsQuery.data && invitationsQuery.data.length > 0 ? (
-							<Box>
-								<Text
-									fs="sm"
-									fw="bold"
-									p="md"
-									bg="primary.1"
-								>
-									Ausstehende Einladungen
-								</Text>
-								{invitationsQuery.data.map((invitation) => (
-									<Box key={invitation._id}>
-										{renderInvitationItem({
-											item: invitation,
-										})}
-									</Box>
-								))}
-							</Box>
-						) : null
+						<Box>
+							{invitationsQuery.data && invitationsQuery.data.length > 0 ? (
+								<Box>
+									<Text
+										fs="sm"
+										fw="bold"
+										p="md"
+										bg="primary.1"
+									>
+										Ausstehende Einladungen
+									</Text>
+									{invitationsQuery.data.map((invitation) => (
+										<Box key={invitation._id}>
+											{renderInvitationItem({
+												item: invitation,
+											})}
+										</Box>
+									))}
+								</Box>
+							) : null}
+							{isAdmin &&
+							joinRequestsQuery.data &&
+							joinRequestsQuery.data.length > 0 ? (
+								<Box>
+									<Text
+										fs="sm"
+										fw="bold"
+										p="md"
+										bg="primary.1"
+									>
+										Beitrittsanfragen
+									</Text>
+									{joinRequestsQuery.data.map((request) => (
+										<Box key={request._id}>
+											{renderJoinRequestItem({ item: request })}
+										</Box>
+									))}
+								</Box>
+							) : null}
+						</Box>
 					}
 				/>
 				<FAB

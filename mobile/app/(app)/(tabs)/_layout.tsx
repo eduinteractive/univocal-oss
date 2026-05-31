@@ -20,10 +20,16 @@ const TabsLayout = () => {
 					align="center"
 					w="85%"
 				>
-					Du bist in keiner Gruppe. Bitte trete erst einer Gruppe bei.
+					Du bist in keiner Gruppe. Wähle eine Gruppe aus oder tritt einer offenen Gruppe bei.
 				</Text>
-				<Button onPress={() => router.navigate("/(app)/invitations")}>
-					Zu den Gruppeneinladungen
+				<Button onPress={() => router.navigate("/(app)/opentenants")}>
+					Offene Gruppen
+				</Button>
+				<Button
+					variant="outline"
+					onPress={() => router.navigate("/(app)/invitations")}
+				>
+					Gruppeneinladungen
 				</Button>
 			</Flex>
 		);

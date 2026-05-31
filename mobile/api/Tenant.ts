@@ -47,6 +47,21 @@ export interface TenantInvitation {
     date: string;
 }
 
+export enum TenantRequestStatus {
+    PENDING = "PENDING",
+    ACCEPTED = "ACCEPTED",
+    REJECTED = "REJECTED",
+}
+
+export interface TenantRequest {
+    _id: string;
+    tenant: string | Tenant;
+    requesterId: string;
+    mail: string;
+    date: string;
+    status: TenantRequestStatus;
+}
+
 interface getTenantsRequest {
     params?: {
         domain?: string;
@@ -200,4 +215,63 @@ interface joinTenantRequest {
 export const joinTenant = async (req: joinTenantRequest) => {
     const response = await APIHandler.post(`/tenant/user/join/${req.tenantId}`);
     return response.data as Tenant;
+}
+
+export const getUserTenantRequests = async () => {
+    const response = await APIHandler.get(`/tenant/user/request`);
+    return response.data as (TenantRequest & { tenant: Tenant })[];
+}
+
+interface createTenantJoinRequestRequest {
+    tenantId: string;
+}
+
+export const createTenantJoinRequest = async (req: createTenantJoinRequestRequest) => {
+    const response = await APIHandler.post(`/tenant/user/request/${req.tenantId}`);
+    return response.data as TenantRequest;
+}
+
+interface cancelUserTenantRequestRequest {
+    requestId: string;
+}
+
+export const cancelUserTenantRequest = async (req: cancelUserTenantRequestRequest) => {
+    const response = await APIHandler.delete(`/tenant/user/request/${req.requestId}`);
+    return response.data;
+}
+
+interface getTenantJoinRequestsRequest {
+    tenantId: string;
+}
+
+export const getTenantJoinRequests = async (req: getTenantJoinRequestsRequest) => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/request`);
+    return response.data as TenantRequest[];
+}
+
+interface acceptTenantJoinRequestRequest {
+    tenantId: string;
+    requestId: string;
+    body?: { permissionLevel?: number };
+}
+
+export const acceptTenantJoinRequest = async (req: acceptTenantJoinRequestRequest) => {
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/request/${req.requestId}/accept`,
+        req.body ?? {}
+    );
+    return response.data as TenantRequest;
+}
+
+interface rejectTenantJoinRequestRequest {
+    tenantId: string;
+    requestId: string;
+}
+
+export const rejectTenantJoinRequest = async (req: rejectTenantJoinRequestRequest) => {
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/request/${req.requestId}/reject`,
+        {}
+    );
+    return response.data as TenantRequest;
 }
