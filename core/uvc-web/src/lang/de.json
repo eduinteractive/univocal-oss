@@ -718,7 +718,19 @@
             "OFF": "Aus"
         },
         "ERRORS": {
-            "MESSAGE_REQUIRED": "Bitte gebe eine Nachricht ein"
+            "MESSAGE_REQUIRED": "Bitte gebe eine Nachricht ein",
+            "DESCRIPTION_REQUIRED": "Bitte beschreibe dein Anliegen"
+        },
+        "ISSUE": {
+            "MODAL_TITLE": "Problem melden",
+            "TYPE_LABEL": "Art der Meldung",
+            "TYPE_PLACEHOLDER": "Art auswählen...",
+            "TYPE_BUG_REPORT": "Fehler melden",
+            "TYPE_FEATURE_REQUEST": "Feature-Wunsch",
+            "TYPE_OTHER": "Sonstiges",
+            "DESCRIPTION_LABEL": "Beschreibung",
+            "DESCRIPTION_PLACEHOLDER": "Beschreibe das Problem oder deinen Wunsch...",
+            "SUCCESS": "Deine Meldung wurde erfolgreich gesendet. Vielen Dank!"
         }
     },
     "PAGES": {

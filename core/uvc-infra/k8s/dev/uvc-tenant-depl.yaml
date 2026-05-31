@@ -102,6 +102,11 @@ spec:
                 secretKeyRef:
                   name: environment
                   key: network_key
+            - name: SUPPORT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: environment
+                  key: support_email
 ---
 apiVersion: v1
 kind: Service

@@ -10,6 +10,7 @@ import {
     cancelUserTenantRequestChain,
     createUserTenantRequestChain,
 } from "../controller/TenantRequest.validate";
+import { reportTenantIssueChain } from "../controller/Tenant.validate";
 
 const PrivateRouter = Router({ mergeParams: true });
 
@@ -23,6 +24,7 @@ PrivateRouter.post("/user/request/:tenantId", createUserTenantRequestChain(), va
 PrivateRouter.get("/user/request", TenantRequestController.getUserTenantRequests);
 PrivateRouter.delete("/user/request/:requestId", cancelUserTenantRequestChain(), validateRequestSchema, TenantRequestController.cancelUserTenantRequest);
 PrivateRouter.get("/user/tenant", TenantController.getUserTenants) // Get Tenant by User
+PrivateRouter.post("/user/issue", reportTenantIssueChain(), validateRequestSchema, TenantController.reportTenantIssue);
 PrivateRouter.get("/user/notification", UserController.getUserNotifications)
 PrivateRouter.put("/user/notification/seen", UserController.markUserNotificationsAsSeen)
 

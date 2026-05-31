@@ -9,7 +9,6 @@ import {
     Avatar,
     Burger,
     ActionIcon,
-    useMantineColorScheme,
     ScrollArea,
     Indicator,
     ThemeIcon,
@@ -24,8 +23,6 @@ import {
     IconLogout,
     IconChevronRight,
     IconMail,
-    IconSun,
-    IconMoon,
     IconMessage,
     IconDashboard,
     IconUsers,
@@ -43,12 +40,13 @@ import {
     IconShield,
     IconSectionSign,
     IconFileText,
+    IconBug,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
 import { useTenant } from '../context/TenantContext';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { SAPI } from '@eduinteractive/uvc-api';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { deepCopy } from '../utils/DataMiddleware';
 import SVHNavLinksGroup from '../components/common/SVHNavLinksGroup';
 import { PERMISSION_LEVEL, UserContact } from '@eduinteractive/uvc-api';
@@ -62,8 +60,8 @@ import NotificationPopover from '../components/common/SVHNotificationPopover';
 import { getMemberRoleLabel } from '../utils/Parser';
 import { useMediaQuery } from '@mantine/hooks';
 import LOGO from '../assets/logo.png';
-import LOGO_WHITE from '../assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import BugModal from '../components/features/tenant/BugModal';
 
 const navigationLinks = Object.freeze([
     { icon: IconHome, label: 'Startseite', link: '/', visible: false },
@@ -180,8 +178,8 @@ const SVHNavigation = () => {
     const { currentTenant, setCurrentTenant } = useTenant();
     const { mobileOpened, desktopOpened, toggleDesktop, toggleMobile } =
         useContext(SidebarContext);
-    const { colorScheme, setColorScheme } = useMantineColorScheme();
     const { t } = useTranslation();
+    const [bugModalOpen, setBugModalOpen] = useState(false);
 
     const groupQuery = useQuery({
         queryKey: ['usergroups', authData?.groups],
@@ -378,23 +376,13 @@ const SVHNavigation = () => {
                     />
                     {(mobileOpened || desktopOpened) && (
                         <Box h={30} mb="sm" mt="sm" pl="sm">
-                            {colorScheme === 'dark' ? (
-                                <Image
-                                    src={LOGO_WHITE}
-                                    alt="Univocal Logo"
-                                    h="100%"
-                                    w="auto"
-                                    fit="contain"
-                                />
-                            ) : (
-                                <Image
-                                    src={LOGO}
-                                    alt="Univocal Logo"
-                                    h="100%"
-                                    w="auto"
-                                    fit="contain"
-                                />
-                            )}
+                            <Image
+                                src={LOGO}
+                                alt="Univocal Logo"
+                                h="100%"
+                                w="auto"
+                                fit="contain"
+                            />
                         </Box>
                     )}
                 </Flex>
@@ -526,13 +514,9 @@ const SVHNavigation = () => {
             >
                 <ActionIcon
                     variant="subtle"
-                    onClick={() =>
-                        setColorScheme(
-                            colorScheme === 'dark' ? 'light' : 'dark'
-                        )
-                    }
+                    onClick={() => setBugModalOpen(true)}
                 >
-                    {colorScheme === 'dark' ? <IconSun /> : <IconMoon />}
+                    <IconBug />
                 </ActionIcon>
                 <NotificationPopover
                     data={userNotificationsQuery.data}
@@ -724,6 +708,11 @@ const SVHNavigation = () => {
                     </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
+            <BugModal
+                visible={bugModalOpen}
+                onClose={() => setBugModalOpen(false)}
+                tenantId={currentTenant?._id}
+            />
         </AppShell.Navbar>
     );
 };

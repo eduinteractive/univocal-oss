@@ -36,6 +36,23 @@ export const getTenantDashboard = async (req: getTenantDashboardRequest) => {
     }[];
 }
 
+export interface reportTenantIssueRequest {
+    body: {
+        type: "FEATURE_REQUEST" | "BUG_REPORT" | "OTHER";
+        description: string;
+        url: string;
+    }
+    tenantId?: string;
+}
+
+export const reportTenantIssue = async (req: reportTenantIssueRequest) => {
+    const endpoint = req.tenantId
+        ? `/tenant/tenant/${req.tenantId}/issue`
+        : `/tenant/user/issue`;
+    const response = await APIHandler.post(endpoint, req.body);
+    return response.data as void;
+}
+
 export interface updateTenantRequest {
     id?: string;
     body: {

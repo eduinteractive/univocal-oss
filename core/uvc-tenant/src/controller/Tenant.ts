@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { AnyBulkWriteOperation, Types } from "mongoose";
 import Domain, { DomainDoc } from "../models/Domain";
 import TenantNotification, { TenantNotificationType } from "../models/TenantNotification";
-import { AuthProvider, NetworkAxios, NotFoundError, PERMISSION_LEVEL } from "@eduinteractive/uvc-common";
+import { AuthProvider, NetworkAxios, NotFoundError, PERMISSION_LEVEL, sendBrevoMail } from "@eduinteractive/uvc-common";
 
 interface getTenantsQuery {
     domain?: string;
@@ -27,10 +27,10 @@ export const getTenants = async (req: Request, res: Response, next: NextFunction
                     if (idpIdentifier) {
                         const domain = await Domain.findOne({ idpIdentifier: idpIdentifier });
                         if (domain) {
-                            condition.domain = {$in: [domain._id]};
+                            condition.domain = { $in: [domain._id] };
                         }
                     }
-                } 
+                }
             }
         }
 
@@ -50,12 +50,12 @@ export const getTenant = async (req: Request, res: Response, next: NextFunction)
         const query = req.query as getTenantUsersQuery;
         const tenant = await Tenant.findById(req.params.tenantId).populate('domain') as unknown as TenantDoc & { domain: DomainDoc };
         const isAdmin = req.currentUser?.permissionLevel && req.currentUser?.permissionLevel >= PERMISSION_LEVEL.SV_HUB_MODERATION;
-            const users = await NetworkAxios.get('http://uvc-auth-srv:3001/api/auth/network/users/tenant/' + req.params.tenantId, {
-                params: {
-                    ...req.query as getTenantUsersQuery,
-                    isAdmin: isAdmin
-                }
-            });
+        const users = await NetworkAxios.get('http://uvc-auth-srv:3001/api/auth/network/users/tenant/' + req.params.tenantId, {
+            params: {
+                ...req.query as getTenantUsersQuery,
+                isAdmin: isAdmin
+            }
+        });
         if (!tenant) {
             throw new NotFoundError("Die Gruppe konnte nicht gefunden werden.");
         }
@@ -394,6 +394,37 @@ export const getTenantDashboard = async (req: Request, res: Response, next: Next
         response.dashboardItems = response.dashboardItems.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
         res.status(200).json(response);
+    } catch (err) {
+        next(err);
+    }
+}
+
+interface reportTenantIssue {
+    type: "FEATURE_REQUEST" | "BUG_REPORT" | "OTHER";
+    description: string;
+    url: string;
+}
+
+export const reportTenantIssue = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const body = req.body as reportTenantIssue;
+        const tenantId = req.params.tenantId;
+        let tenantLabel = "Keine Gruppe";
+
+        if (tenantId) {
+            const tenant = await Tenant.findById(tenantId);
+            if (!tenant) {
+                throw new NotFoundError("Die Gruppe wurde nicht gefunden.");
+            }
+            tenantLabel = tenant.title;
+        }
+
+        await sendBrevoMail({
+            to: [{ email: process.env.SUPPORT_EMAIL! }],
+            subject: `[Univocal] Issue gemeldet: ${body.type}`,
+            html: `<p>Ein Issue wurde gemeldet.</p><p>Type: ${body.type}</p><p>Description: ${body.description}</p><p>URL: ${body.url}</p><p>Tenant: ${tenantLabel}</p>`,
+        });
+        res.status(200).send("Issue reported");
     } catch (err) {
         next(err);
     }
