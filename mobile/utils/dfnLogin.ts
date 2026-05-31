@@ -5,7 +5,7 @@ import * as WebBrowser from "expo-web-browser";
 export const DFN_CALLBACK_PATH = "auth/dfn";
 
 export const DFN_ERROR_MESSAGES: Record<string, string> = {
-	"4001": "Die Anwendung ist für deine Hochschule nicht freigegeben (DFN-AAI: kPID).",
+	"4001": "Die Anwendung ist für deine Hochschule nicht freigegeben (DFN-AAI: kSID).",
 	"4002": "Die Anwendung ist für deine Hochschule nicht freigegeben (DFN-AAI: kAttr).",
 };
 

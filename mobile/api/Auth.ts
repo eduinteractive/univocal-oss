@@ -59,7 +59,7 @@ export interface AuthData {
 	dataProtectionAgreement: boolean;
 	activationStatus: ActivationStatus;
 	authProvider?: AuthProvider;
-	/** Aus pairwise-id abgeleitet (Backend), kein IdP-Attribut */
+	/** Aus subject-id abgeleitet (Backend), kein IdP-Attribut */
 	schacHomeOrganization?: string;
 	lastSignDate: Date;
 	registerDate: Date;

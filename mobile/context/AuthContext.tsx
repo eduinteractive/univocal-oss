@@ -2,15 +2,16 @@ import { AuthData, AuthDataWithTokens, checkAuth, exchangeDfnCode, login, logout
 import { onSignUpBody } from "@/components/features/auth/SignUpForm";
 import { useStorageState } from "@/hooks/useStorageState";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import { DfnLoginCancelledError, startDfnLogin } from "@/utils/dfnLogin";
+import { DfnLoginCancelledError, DFN_ERROR_MESSAGES, startDfnLogin } from "@/utils/dfnLogin";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useContext, createContext, type PropsWithChildren, useState, useEffect } from "react";
+import { useContext, createContext, type PropsWithChildren, useState, useEffect, useCallback } from "react";
 import { eventEmitter } from "@/api/APIHandler";
 
 const AuthContext = createContext<{
 	signIn: (mail: string, password: string) => Promise<any>;
 	signInWithUniversity: () => Promise<void>;
+	completeUniversityLogin: (params: { code?: string; status?: string }) => Promise<boolean>;
 	signOut: () => void;
 	signUp: (body: onSignUpBody) => Promise<void>;
 	forgetPassword: (mail: string) => Promise<void>;
@@ -21,6 +22,7 @@ const AuthContext = createContext<{
 }>({
 	signIn: () => new Promise(() => null),
 	signInWithUniversity: () => new Promise(() => null),
+	completeUniversityLogin: async () => false,
 	signOut: () => null,
 	signUp: () => new Promise(() => null),
 	forgetPassword: () => new Promise(() => null),
@@ -167,6 +169,29 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
             }
         }
     }, [authQuery.error]);
+
+	const completeUniversityLogin = useCallback(async (params: { code?: string; status?: string }) => {
+		if (params.status) {
+			const message =
+				DFN_ERROR_MESSAGES[params.status] ?? "Die Hochschul-Anmeldung ist fehlgeschlagen.";
+			NotificationHandler.showError(message);
+			return false;
+		}
+
+		if (!params.code?.trim()) {
+			NotificationHandler.showError("Die Hochschul-Anmeldung ist fehlgeschlagen.");
+			return false;
+		}
+
+		try {
+			await dfnExchangeMutation.mutateAsync({
+				body: { code: params.code.trim() },
+			});
+			return true;
+		} catch {
+			return false;
+		}
+	}, [dfnExchangeMutation]);
         
 	return (
 		<AuthContext.Provider
@@ -182,12 +207,10 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 					try {
 						const result = await startDfnLogin();
 						if (result.type === "error") {
-							NotificationHandler.showError(result.message);
+							await completeUniversityLogin({ status: result.status });
 							return;
 						}
-						await dfnExchangeMutation.mutateAsync({
-							body: { code: result.code },
-						});
+						await completeUniversityLogin({ code: result.code });
 					} catch (error) {
 						if (error instanceof DfnLoginCancelledError) {
 							return;
@@ -199,6 +222,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 						);
 					}
 				},
+				completeUniversityLogin,
 				signOut: () => {
 					logoutMutation.mutateAsync();
 				},

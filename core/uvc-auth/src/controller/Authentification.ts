@@ -201,9 +201,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 export const dfnLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const mobileFlow = isMobileDfnFlow(req);
-        const pairwiseId = normalizeShibHeaderValue(
-            getHeader(req, "x-pairwise-id") || getHeader(req, "x-remote-user")
-        );
         const principal = getDfnPrincipalFromRequest(req);
         const mail = normalizeShibHeaderValue(getHeader(req, "x-mail"));
         const givenName = normalizeShibHeaderValue(getHeader(req, "x-given-name"));
