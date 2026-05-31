@@ -21,5 +21,6 @@ PublicRouter.post("/is-mail-existing", isMailExistingChain(), validateRequestSch
 
 PublicRouter.get("/dfn/login", AuthController.dfnLogin);
 PublicRouter.get("/dfn/bridge", AuthController.dfnBridge);
+PublicRouter.post("/dfn/exchange", AuthController.dfnExchange);
 
 export default PublicRouter;

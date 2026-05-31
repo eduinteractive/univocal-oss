@@ -94,6 +94,17 @@ export const login = async (req: LoginRequest) => {
 	return response.data as AuthDataWithTokens;
 };
 
+interface ExchangeDfnCodeRequest {
+	body: {
+		code: string;
+	};
+}
+
+export const exchangeDfnCode = async (req: ExchangeDfnCodeRequest) => {
+	const response = await APIHandler.post("/auth/public/dfn/exchange", req.body);
+	return response.data as AuthDataWithTokens;
+};
+
 interface RegisterRequest {
 	body: {
 		mail: string;
