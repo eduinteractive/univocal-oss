@@ -6,7 +6,7 @@ import "react-native-reanimated";
 import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "@/context/AuthContext";
 import { Slot } from "expo-router";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "expo-router/react-navigation";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { APIErrorObject } from "@/utils/NotificationHandler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

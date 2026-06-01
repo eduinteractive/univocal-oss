@@ -49,7 +49,7 @@ const Auth = () => {
 							resizeMode="contain"
 						/>
 						<Text align="center" fs="sm">
-							Deine Plattform für digitale SV-Arbeit
+							Deine Plattform für digitale Zusammenarbeit
 						</Text>
 					</Flex>
 					<Divider

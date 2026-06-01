@@ -54,7 +54,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Start",
 					tabBarIcon: ({ color }) => (
-						<IconHome color={color} />
+						<IconHome color={color as string} />
 					),
 				}}
 			/>
@@ -63,7 +63,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Chat",
 					tabBarIcon: ({ color }) => (
-						<IconMessage color={color} />
+						<IconMessage color={color as string} />
 					),
 				}}
 			/>
@@ -72,7 +72,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Kalender",
 					tabBarIcon: ({ color }) => (
-						<IconCalendar color={color} />
+						<IconCalendar color={color as string} />
 					),
 				}}
 			/>

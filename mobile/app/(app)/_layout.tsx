@@ -1,14 +1,13 @@
-import { IconExternalLink, IconLogout, IconMail, IconUsers } from "@/assets/icons/Icon";
+import { IconArrowsLeftRight, IconExternalLink, IconLogout, IconMail, IconUsers } from "@/assets/icons/Icon";
 import UVCLoader from "@/components/common/UVCLoader";
 import HeaderBack from "@/components/layouts/HeaderBack";
 import { useAuth } from "@/context/AuthContext";
 import { useTenant } from "@/context/TenantContext";
 import { applyColor, Button, Divider, Flex, Text } from "@eduinteractive/balladui";
-import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Redirect, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useRef } from "react";
-import { Image, Linking, ScrollView } from "react-native";
+import { Image, Linking, ScrollView, TouchableOpacity } from "react-native";
 
 const AppLayout = () => {
 	const router = useRouter();
@@ -28,14 +27,16 @@ const AppLayout = () => {
 	return (
 		<Drawer
 			ref={drawerRef}
-			screenOptions={{
+			screenOptions={({navigation}) => ({
 				headerLeft: () => (
-					<DrawerToggleButton
-						tintColor="black"
-						pressColor="black"
-					/>
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                        <IconArrowsLeftRight
+                            color="black"
+                            size={20}
+                        />
+                    </TouchableOpacity>
 				),
-			}}
+			})}
 			drawerContent={() => {
 				return (
 					<ScrollView
