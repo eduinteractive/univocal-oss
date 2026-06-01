@@ -99,3 +99,15 @@ export const isMailExisting = async (req: IsMailExistingRequest) => {
     const response = await APIHandler.post('/auth/public/is-mail-existing', req.body);
     return response.data;
 }
+
+export interface requestAccountDeletionRequest {
+    body: {
+        email: string;
+        website?: string;
+    };
+}
+
+export const requestAccountDeletion = async (req: requestAccountDeletionRequest) => {
+    const response = await APIHandler.post('/auth/public/account-deletion', req.body);
+    return response.data as { ok: true };
+}

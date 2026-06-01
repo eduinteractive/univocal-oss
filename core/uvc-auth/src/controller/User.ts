@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import UserAccount, { ActivationStatus, UserAccountDoc } from '../models/UserAccount';
 import UserContact, { UserContactDoc } from '../models/UserContact';
 import bcrypt from "bcryptjs";
-import { BadRequestError, ForbiddenError, NotFoundError } from '@eduinteractive/uvc-common';
+import { BadRequestError, ForbiddenError, NotFoundError, sendBrevoMail } from '@eduinteractive/uvc-common';
 import { Types } from 'mongoose';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
 import { expo, EXPO_TICKETS } from '../services/Notification';
@@ -335,3 +335,48 @@ export const unbanUser = async (req: Request, res: Response, next: NextFunction)
         next(err);
     }
 }
+
+function escapeHtml(s: string): string {
+	return s
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;");
+}
+
+export const requestAccountDeletion = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const website = req.body?.website as string | undefined;
+		if (website && String(website).trim() !== "") {
+			return res.status(200).json({ ok: true });
+		}
+
+		const email = String(req.body?.email ?? "").trim();
+
+		const toEmail =
+			process.env.SUPPORT_EMAIL?.trim() ||
+			process.env.SAAS_OFFER_TO_EMAIL?.trim() ||
+			"sales@saukels.de";
+
+		const htmlContent = `
+<p><strong>Kontolöschung angefordert (univocal Landing)</strong></p>
+<p><strong>E-Mail:</strong> ${escapeHtml(email)}</p>
+<p>Bitte prüfe, ob ein Konto mit dieser E-Mail existiert, und bearbeite die Löschung manuell.</p>
+`.trim();
+
+		await sendBrevoMail({
+			to: [{ email: toEmail }],
+			subject: `[Univocal] Kontolöschung angefordert: ${email}`,
+			html: htmlContent,
+			replyTo: { email },
+		});
+
+		res.status(200).json({ ok: true });
+	} catch (err) {
+		next(err);
+	}
+};

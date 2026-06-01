@@ -13,6 +13,15 @@ const nextConfig = {
 		optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
 	},
 	output: "standalone",
+	async redirects() {
+		return [
+			{
+				source: "/nutzungsbedingungen",
+				destination: "/service/nutzungsbedingungen",
+				permanent: true,
+			},
+		];
+	},
 };
 
 export default nextConfig;

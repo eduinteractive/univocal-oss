@@ -190,7 +190,7 @@ const AppLayout = () => {
 								my="sm"
 								py="sm"
 								px={0}
-								onPress={() => Linking.openURL("https://univocal.de/nutzungsbedingungen")}
+								onPress={() => Linking.openURL("https://univocal.de/service/nutzungsbedingungen")}
 							>
 								<Flex
 									direction="row"
