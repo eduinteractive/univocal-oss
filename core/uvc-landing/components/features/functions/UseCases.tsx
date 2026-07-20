@@ -35,7 +35,11 @@ const UseCaseCard = (props: { useCase: UseCase }) => {
 			</Title>
 			<Box
 				className="uvc-usecase-row"
-				style={{ gridTemplateColumns: columns }}
+				style={
+					{
+						["--uvc-usecase-columns" as string]: columns,
+					} as React.CSSProperties
+				}
 			>
 				{props.useCase.steps.map((step, index) => {
 					const isExpanded = openIndex === index;
@@ -76,12 +80,22 @@ const UseCaseCard = (props: { useCase: UseCase }) => {
 										gap={4}
 										className="uvc-usecase-box__detail-text"
 									>
-										<Text
-											fw={700}
-											c={COLORS.PRIMARY}
-										>
-											{step.label}
-										</Text>
+										<Box className="uvc-usecase-box__detail-heading">
+											<Image
+												className="uvc-usecase-box__icon uvc-usecase-box__icon--sm"
+												src={`${UVC_ASSETS_URL}/functions/${step.icon}`}
+												alt=""
+												w={40}
+												h={40}
+												fit="contain"
+											/>
+											<Text
+												fw={700}
+												c={COLORS.PRIMARY}
+											>
+												{step.label}
+											</Text>
+										</Box>
 										<Text
 											size="sm"
 											c={COLORS.TEXT}
@@ -91,12 +105,12 @@ const UseCaseCard = (props: { useCase: UseCase }) => {
 										</Text>
 									</Stack>
 									<Image
+										className="uvc-usecase-box__icon uvc-usecase-box__icon--lg"
 										src={`${UVC_ASSETS_URL}/functions/${step.icon}`}
 										alt=""
 										w={110}
 										h={110}
 										fit="contain"
-										style={{ flexShrink: 0, alignSelf: "center" }}
 									/>
 								</Box>
 							</Box>

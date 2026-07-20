@@ -15,7 +15,52 @@ body {
     gap: 1rem;
     align-items: stretch;
     width: 100%;
-    transition: grid-template-columns 380ms cubic-bezier(0.33, 1, 0.68, 1);
+    /* Mobile: one box per row */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1100px) {
+    .uvc-usecase-row {
+        grid-template-columns: var(--uvc-usecase-columns);
+        transition: grid-template-columns 380ms cubic-bezier(0.33, 1, 0.68, 1);
+    }
+}
+
+.uvc-usecase-box__detail-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.uvc-usecase-box__icon {
+    flex-shrink: 0;
+}
+
+.uvc-usecase-box__icon--sm {
+    display: none;
+}
+
+.uvc-usecase-box__icon--lg {
+    display: block;
+    align-self: center;
+}
+
+@media (max-width: 1099px) {
+    .uvc-usecase-box__detail-inner {
+        flex-direction: column;
+    }
+
+    .uvc-usecase-box__icon--sm {
+        display: block;
+    }
+
+    .uvc-usecase-box__icon--lg {
+        display: none;
+    }
+
+    .uvc-usecase-box:hover {
+        transform: none;
+    }
 }
 
 .uvc-usecase-box {
