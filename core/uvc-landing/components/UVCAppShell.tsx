@@ -94,6 +94,12 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							>
 								Startseite
 							</Link>
+							<Link
+								href="/funktionen"
+								className={classes.link}
+							>
+								Funktionen
+							</Link>
 							<a
 								href="/faq"
 								className={classes.link}
@@ -143,6 +149,12 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 								href="/"
 							>
 								Startseite
+							</Link>
+							<Link
+								className={classes.link}
+								href="/funktionen"
+							>
+								Funktionen
 							</Link>
 							<a
 								href="/faq"

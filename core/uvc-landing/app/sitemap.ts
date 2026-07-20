@@ -9,6 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 1,
 		},
 		{
+			url: "https://univocal.de/funktionen",
+			lastModified: new Date("2026-07-20"),
+			changeFrequency: "monthly",
+			priority: 0.9,
+		},
+		{
 			url: "https://univocal.de/faq",
 			lastModified: new Date("2025-04-04"),
 			changeFrequency: "monthly",

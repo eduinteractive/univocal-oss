@@ -10,7 +10,7 @@ import { SaasOfferModal } from "../components/SaasOfferModal";
 import { UVCAmbientBlobs, UVCCtaDotPattern, UVCNetworkCollaborationSvg } from "../components/UVCDecoratives";
 import { COLORS } from "../constants/Colors";
 
-const TEXT = "#2d1b4e";
+const TEXT = COLORS.TEXT;
 
 const UVC_GITHUB_URL = "https://github.com/eduinteractive/univocal-oss";
 
@@ -183,7 +183,7 @@ const HomePage = () => {
 					pos="relative"
 					py={{ base: "3rem", sm: "4rem" }}
 					px={{ base: "md", sm: "xl" }}
-					bg="#EEECFF"
+					bg={COLORS.SECONDARY}
 					style={{
 						overflow: "hidden",
 						borderTop: "1px solid rgba(18, 8, 117, 0.06)",
@@ -292,7 +292,7 @@ const HomePage = () => {
 
 				<Box
 					component="section"
-					bg={"#EEECFF"}
+					bg={COLORS.SECONDARY}
 					py={{ base: "2.5rem", sm: "3.5rem" }}
 					px={{ base: "md", sm: "xl" }}
 					style={{
