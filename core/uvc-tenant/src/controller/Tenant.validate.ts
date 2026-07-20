@@ -85,3 +85,11 @@ export const getPublicTenantChain = () => {
         check("tenantId").isMongoId().withMessage("tenantId must be a valid mongo id"),
     ]
 }
+
+export const reportTenantIssueChain = () => {
+    return [
+        body("type").isIn(["FEATURE_REQUEST", "BUG_REPORT", "OTHER"]).withMessage("type must be one of: FEATURE_REQUEST, BUG_REPORT, OTHER"),
+        body("description").isString().withMessage("description must be a string"),
+        body("url").isString().withMessage("url must be a string"),
+    ]
+}

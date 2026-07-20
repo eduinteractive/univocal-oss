@@ -6,7 +6,7 @@ import SurveyResults from "@/components/features/survey/SurveyResults";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSurvey, updateSurvey, generateSurveyCodes, resetSurveyCodes, updateSurveyComponentOrder, deleteSurvey } from "@/api/Survey";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useLayoutEffect, useMemo } from "react";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { applyColor, Button, Tabs } from "@eduinteractive/balladui";
@@ -212,7 +212,7 @@ export default () => {
 	);
 
 	if (surveyQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

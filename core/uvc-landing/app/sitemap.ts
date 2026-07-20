@@ -32,5 +32,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			changeFrequency: "monthly",
 			priority: 0.2,
 		},
+		{
+			url: "https://univocal.de/kontoloeschung",
+			lastModified: new Date(),
+			changeFrequency: "yearly",
+			priority: 0.3,
+		},
+		{
+			url: "https://univocal.de/service/nutzungsbedingungen",
+			lastModified: new Date("2025-09-10"),
+			changeFrequency: "yearly",
+			priority: 0.4,
+		},
 	];
 }

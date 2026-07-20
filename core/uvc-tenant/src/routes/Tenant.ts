@@ -5,7 +5,7 @@ import * as TenantInvitationController from "../controller/TenantInvitation";
 import * as TenantRequestController from "../controller/TenantRequest";
 import { requireTenantPermission, validateRequestSchema } from "@eduinteractive/uvc-common";
 import { isBudgetAuthor } from "../middlewares/isBudgetAuthor";
-import { createNotificationChain, deleteNotificationChain, markNotificationAsSeenChain, updateTenantChain } from "../controller/Tenant.validate";
+import { createNotificationChain, deleteNotificationChain, markNotificationAsSeenChain, reportTenantIssueChain, updateTenantChain } from "../controller/Tenant.validate";
 import { createBudgetChain, createBudgetPositionChain, deleteBudgetChain, deleteBudgetPositionChain, getBudgetChain, getBudgetPositionsChain, updateBudgetChain, updateBudgetPositionChain } from "../controller/Budget.validate";
 import { createInvitationChain, deleteTenantInvitationChain } from "../controller/TenantInvitation.validate";
 import { acceptTenantRequestChain, rejectTenantRequestChain } from "../controller/TenantRequest.validate";
@@ -46,5 +46,8 @@ TenantRouter.delete("/invitation/:invitationId", requireTenantPermission('member
 TenantRouter.get("/request", requireTenantPermission('member:administration', false), TenantRequestController.getTenantRequests);
 TenantRouter.put("/request/:requestId/accept", requireTenantPermission('member:administration', false), acceptTenantRequestChain(), validateRequestSchema, TenantRequestController.acceptTenantRequest);
 TenantRouter.put("/request/:requestId/reject", requireTenantPermission('member:administration', false), rejectTenantRequestChain(), validateRequestSchema, TenantRequestController.rejectTenantRequest);
+
+// Tenant Issue Routes
+TenantRouter.post("/issue", reportTenantIssueChain(), validateRequestSchema, TenantController.reportTenantIssue);
 
 export default TenantRouter;

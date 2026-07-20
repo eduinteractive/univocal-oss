@@ -1,4 +1,4 @@
-import APIHandler, { getSVHFilterParams, SVHFilterObject, SVHMetadata } from "./APIHandler";
+import APIHandler, { getUVCFilterParams, UVCFilterObject, UVCMetadata } from "./APIHandler";
 
 /** Type Definitions */
 
@@ -7,7 +7,7 @@ export enum CalendarTokenStatus {
     INACTIVE = "INACTIVE",
 }
 
-export interface CalendarEvent extends SVHMetadata {
+export interface CalendarEvent extends UVCMetadata {
     _id: string;
     location?: string;
     notes?: string;
@@ -32,11 +32,11 @@ export interface CalendarToken {
 
 interface getCalendarEventsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getCalendarEvents = async (req: getCalendarEventsRequest) => {
-    const response = await APIHandler.get(`/calendar/tenant/${req.tenantId}/event`, { params: getSVHFilterParams(req.params) });
+    const response = await APIHandler.get(`/calendar/tenant/${req.tenantId}/event`, { params: getUVCFilterParams(req.params) });
     return response.data as CalendarEvent[];
 }
 

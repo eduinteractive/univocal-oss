@@ -1,4 +1,4 @@
-import APIHandler, { getSVHFilterParams, SVHFilterObject, SVHMetadata } from "./APIHandler";
+import APIHandler, { getUVCFilterParams, UVCFilterObject, UVCMetadata } from "./APIHandler";
 import { CalendarEvent } from "./Calendar";
 import { Domain } from "./Domain";
 
@@ -11,19 +11,12 @@ export enum TenantDashboardItemType {
     SURVEY = "SURVEY",
 }
 
-export enum TenantType {
-    SV = "SV",
-    SSR = "SSR",
-    NETWORK = "NETWORK",
-}
-
 export type TenantVisibility = "PUBLIC" | "HIDDEN" | "ON_REQUEST";
 
 export interface Tenant {
     _id: string;
     title: string;
     description?: string;
-    type: TenantType;
     domain?: string | Domain;
     visibility: TenantVisibility;
     integrations: {
@@ -45,7 +38,6 @@ export interface TenantUser {
     lastName: string;
     group_id: string;
     group_permission: number;
-    group_type: TenantType;
 }
 
 export interface TenantInvitation {
@@ -55,10 +47,24 @@ export interface TenantInvitation {
     date: string;
 }
 
+export enum TenantRequestStatus {
+    PENDING = "PENDING",
+    ACCEPTED = "ACCEPTED",
+    REJECTED = "REJECTED",
+}
+
+export interface TenantRequest {
+    _id: string;
+    tenant: string | Tenant;
+    requesterId: string;
+    mail: string;
+    date: string;
+    status: TenantRequestStatus;
+}
+
 interface getTenantsRequest {
     params?: {
         domain?: string;
-        type?: TenantType;
         visibility?: TenantVisibility;
     }
 }
@@ -77,7 +83,7 @@ export const getUserTenants = async () => {
 
 interface getTenantRequest {
     id?: string;
-    params?: SVHFilterObject | null;
+    params?: UVCFilterObject | null;
 }
 
 export interface getTenantResponse {
@@ -88,7 +94,7 @@ export interface getTenantResponse {
 export const getTenant = async (req: getTenantRequest) => {
     if (!req.id) throw new Error('No Tenant id provided');
     const response = await APIHandler.get(`/tenant/tenant/${req.id}`, {
-        params: getSVHFilterParams(req.params || null),
+        params: getUVCFilterParams(req.params || null),
     });
     return response.data as getTenantResponse;
 }
@@ -101,7 +107,7 @@ export const getTenantDashboard = async (req: getTenantDashboardRequest) => {
     const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/dashboard`);
     return response.data as {
         calendarEvents: CalendarEvent[];
-        dashboardItems: (SVHMetadata & { type: TenantDashboardItemType })[];
+        dashboardItems: (UVCMetadata & { type: TenantDashboardItemType })[];
     };
 }
 
@@ -180,7 +186,6 @@ export interface updateTenantRequest {
     body: {
         title?: string;
         description?: string;
-        type?: string;
         domain?: string;
         visibility?: TenantVisibility;
         integrations?: {
@@ -210,4 +215,63 @@ interface joinTenantRequest {
 export const joinTenant = async (req: joinTenantRequest) => {
     const response = await APIHandler.post(`/tenant/user/join/${req.tenantId}`);
     return response.data as Tenant;
+}
+
+export const getUserTenantRequests = async () => {
+    const response = await APIHandler.get(`/tenant/user/request`);
+    return response.data as (TenantRequest & { tenant: Tenant })[];
+}
+
+interface createTenantJoinRequestRequest {
+    tenantId: string;
+}
+
+export const createTenantJoinRequest = async (req: createTenantJoinRequestRequest) => {
+    const response = await APIHandler.post(`/tenant/user/request/${req.tenantId}`);
+    return response.data as TenantRequest;
+}
+
+interface cancelUserTenantRequestRequest {
+    requestId: string;
+}
+
+export const cancelUserTenantRequest = async (req: cancelUserTenantRequestRequest) => {
+    const response = await APIHandler.delete(`/tenant/user/request/${req.requestId}`);
+    return response.data;
+}
+
+interface getTenantJoinRequestsRequest {
+    tenantId: string;
+}
+
+export const getTenantJoinRequests = async (req: getTenantJoinRequestsRequest) => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/request`);
+    return response.data as TenantRequest[];
+}
+
+interface acceptTenantJoinRequestRequest {
+    tenantId: string;
+    requestId: string;
+    body?: { permissionLevel?: number };
+}
+
+export const acceptTenantJoinRequest = async (req: acceptTenantJoinRequestRequest) => {
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/request/${req.requestId}/accept`,
+        req.body ?? {}
+    );
+    return response.data as TenantRequest;
+}
+
+interface rejectTenantJoinRequestRequest {
+    tenantId: string;
+    requestId: string;
+}
+
+export const rejectTenantJoinRequest = async (req: rejectTenantJoinRequestRequest) => {
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/request/${req.requestId}/reject`,
+        {}
+    );
+    return response.data as TenantRequest;
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button } from "@eduinteractive/balladui";
 import * as DocumentPicker from "expo-document-picker";
-import SVHMaterials from "./SVHMaterials";
+import UVCMaterials from "./UVCMaterials";
 import { IconFiles } from "@/assets/icons/Icon";
 
 export interface Material {
@@ -10,14 +10,14 @@ export interface Material {
 	mimetype: string;
 }
 
-export interface SVHMaterialFormProps {
+export interface UVCMaterialFormProps {
 	materials: Material[];
 	setMaterials: React.Dispatch<React.SetStateAction<Material[]>>;
 	newUploads: any[];
 	setNewUploads: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const SVHMaterialForm: React.FC<SVHMaterialFormProps> = ({ materials, setMaterials, newUploads, setNewUploads }) => {
+const UVCMaterialForm: React.FC<UVCMaterialFormProps> = ({ materials, setMaterials, newUploads, setNewUploads }) => {
 	const handlePickFile = async () => {
 		const result = await DocumentPicker.getDocumentAsync({
 			type: "*/*",
@@ -47,16 +47,14 @@ const SVHMaterialForm: React.FC<SVHMaterialFormProps> = ({ materials, setMateria
 				color="black"
 				onPress={handlePickFile}
 				style={{ borderWidth: 2 }}
-                mb="sm"
+				mb="sm"
 			>
-				<IconFiles
-					size={16}
-				/>
+				<IconFiles size={16} />
 				{newUploads.length === 0
 					? "Datei hinzufügen"
 					: `${newUploads.length} Dateien hinzufügen`}
 			</Button>
-			<SVHMaterials
+			<UVCMaterials
 				isForm
 				materials={materials}
 				onPress={(material) => handleRemoveMaterial(material.link)}
@@ -65,4 +63,4 @@ const SVHMaterialForm: React.FC<SVHMaterialFormProps> = ({ materials, setMateria
 	);
 };
 
-export default SVHMaterialForm;
+export default UVCMaterialForm;

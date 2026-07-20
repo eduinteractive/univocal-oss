@@ -1,6 +1,6 @@
 import { News } from "@/api/News";
 import { IconPlus } from "@/assets/icons/Icon";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import { htmlToMarkdown } from "@/utils/Parser";
 import { Flex, Text } from "@eduinteractive/balladui";
 import { FAB } from "@eduinteractive/balladui";
@@ -19,7 +19,7 @@ interface ProfileNewsProps {
 export default (props: ProfileNewsProps) => {
 	return (
 		<Box flex={1}>
-			<SVHMetaCards
+			<UVCMetaCards
 				data={
 					props.data?.news.map((news) => ({
 						...news,

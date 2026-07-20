@@ -1,17 +1,15 @@
-import { useTenant } from "@/context/TenantContext";
 import { useEffect, useState } from "react";
-import { getMemberRoles } from "@/utils/Parser";
+import { getGroupPermissionOptions } from "@/utils/Parser";
 import { Alert } from "react-native";
 import { Select } from "@eduinteractive/balladui";
 
-interface SVHViewAccessSelectProps {
+interface UVCViewAccessSelectProps {
 	initial: number | null;
 	value: number;
 	onChange: (value: number) => void;
 }
 
-const SVHViewAccessSelect = (props: SVHViewAccessSelectProps) => {
-	const { currentTenant } = useTenant();
+const UVCViewAccessSelect = (props: UVCViewAccessSelectProps) => {
 	const [newValue, setNewValue] = useState<null | number>(null);
 
 	useEffect(() => {
@@ -61,7 +59,7 @@ const SVHViewAccessSelect = (props: SVHViewAccessSelectProps) => {
 			size="sm"
 			label="Sichtbarkeit"
 			placeholder="Sichtbarkeit auswählen..."
-			options={getMemberRoles(currentTenant?.type).map((role) => ({
+			options={getGroupPermissionOptions().map((role) => ({
 				label: role.label,
 				value: role.value.toString(),
 			}))}
@@ -82,4 +80,4 @@ const SVHViewAccessSelect = (props: SVHViewAccessSelectProps) => {
 	);
 };
 
-export default SVHViewAccessSelect;
+export default UVCViewAccessSelect;

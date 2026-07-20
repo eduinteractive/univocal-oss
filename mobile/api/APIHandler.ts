@@ -34,12 +34,12 @@ APIHandler.interceptors.response.use(
     }
 );
 
-export interface SVHFilterObject {
+export interface UVCFilterObject {
     text?: string;
     sort?: Record<string, any>;
 }
 
-export interface SVHMetadata {
+export interface UVCMetadata {
     tenantId: string
     authorId: string
     title: string;
@@ -49,19 +49,19 @@ export interface SVHMetadata {
     updatedAt: Date;
 }
 
-export interface createSVHMetadataAttrs {
+export interface createUVCMetadataAttrs {
     title: string;
     description?: string;
     viewAccess: number;
 }
 
-export interface updateSVHMetadataAttrs {
+export interface updateUVCMetadataAttrs {
     title?: string;
     description?: string;
     viewAccess?: number;
 }
 
-export const getSVHFilterParams = (params: SVHFilterObject | null) => {
+export const getUVCFilterParams = (params: UVCFilterObject | null) => {
     let sanitizedParams = {}
     if (params) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -3,7 +3,7 @@ import { Router } from "express";
 import * as AuthController from "../controller/Authentification";
 import { loginChain, registerChain, resetPasswordChain, resetPasswordRepeatMailChain, resetPasswordWithTokenChain, verifyMailChain } from "../controller/Authentification.validate";
 import * as UserController from "../controller/User";
-import { isMailExistingChain } from "../controller/User.validate";
+import { isMailExistingChain, requestAccountDeletionChain } from "../controller/User.validate";
 
 const PublicRouter = Router({ mergeParams: true });
 
@@ -17,9 +17,10 @@ PublicRouter.post("/reset-password-repeat", resetPasswordRepeatMailChain(), vali
 PublicRouter.post("/reset-password/:token", resetPasswordWithTokenChain(), validateRequestSchema, AuthController.resetPasswordWithToken);
 PublicRouter.post("/verify", verifyMailChain(), validateRequestSchema, AuthController.verifyMail);
 PublicRouter.post("/is-mail-existing", isMailExistingChain(), validateRequestSchema, UserController.isMailExisting);
-
+PublicRouter.post("/account-deletion", requestAccountDeletionChain(), validateRequestSchema, UserController.requestAccountDeletion);
 
 PublicRouter.get("/dfn/login", AuthController.dfnLogin);
 PublicRouter.get("/dfn/bridge", AuthController.dfnBridge);
+PublicRouter.post("/dfn/exchange", AuthController.dfnExchange);
 
 export default PublicRouter;

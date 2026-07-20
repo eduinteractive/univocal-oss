@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex, Text, Button, Box, applyColor, applySizeProp } from "@eduinteractive/balladui";
-import { SVHEvent, SVHEventAttendee, SVHEventRegistration } from "@/api/Events";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
 import { useState, useMemo } from "react";
 import { Switch, ScrollView, RefreshControl, Share } from "react-native";
 import Markdown from "react-native-markdown-display";
@@ -12,9 +12,9 @@ import { IconEdit } from "@/assets/icons/Icon";
 
 interface EventProgramProps {
 	data?: {
-		event: SVHEvent;
-		attendees: SVHEventAttendee[];
-		registrations: SVHEventRegistration[];
+		event: UVCEvent;
+		attendees: UVCEventAttendee[];
+		registrations: UVCEventRegistration[];
 	};
 	onUpdate: (data: any) => void;
 	isRefetching?: boolean;

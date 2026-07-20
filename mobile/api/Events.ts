@@ -1,6 +1,6 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "./APIHandler";
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
 
-export interface SVHEvent extends SVHMetadata {
+export interface UVCEvent extends UVCMetadata {
     _id: string;
     startDate: Date;
     endDate?: Date;
@@ -31,7 +31,7 @@ export interface SVHEvent extends SVHMetadata {
     }
 }
 
-export interface SVHEventAttendee {
+export interface UVCEventAttendee {
     _id: string;
     eventId: string;
     personal: {
@@ -46,7 +46,7 @@ export interface SVHEventAttendee {
     updatedAt: Date;
 }
 
-export interface SVHEventRegistration {
+export interface UVCEventRegistration {
     _id: string;
     eventId: string;
     personal: {
@@ -63,11 +63,11 @@ export interface SVHEventRegistration {
 
 interface getEventsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
-export const getEvents = async (req: getEventsRequest): Promise<SVHEvent[]> => {
-    const response = await APIHandler.get(`/event/tenant/${req.tenantId}/event`, { params: getSVHFilterParams(req.params) });
+export const getEvents = async (req: getEventsRequest): Promise<UVCEvent[]> => {
+    const response = await APIHandler.get(`/event/tenant/${req.tenantId}/event`, { params: getUVCFilterParams(req.params) });
     return response.data;
 }
 
@@ -79,9 +79,9 @@ interface getEventRequest {
 export const getEvent = async (req: getEventRequest) => {
     const response = await APIHandler.get(`/event/tenant/${req.tenantId}/event/${req.eventId}`);
     return response.data as {
-        event: SVHEvent;
-        attendees: SVHEventAttendee[];
-        registrations: SVHEventRegistration[];
+        event: UVCEvent;
+        attendees: UVCEventAttendee[];
+        registrations: UVCEventRegistration[];
     };
 }
 
@@ -91,25 +91,25 @@ interface getPublicEventRequest {
 
 export const getPublicEvent = async (req: getPublicEventRequest) => {
     const response = await APIHandler.get(`/event/public/event/${req.eventId}`);
-    return response.data as Partial<SVHEvent>;
+    return response.data as Partial<UVCEvent>;
 }
 
 interface createEventRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs & {
+    body: createUVCMetadataAttrs & {
         startDate: Date;
         endDate?: Date;
     }
 }
 
-export const createEvent = async (req: createEventRequest): Promise<SVHEvent> => {
+export const createEvent = async (req: createEventRequest): Promise<UVCEvent> => {
     return await APIHandler.post(`/event/tenant/${req.tenantId}/event`, req.body);
 }
 
 interface updateEventRequest {
     tenantId: string;
     eventId: string;
-    body: updateSVHMetadataAttrs & {
+    body: updateUVCMetadataAttrs & {
         startDate?: Date;
         endDate?: Date;
         config?: {
@@ -141,7 +141,7 @@ interface updateEventRequest {
     }
 }
 
-export const updateEvent = async (req: updateEventRequest): Promise<SVHEvent> => {
+export const updateEvent = async (req: updateEventRequest): Promise<UVCEvent> => {
     if (!req.body.config?.toc?.newUploads) {
         return await APIHandler.put(`/event/tenant/${req.tenantId}/event/${req.eventId}`, req.body);
     } else {

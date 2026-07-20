@@ -48,3 +48,11 @@ export const banUserChain = () => {
         check("userId").isMongoId().withMessage("Die Benutzer-ID ist ungültig!")
     ]
 }
+
+export const requestAccountDeletionChain = () => [
+	body("email")
+		.trim()
+		.isEmail()
+		.withMessage("Bitte eine gültige E-Mail-Adresse angeben."),
+	body("website").optional().isString(),
+];

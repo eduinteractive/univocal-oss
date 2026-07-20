@@ -11,7 +11,7 @@ import TenantMisc from "@/components/features/tenant/TenantMisc";
 import TenantNotificationModal from "@/components/features/tenant/TenantNotificationModal";
 import { Flex, Text, Tabs, TabItem } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 
 export default () => {
 	const { currentTenant, userTenants } = useTenant();
@@ -91,7 +91,7 @@ export default () => {
 	}
 
 	if (!tenantQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	const tabs: TabItem[] = [

@@ -3,7 +3,7 @@ import { useTenant } from "@/context/TenantContext";
 import { RelativePathString, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteWiki, getWikis } from "@/api/Wiki";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import { getContactGroups } from "@/api/Contact";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { Box, Button, Flex, Text } from "@eduinteractive/balladui";
@@ -82,7 +82,7 @@ const KnowledgeScreen = () => {
 				})}
 			</Flex>
 			{activeTab === "Wikis" && (
-				<SVHMetaCards
+				<UVCMetaCards
 					permissionPrefix="knowledge"
 					data={wikisQuery.data || []}
 					onOpen={(wikiId) =>
@@ -97,7 +97,7 @@ const KnowledgeScreen = () => {
 				/>
 			)}
 			{activeTab === "Kontaktgruppen" && (
-				<SVHMetaCards
+				<UVCMetaCards
 					permissionPrefix="knowledge"
 					data={contactGroupsQuery.data || []}
 					onOpen={(contactGroupId) =>

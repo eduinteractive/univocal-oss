@@ -8,8 +8,8 @@ import { Wiki } from "@/api/Wiki";
 import { SurveyMeta } from "@/api/Survey";
 import { TenantUser } from "@/api/Tenant";
 import { htmlToMarkdown } from "@/utils/Parser";
-import { SVHEvent } from "@/api/Events";
-import SVHMaterialForm, { Material } from "@/components/common/SVHMaterialForm";
+import { UVCEvent } from "@/api/Events";
+import UVCMaterialForm, { Material } from "@/components/common/UVCMaterialForm";
 import { IconCircleCheck, IconCircle, IconPlus, IconTrash } from "@/assets/icons/Icon";
 
 export interface ProjectTaskFormData {
@@ -35,7 +35,7 @@ interface ProjectTaskFormProps {
 	data?: ProjectTaskFormData | null;
 	budgets: Budget[];
 	wikis: Wiki[];
-	events: SVHEvent[];
+	events: UVCEvent[];
 	surveys: SurveyMeta[];
 	tenantMembers: TenantUser[];
 	loading?: boolean;
@@ -661,7 +661,7 @@ const ProjectTaskForm = (props: ProjectTaskFormProps) => {
 					>
 						Materialien ({materials.length})
 					</Text>
-					<SVHMaterialForm
+					<UVCMaterialForm
 						materials={materials}
 						setMaterials={setMaterials}
 						newUploads={newUploads}

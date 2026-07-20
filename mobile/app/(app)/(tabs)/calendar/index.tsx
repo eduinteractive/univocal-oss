@@ -5,15 +5,35 @@ import { useTenant } from "@/context/TenantContext";
 import { Box, FAB, Flex, Text } from "@eduinteractive/balladui";
 import { useQuery } from "@tanstack/react-query";
 import { RelativePathString, useFocusEffect, useRouter } from "expo-router";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { Agenda, CalendarProvider } from "react-native-calendars";
+
+function toLocalDateString(d: Date) {
+	const y = d.getFullYear();
+	const m = String(d.getMonth() + 1).padStart(2, "0");
+	const day = String(d.getDate()).padStart(2, "0");
+	return `${y}-${m}-${day}`;
+}
 
 const CalendarScreen = () => {
 	const agendaRef = useRef<Agenda>(null);
 	const { currentTenant } = useTenant();
 	const router = useRouter();
 	const [markedDates, setMarkedDates] = useState<Record<string, any>>({});
-	const [items, setItems] = useState<Record<string, any>>({});
+	/** Must stay `undefined` when there are no days — `{}` is truthy and triggers an Agenda getDerivedStateFromProps / loadReservations infinite loop in react-native-calendars. */
+	const [items, setItems] = useState<Record<string, any[]> | undefined>(
+		undefined
+	);
+
+	/** Stable YYYY-MM-DD — never pass `new Date().toISOString()` inline: CalendarProvider's useDidUpdate treats any prop change as a programmatic date change and can loop. */
+	const anchorDate = useMemo(() => toLocalDateString(new Date()), []);
 
 	const calendarEventsQuery = useQuery({
 		queryKey: ["calendarEvents", currentTenant?._id],
@@ -24,21 +44,22 @@ const CalendarScreen = () => {
 			}),
 	});
 
+	const { refetch } = calendarEventsQuery;
+
 	useFocusEffect(
 		useCallback(() => {
-			calendarEventsQuery.refetch();
+			void refetch();
 			const currentDate = new Date();
+			const dateString = toLocalDateString(currentDate);
 			const dateObject = {
 				year: currentDate.getFullYear(),
 				month: currentDate.getMonth() + 1,
 				day: currentDate.getDate(),
 				timestamp: currentDate.getTime(),
-				dateString: currentDate.toISOString(),
+				dateString,
 			};
-			if (agendaRef.current) {
-				agendaRef.current?.chooseDay(dateObject, false);
-			}
-		}, [calendarEventsQuery])
+			agendaRef.current?.chooseDay(dateObject, false);
+		}, [refetch])
 	);
 
 	useEffect(() => {
@@ -78,20 +99,19 @@ const CalendarScreen = () => {
 			});
 		});
 
-		setItems(itemsTemp);
+		setItems(
+			Object.keys(itemsTemp).length > 0 ? itemsTemp : undefined
+		);
 		setMarkedDates(dotsTemp);
 	}, [calendarEventsQuery.data]);
 
 	return (
 		<Fragment>
-			<CalendarProvider
-				date={new Date().toISOString()}
-				showTodayButton
-			>
+			<CalendarProvider date={anchorDate} showTodayButton>
 				<Agenda
 					ref={agendaRef}
 					showOnlySelectedDayItems={true}
-					selected={"2025-05-05"}
+					selected={anchorDate}
 					markingType="multi-dot"
 					items={items}
 					markedDates={markedDates}

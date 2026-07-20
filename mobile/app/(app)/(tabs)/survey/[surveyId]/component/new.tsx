@@ -11,7 +11,7 @@ import {
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { useLayoutEffect } from "react";
 import { Flex, Text } from "@eduinteractive/balladui";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import SurveyComponentForm, { SurveyComponentFormData } from "@/components/features/survey/SurveyComponentForm";
 
 export default () => {
@@ -56,7 +56,7 @@ export default () => {
 	};
 
 	if (surveyQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!surveyQuery.data) {

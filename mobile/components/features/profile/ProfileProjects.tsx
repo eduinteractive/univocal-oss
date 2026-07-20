@@ -1,6 +1,6 @@
 import { TenantProject } from "@/api/TenantProject";
 import { IconPlus } from "@/assets/icons/Icon";
-import SVHMetaCards from "@/components/common/SVHMetaCards";
+import UVCMetaCards from "@/components/common/UVCMetaCards";
 import { htmlToMarkdown } from "@/utils/Parser";
 import { Box, FAB } from "@eduinteractive/balladui";
 import { RelativePathString } from "expo-router";
@@ -19,7 +19,7 @@ interface ProfileProjectsProps {
 export default (props: ProfileProjectsProps) => {
 	return (
         <Box flex={1}>
-		<SVHMetaCards
+		<UVCMetaCards
 			data={
 				props.data?.projects.map((project) => ({
 					...project,

@@ -1,5 +1,5 @@
 import { deleteWikiSection, getWikiSection } from "@/api/Wiki";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useTenant } from "@/context/TenantContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -8,7 +8,7 @@ import Markdown from "react-native-markdown-display";
 import { htmlToMarkdown } from "@/utils/Parser";
 import React, { useLayoutEffect } from "react";
 import { applySizeProp, Divider, Text } from "@eduinteractive/balladui";
-import SVHMaterials from "@/components/common/SVHMaterials";
+import UVCMaterials from "@/components/common/UVCMaterials";
 import { IconEdit, IconFiles, IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
 
@@ -100,7 +100,7 @@ export default () => {
 	}, [wikiSectionQuery.data, navigation]);
 
 	if (wikiSectionQuery.isLoading || !wikiSectionQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	const wiki = wikiSectionQuery.data;
@@ -135,9 +135,9 @@ export default () => {
 					>
 						Materialien
 					</Text>
-					<SVHMaterials materials={wiki.materials} onPress={(material) => 
+					<UVCMaterials materials={wiki.materials} onPress={(material) => 
                         Linking.openURL(
-                            `https://apps.sv-hub.de/api/event/public/event/${
+                            `https://apps.univocal.de/api/event/public/event/${
                                 wikiId
                             }/download/${encodeURIComponent(
                                 material.link

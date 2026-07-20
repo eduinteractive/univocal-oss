@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Spinner } from "@eduinteractive/balladui";
 
-const SVHLoader = () => {
+const UVCLoader = () => {
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "white" }}>
 			<Spinner size="xl" />
@@ -9,4 +9,4 @@ const SVHLoader = () => {
 	);
 };
 
-export default SVHLoader;
+export default UVCLoader;

@@ -2,6 +2,7 @@ import { Profile } from "@/api/Profile";
 import { applyColor, Box, Button, Flex, Text } from "@eduinteractive/balladui";
 import { BASE_URL } from "@/api/APIHandler";
 import { useTenant } from "@/context/TenantContext";
+import type { TenantVisibility } from "@/api/Tenant";
 import { Image } from "react-native";
 import { IconEdit } from "@/assets/icons/Icon";
 import { router } from "expo-router";
@@ -11,6 +12,12 @@ interface ProfileGeneralProps {
 		profile: Profile;
 	};
 }
+
+const TENANT_VISIBILITY_LABEL: Record<TenantVisibility, string> = {
+	PUBLIC: "Öffentlich",
+	HIDDEN: "Nicht öffentlich",
+	ON_REQUEST: "Auf Anfrage",
+};
 
 export default (props: ProfileGeneralProps) => {
 	const { currentTenant } = useTenant();
@@ -72,12 +79,14 @@ export default (props: ProfileGeneralProps) => {
 							/>
 						</Button>
 					</Flex>
-					<Text
-						fs="sm"
-						c="gray.4"
-					>
-						{currentTenant?.tenant?.type || "Typ unbekannt"}
-					</Text>
+					{currentTenant?.tenant?.visibility != null && (
+						<Text
+							fs="sm"
+							c="gray.4"
+						>
+							{TENANT_VISIBILITY_LABEL[currentTenant.tenant.visibility]}
+						</Text>
+					)}
 				</Flex>
 			</Flex>
 

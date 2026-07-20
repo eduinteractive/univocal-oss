@@ -1,12 +1,11 @@
-import { DrawerToggleButton } from "@react-navigation/drawer";
 import { TouchableOpacity, View, ScrollView, SafeAreaView } from "react-native";
 import { ActionSheet, Flex, Text, Card, Box } from "@eduinteractive/balladui";
-import { Fragment, useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigation, useRouter, useFocusEffect } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
-import { IconArrowsLeftRight, IconLogout, IconUser, IconUsersGroup, IconChevronDown } from "@/assets/icons/Icon";
-import { DrawerActions } from "@react-navigation/native";
+import { IconArrowsLeftRight, IconLogout, IconUser, IconChevronDown } from "@/assets/icons/Icon";
 import { TENANT_NAVIGATION_ITEMS } from "@/app/(app)/(tabs)/dashboard";
+import * as Drawer from "expo-router/drawer";
 
 interface HeaderFeatureProps {
 	title: string;
@@ -111,7 +110,7 @@ const HeaderFeature = ({ title, disableNavigation }: HeaderFeatureProps) => {
 				{/* Left: Drawer Toggle */}
 				<View style={{ marginHorizontal: 0, paddingHorizontal: -8 }}>
 					<TouchableOpacity
-						onPress={() => navigate.dispatch(DrawerActions.toggleDrawer())}
+						onPress={() => (navigate as any).toggleDrawer()}
 					>
 						<IconArrowsLeftRight />
 					</TouchableOpacity>

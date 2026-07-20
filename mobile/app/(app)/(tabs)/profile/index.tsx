@@ -3,7 +3,7 @@ import { getProfile } from "@/api/Profile";
 import { deleteTenantProject, getTenantProjects } from "@/api/TenantProject";
 import { deleteNews, getAllNews } from "@/api/News";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useLayoutEffect, useMemo } from "react";
 import { applyColor, applySizeProp, Button, Tabs } from "@eduinteractive/balladui";
 import ProfileGeneral from "@/components/features/profile/ProfileGeneral";
@@ -124,7 +124,7 @@ const ProfileScreen = () => {
 	);
 
 	if (profileQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

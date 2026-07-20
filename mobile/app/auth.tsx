@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Image, Keyboard, ScrollView, TouchableWithoutFeedback } from "react-native";
 
 const Auth = () => {
-	const { signIn, signUp, forgetPassword } = useAuth();
+	const { signIn, signInWithUniversity, signUp, forgetPassword } = useAuth();
 
 	const [formState, setFormState] = useState<AuthFormState>(AuthFormState.SignIn);
 
@@ -49,7 +49,7 @@ const Auth = () => {
 							resizeMode="contain"
 						/>
 						<Text align="center" fs="sm">
-							Deine Plattform für digitale SV-Arbeit
+							Deine Plattform für digitale Zusammenarbeit
 						</Text>
 					</Flex>
 					<Divider
@@ -65,6 +65,7 @@ const Auth = () => {
 							<SignInForm
 								onFormChange={setFormState}
 								onSignIn={signIn}
+								onUniversitySignIn={signInWithUniversity}
 							/>
 						)}
 						{formState === AuthFormState.SignUp && (

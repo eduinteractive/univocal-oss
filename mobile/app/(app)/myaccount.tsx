@@ -9,6 +9,7 @@ import { NotificationHandler } from "../../utils/NotificationHandler";
 const MyAccountScreen = () => {
 	const { authData } = useAuth();
 	const contact = authData?.contact as { first_name: string; last_name: string; phone?: string } | undefined;
+	const isDfnUser = authData?.authProvider === "DFN_AAI";
 
 	// Password change form state
 	const [oldPassword, setOldPassword] = useState("");
@@ -132,6 +133,7 @@ const MyAccountScreen = () => {
 					</Flex>
 				</Card>
 
+				{!isDfnUser && (
 				<Card
 					variant="outline"
 					color="gray.3"
@@ -202,6 +204,7 @@ const MyAccountScreen = () => {
 						</Button>
 					</Flex>
 				</Card>
+				)}
 			</ScrollView>
 		</KeyboardAvoidingView>
 	);

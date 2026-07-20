@@ -1,17 +1,20 @@
 {
 	"expo": {
-		"name": "SV-Hub",
-		"slug": "svhub",
-		"version": "1.1.1",
+		"name": "univocal",
+		"slug": "univocal",
+		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"scheme": "SVHub",
+		"scheme": "univocal",
 		"userInterfaceStyle": "light",
-		"newArchEnabled": true,
 		"ios": {
 			"userInterfaceStyle": "light",
 			"supportsTablet": true,
-			"bundleIdentifier": "de.saukels.svhub"
+			"bundleIdentifier": "de.saukels.univocal",
+            "infoPlist": {
+                "UIDesignRequiresCompatibility": true
+            },
+            "icon": "./assets/images/app.icon"
 		},
 		"android": {
 			"userInterfaceStyle": "light",
@@ -19,7 +22,21 @@
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
 			},
-			"package": "de.saukels.svhub"
+			"package": "de.saukels.univocal",
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"autoVerify": false,
+					"data": [
+						{
+							"scheme": "univocal",
+							"host": "auth",
+							"pathPrefix": "/dfn"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
+			]
 		},
 		"web": {
 			"bundler": "metro",
@@ -40,16 +57,18 @@
 			"expo-secure-store",
 			"expo-font",
 			"expo-web-browser",
-            "expo-notifications"
+            "expo-notifications",
+            "expo-status-bar",
+            "@react-native-community/datetimepicker"
 		],
 		"experiments": {
 			"typedRoutes": true
 		},
 		"extra": {
 			"router": {},
-			"eas": {
-				"projectId": "5f39ce5b-a681-476c-a1d9-76787088e133"
-			}
+            "eas": {
+                "projectId": "6812a991-39f4-49be-a404-4f73179fd00c"
+            }
 		}
 	}
 }

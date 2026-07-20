@@ -3,9 +3,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTenant } from "@/context/TenantContext";
 import { useState, useLayoutEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHMetaForm from "@/components/common/SVHMetaForm";
+import UVCMetaForm from "@/components/common/UVCMetaForm";
 import { getBudget, updateBudget } from "@/api/Budget";
 
 export default () => {
@@ -65,7 +65,7 @@ export default () => {
 	};
 
 	if (budgetQuery.isLoading || !budgetQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (
@@ -74,7 +74,7 @@ export default () => {
 			style={{ flex: 1 }}
 			keyboardVerticalOffset={Platform.OS === "ios" ? 96 : 0}
 		>
-			<SVHMetaForm
+			<UVCMetaForm
 				data={budgetQuery.data.budget}
 				loading={loading}
 				onSubmit={handleSubmit}

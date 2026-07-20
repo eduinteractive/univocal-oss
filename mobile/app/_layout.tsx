@@ -1,11 +1,12 @@
 import "@/global.css";
 import * as SplashScreen from "expo-splash-screen";
+import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "@/context/AuthContext";
 import { Slot } from "expo-router";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "expo-router/react-navigation";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { APIErrorObject } from "@/utils/NotificationHandler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -16,6 +17,7 @@ import Toast, { ErrorToast, InfoToast, SuccessToast } from "react-native-toast-m
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+WebBrowser.maybeCompleteAuthSession();
 
 const queryClient = new QueryClient({
 	mutationCache: new MutationCache({

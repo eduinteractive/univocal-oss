@@ -238,7 +238,7 @@ const Register = (props: RegisterProps) => {
                             <Text>
                                 {t("AUTH.ATTRIBUTES.TERMS_PRE")}{' '}
                                 <a
-                                    href="https://univocal.de/nutzungsbedingungen"
+                                    href="https://univocal.de/service/nutzungsbedingungen"
                                     target="_blank"
                                 >
                                     {t("AUTH.ATTRIBUTES.TERMS")}

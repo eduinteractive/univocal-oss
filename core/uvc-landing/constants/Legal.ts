@@ -229,3 +229,70 @@ export const AGBHTML = `<h2>1. Anbieter und Geltungsbereich</h2>
 <hr>
 <p><strong>Stand: 05. Januar 2025</strong></p>`
 
+export const TermsOfUseHTML = `
+<div class="entry-content clear">
+<p><strong>Community-Richtlinie für univocal / Nutzungsbedingungen</strong></p>
+<p>Willkommen bei univocal. Unsere Community wurde gegründet, um die Gremienarbeit in Universitäten zu fördern: eine Plattform, auf der ihr euch vernetzen, Ideen austauschen und gemeinsam an Projekten arbeiten könnt. Wir möchten einen Raum schaffen, in dem Gremien und Hochschulgruppen ihre Stimmen erheben, voneinander lernen und sich gegenseitig unterstützen können. Um eine respektvolle und sichere Umgebung für alle Mitglieder zu gewährleisten, bitten wir dich, die folgenden Richtlinien zu beachten.</p>
+
+<h2>1. Respektvoller Umgang</h2>
+<p><strong>Grundhaltung:</strong> Jeder Austausch soll von Respekt, Höflichkeit und Sachlichkeit geprägt sein. (Siehe Punkt 7)</p>
+<p><strong>Verbote:</strong> Beleidigende, diskriminierende, diffamierende oder verleumderische Äußerungen sowie persönliche Angriffe sind streng untersagt.</p>
+<p><strong>Diversität:</strong> Diskriminierung aufgrund von Geschlecht, Herkunft, Religion, sexueller Orientierung oder anderen persönlichen Merkmalen wird nicht toleriert. (Siehe Punkt 8)</p>
+
+<h2>2. Angemessene Nutzung der Funktionen</h2>
+<p><strong>Chat:</strong> Verwende den Chat für konstruktive Diskussionen. Spam, kommerzielle Werbung oder unangemessene Inhalte sind verboten. Inhalte, die in irgendeiner Weise gegen das Recht verstoßen, sind nicht gestattet. Wenn dir Inhalte auffallen, die unangemessen erscheinen oder gegen geltendes Recht verstoßen, solltest du sie über den Meldebutton melden.</p>
+<p><strong>Gruppen:</strong> Gruppen, die gegen die Richtlinien verstoßen oder nicht aktiv sind, können gelöscht werden.</p>
+<p><strong>Veranstaltungen:</strong> Stelle sicher, dass alle Veranstaltungen den Richtlinien entsprechen und für die Community von Interesse sind.</p>
+<p><strong>Datenaustausch:</strong> Teile nur Inhalte, die du rechtmäßig verwenden darfst. Achte darauf, dass alle geteilten Informationen korrekt und relevant sind. Inhalte, die Datenschutzrechte verletzen beziehungsweise persönliche Informationen enthalten, sind nicht gestattet.</p>
+<p><strong>Wiki:</strong> Beiträge im Wiki sollten informativ und hilfreich sein. Vermeide persönliche Meinungen oder nicht überprüfte Informationen. Das Aufstellen von nachweisbar falschen Behauptungen und/oder das Irreführen anderer Mitglieder ist nicht erlaubt.</p>
+
+<h2>3. Datenschutz und Sicherheit</h2>
+<p><strong>Persönliche Daten:</strong> Veröffentliche keine persönlichen Informationen wie Adressen, Telefonnummern oder andere sensible Daten ohne ausdrückliche Zustimmung der betroffenen Person.</p>
+<p><strong>Privatsphäre:</strong> Respektiere stets die Privatsphäre aller Mitglieder und schütze die Daten der Community.</p>
+<p><strong>Rechtliche Grundlage:</strong> Unsere Maßnahmen orientieren sich an den Vorgaben der DSGVO, des BDSG und jugendschutzrechtlichen Bestimmungen.</p>
+
+<h2>4. Meldung von Missbrauch</h2>
+<p>Wenn du unangemessenes Verhalten oder Missbrauch von Funktionen beobachtest, melde dies bitte umgehend den Administratoren. Wir nehmen solche Meldungen ernst und werden entsprechende Maßnahmen ergreifen. Du kannst Missbrauch direkt über die integrierte Meldefunktion auf der Plattform melden – so können wir schnell und gezielt reagieren, um die Sicherheit der Community zu gewährleisten.</p>
+
+<h2>5. Konsequenzen bei Verstößen</h2>
+<p>Verstöße gegen diese Richtlinien können je nach Schwere zu Verwarnungen, vorübergehenden Sperrungen oder zur dauerhaften Löschung des Kontos führen.</p>
+<p><strong>Besonders schwere Verstöße:</strong> Bei besonders schweren Vergehen behalten wir uns vor, diese strafrechtlich anzuzeigen. Dazu zählen unter anderem:</p>
+<ul>
+<li>Extremistische Inhalte (u. a. Hetze gegen Minderheiten, Kennzeichen und Symbole verfassungswidriger Organisationen, Verherrlichung des Nazi-Regimes, Aufruf zu Terrorismus)</li>
+<li>Pornografische Inhalte – insbesondere die Darstellung sexualisierter Gewalt an Kindern</li>
+<li>Gewaltverherrlichende Inhalte (Verbreitung von Medien, die grausame oder unmenschliche Gewalttätigkeiten gegen Menschen zeigen)</li>
+</ul>
+
+<h2>6. Gemeinsame Werte und Verhaltensstandards</h2>
+<p>Unsere Community ist ein Ort des respektvollen Dialogs und der Zusammenarbeit. Wir ermutigen alle Mitglieder, aktiv beizutragen, andere zu unterstützen und eine Kultur der positiven Kommunikation und Zusammenarbeit zu fördern. Der Austausch von Ideen sollte immer mit dem Ziel erfolgen, zu lernen, zu wachsen und gemeinsam positive Veränderungen zu bewirken.</p>
+<p><strong>Dialog und Zusammenarbeit:</strong> Unser Ziel ist es, einen respektvollen, offenen und lösungsorientierten Austausch zu fördern, bei dem der gemeinsame Wissens- und Erfahrungsaustausch im Vordergrund steht.</p>
+<p><strong>Engagement:</strong> Wir ermutigen alle Mitglieder, aktiv beizutragen und sich gegenseitig zu unterstützen.</p>
+
+<h2>7. Förderung von Inklusion und Diversität</h2>
+<p>Wir setzen uns für eine inklusive Community ein, in der jede Stimme gehört wird. Alle Mitglieder sind unabhängig von Herkunft, Geschlecht, Religion, sexueller Orientierung oder anderen persönlichen Merkmalen willkommen. Diskriminierung oder Belästigung jeglicher Art wird nicht toleriert.</p>
+
+<h2>8. Spam und Werbung</h2>
+<p>Unaufgeforderte Werbung, Kettenbriefe oder Massen-Einladungen zu externen Diensten sind nicht erlaubt. Das Posten von kommerziellen Inhalten, die nicht im Zusammenhang mit der Community stehen, wird ebenfalls entfernt.</p>
+
+<h2>9. Umgang mit Konflikten</h2>
+<p>Bei Meinungsverschiedenheiten oder Konflikten bitten wir dich, respektvoll und ruhig zu bleiben. Persönliche Angriffe oder Eskalationen führen nur zu weiteren Problemen. Unsere Moderatoren stehen bereit, um zu vermitteln und Lösungen zu finden, die für alle Beteiligten akzeptabel sind. (Siehe Punkt 10)</p>
+
+<h2>10. Verantwortung der Administratoren und Moderatoren</h2>
+<p>Die Administratoren und Moderatoren sind dafür verantwortlich, sicherzustellen, dass die Community-Richtlinien eingehalten werden. Sie haben das Recht, Inhalte zu entfernen, Benutzerkonten zu sperren oder zu löschen, die gegen diese Richtlinien verstoßen. Moderatoren sind hier, um zu helfen, Konflikte zu lösen und eine positive Atmosphäre zu fördern.</p>
+<p><strong>Überwachung:</strong> Die Administratoren und Moderatoren sind für die Einhaltung dieser Richtlinien verantwortlich und haben das Recht, bei Verstößen entsprechende Maßnahmen zu ergreifen.</p>
+<p><strong>Konfliktlösung:</strong> Sie stehen bereit, um Meinungsverschiedenheiten zu vermitteln und die Einhaltung eines positiven Umgangs zu fördern.</p>
+<p><strong>Rechtliche Hinweise:</strong> Inhalte, die gegen geltendes Recht verstoßen, werden bei den entsprechenden Behörden gemeldet. (Siehe Punkt 5)</p>
+
+<h2>11. Barrierefreiheit und Zugang</h2>
+<p>Wir sind bestrebt, eine zugängliche Plattform für alle zu bieten. Falls du Schwierigkeiten bei der Nutzung der Plattform hast oder Vorschläge zur Verbesserung der Barrierefreiheit hast, kontaktiere uns bitte. Wir möchten sicherstellen, dass alle Mitglieder unabhängig von ihren Fähigkeiten teilnehmen können.</p>
+
+<h2>12. Urheberrecht und geistiges Eigentum</h2>
+<p>Alle Inhalte, die du in der Community teilst (einschließlich Texten, Bildern, Videos usw.), müssen entweder von dir selbst erstellt oder für die Veröffentlichung freigegeben sein. Beachte, dass das Teilen von urheberrechtlich geschütztem Material ohne Erlaubnis zu einer Sperrung oder Löschung deines Kontos führen kann.</p>
+
+<h2>13. Änderungen der Richtlinien</h2>
+<p>Diese Richtlinie kann von Zeit zu Zeit aktualisiert werden, um sicherzustellen, dass wir den Bedürfnissen der Community gerecht werden und aktuelle rechtliche Anforderungen einhalten. Wir werden die Community über wesentliche Änderungen informieren.</p>
+
+<p><strong>Zuletzt aktualisiert: 01. Juni 2026</strong></p>
+</div>
+`
+

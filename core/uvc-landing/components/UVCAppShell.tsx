@@ -32,6 +32,10 @@ const footerData = [
 		link: "/service/agb",
 	},
 	{
+		label: "Nutzungsbedingungen",
+		link: "/service/nutzungsbedingungen",
+	},
+	{
 		label: "Datenschutzerklärung",
 		link: "/service/privacy",
 	},

@@ -1,4 +1,4 @@
-import APIHandler, { createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "./APIHandler";
+import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
 
 export enum ProjectConnector {
     BUDGET = 'BUDGET',
@@ -43,19 +43,19 @@ export interface ProjectTaskColumn {
     tasks: ProjectTask[];
 }
 
-export interface Project extends SVHMetadata {
+export interface Project extends UVCMetadata {
     _id: string;
     columns: ProjectTaskColumn[];
 }
 
 interface getProjectsRequest {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getProjects = async (req: getProjectsRequest): Promise<Project[]> => {
     const response = await APIHandler.get(`/project/tenant/${req.tenantId}/project`, {
-        params: getSVHFilterParams(req.params)
+        params: getUVCFilterParams(req.params)
     });
     return response.data;
 }
@@ -72,7 +72,7 @@ export const getProject = async (req: getProjectRequest): Promise<Project> => {
 
 interface createProjectRequest {
     tenantId: string;
-    body: createSVHMetadataAttrs
+    body: createUVCMetadataAttrs
 }
 
 export const createProject = async (req: createProjectRequest): Promise<Project> => {
@@ -83,7 +83,7 @@ export const createProject = async (req: createProjectRequest): Promise<Project>
 interface updateProjectRequest {
     tenantId: string;
     projectId: string;
-    body: updateSVHMetadataAttrs & {
+    body: updateUVCMetadataAttrs & {
         columns?: {
             _id: string;
             title: string;

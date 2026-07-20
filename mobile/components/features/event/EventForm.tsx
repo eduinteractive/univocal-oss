@@ -1,12 +1,12 @@
 import { Fragment, useState, useEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
-import SVHMetaForm, { SVHMetaFormSubmit } from "@/components/common/SVHMetaForm";
+import UVCMetaForm, { UVCMetaFormSubmit } from "@/components/common/UVCMetaForm";
 import { DateInput, Flex, TimeInput } from "@eduinteractive/balladui";
-import { SVHEvent } from "@/api/Events";
+import { UVCEvent } from "@/api/Events";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 
 interface EventFormProps {
-	data?: SVHEvent | null;
+	data?: UVCEvent | null;
 	loading: boolean;
 	onSubmit: (data: {
 		title: string;
@@ -57,8 +57,8 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 		}
 	}, [data]);
 
-	// Convert SVHEvent to SVHMetaFormSubmit format
-	const formData: SVHMetaFormSubmit | null = data ? {
+	// Convert UVCEvent to UVCMetaFormSubmit format
+	const formData: UVCMetaFormSubmit | null = data ? {
 		title: data.title,
 		description: data.description,
 		viewAccess: data.viewAccess,
@@ -77,7 +77,7 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 		return finalDate;
 	};
 
-	const handleSubmit = async (formData: SVHMetaFormSubmit) => {
+	const handleSubmit = async (formData: UVCMetaFormSubmit) => {
 		const finalStartDate = getFinalStartDate();
 		const finalEndDate = getFinalEndDate();
 
@@ -141,7 +141,7 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 			style={{ flex: 1 }}
 			keyboardVerticalOffset={Platform.OS === "ios" ? 96 : 0}
 		>
-			<SVHMetaForm
+			<UVCMetaForm
 				data={formData}
 				loading={loading}
 				onSubmit={handleSubmit}

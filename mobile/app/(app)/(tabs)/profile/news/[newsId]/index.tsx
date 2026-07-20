@@ -1,5 +1,5 @@
 import { deleteNews, getNews } from "@/api/News";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import ContentItemView from "@/components/common/ContentItemView";
 import { useTenant } from "@/context/TenantContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -77,7 +77,7 @@ export default () => {
 	}, [newsQuery.data, navigation]);
 
 	if (newsQuery.isLoading || !newsQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

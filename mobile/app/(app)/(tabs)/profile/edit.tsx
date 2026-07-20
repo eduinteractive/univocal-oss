@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile } from "@/api/Profile";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { useEffect, useState } from "react";
 import { Button, Flex, TextInput } from "@eduinteractive/balladui";
 import { NotificationHandler } from "@/utils/NotificationHandler";
@@ -70,7 +70,7 @@ const ProfileEditScreen = () => {
     };
 
     if (profileQuery.isLoading) {
-        return <SVHLoader />;
+        return <UVCLoader />;
     }
 
     return (

@@ -20,10 +20,16 @@ const TabsLayout = () => {
 					align="center"
 					w="85%"
 				>
-					Du bist in keiner Gruppe. Bitte trete erst einer Gruppe bei.
+					Du bist in keiner Gruppe. Wähle eine Gruppe aus oder tritt einer offenen Gruppe bei.
 				</Text>
-				<Button onPress={() => router.navigate("/(app)/invitations")}>
-					Zu den Gruppeneinladungen
+				<Button onPress={() => router.navigate("/(app)/opentenants")}>
+					Offene Gruppen
+				</Button>
+				<Button
+					variant="outline"
+					onPress={() => router.navigate("/(app)/invitations")}
+				>
+					Gruppeneinladungen
 				</Button>
 			</Flex>
 		);
@@ -48,7 +54,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Start",
 					tabBarIcon: ({ color }) => (
-						<IconHome color={color} />
+						<IconHome color={color as string} />
 					),
 				}}
 			/>
@@ -57,7 +63,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Chat",
 					tabBarIcon: ({ color }) => (
-						<IconMessage color={color} />
+						<IconMessage color={color as string} />
 					),
 				}}
 			/>
@@ -66,7 +72,7 @@ const TabsLayout = () => {
 				options={{
 					title: "Kalender",
 					tabBarIcon: ({ color }) => (
-						<IconCalendar color={color} />
+						<IconCalendar color={color as string} />
 					),
 				}}
 			/>

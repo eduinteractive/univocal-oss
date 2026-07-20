@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTenant } from "@/context/TenantContext";
 import { getEvent, updateEvent } from "@/api/Events";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import EventFieldsForm from "@/components/features/event/EventFieldsForm";
 
 interface CustomField {
@@ -68,7 +68,7 @@ export default function EditRegistrations() {
 	};
 
 	if (eventQuery.isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!eventQuery.data) {

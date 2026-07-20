@@ -1,6 +1,5 @@
-import { SVHFilterObject } from "../components/common/SVHFilter";
 import { PROFILE_OBJECT_STATUS } from "../constants/Enums";
-import APIHandler, { getSVHFilterParams } from "./APIHandler";
+import APIHandler, { getUVCFilterParams, UVCFilterObject } from "./APIHandler";
 
 export interface TenantProject {
     _id?: string;
@@ -17,11 +16,11 @@ export interface TenantProject {
 
 interface getTenantProjectsQuery {
     tenantId: string;
-    params: SVHFilterObject | null;
+    params: UVCFilterObject | null;
 }
 
 export const getTenantProjects = async (req: getTenantProjectsQuery) => {
-    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/project`, { params: getSVHFilterParams(req.params) });
+    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/project`, { params: getUVCFilterParams(req.params) });
     return response.data as TenantProject[];
 }
 

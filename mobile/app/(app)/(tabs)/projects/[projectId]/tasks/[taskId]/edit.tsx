@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTask, updateTask } from "@/api/Project";
 import { useTenant } from "@/context/TenantContext";
 import { useLayoutEffect } from "react";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import useBudgets from "@/hooks/useBudgets";
 import useWikis from "@/hooks/useWikis";
@@ -72,7 +72,7 @@ export default () => {
 	};
 
 	if (taskQuery.isLoading || !taskQuery.data) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	return (

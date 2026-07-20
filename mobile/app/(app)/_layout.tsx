@@ -1,24 +1,23 @@
-import { IconExternalLink, IconLogout, IconMail, IconUsers } from "@/assets/icons/Icon";
-import SVHLoader from "@/components/common/SVHLoader";
+import { IconArrowsLeftRight, IconExternalLink, IconLogout, IconMail, IconUsers } from "@/assets/icons/Icon";
+import UVCLoader from "@/components/common/UVCLoader";
 import HeaderBack from "@/components/layouts/HeaderBack";
 import { useAuth } from "@/context/AuthContext";
 import { useTenant } from "@/context/TenantContext";
 import { applyColor, Button, Divider, Flex, Text } from "@eduinteractive/balladui";
-import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Redirect, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useRef } from "react";
-import { Image, Linking, ScrollView } from "react-native";
+import { Image, Linking, ScrollView, TouchableOpacity } from "react-native";
 
 const AppLayout = () => {
 	const router = useRouter();
-	const { authData, isLoading } = useAuth();
+	const { authData, isLoading, signOut } = useAuth();
 	const { currentTenant, userTenants, setCurrentTenant } = useTenant();
 
 	const drawerRef = useRef<any>(null);
 
 	if (isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!authData) {
@@ -28,14 +27,16 @@ const AppLayout = () => {
 	return (
 		<Drawer
 			ref={drawerRef}
-			screenOptions={{
+			screenOptions={({navigation}) => ({
 				headerLeft: () => (
-					<DrawerToggleButton
-						tintColor="black"
-						pressColor="black"
-					/>
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                        <IconArrowsLeftRight
+                            color="black"
+                            size={20}
+                        />
+                    </TouchableOpacity>
 				),
-			}}
+			})}
 			drawerContent={() => {
 				return (
 					<ScrollView
@@ -55,7 +56,7 @@ const AppLayout = () => {
 							align="center"
 							fs="md"
 						>
-							Deine Plattform für digitale SV-Arbeit
+							Weil jede Meinung zählt
 						</Text>
 						<Divider my="md" />
 						<Flex
@@ -110,17 +111,6 @@ const AppLayout = () => {
 											}
 										>
 											{tenant.title}
-										</Text>
-										<Text
-											fs="sm"
-											c={
-												currentTenant?._id ===
-												tenant._id
-													? "blue.4"
-													: "gray"
-											}
-										>
-											{tenant.type}
 										</Text>
 									</Flex>
 								</Button>
@@ -200,7 +190,7 @@ const AppLayout = () => {
 								my="sm"
 								py="sm"
 								px={0}
-								onPress={() => Linking.openURL("https://univocal.de/nutzungsbedingungen")}
+								onPress={() => Linking.openURL("https://univocal.de/service/nutzungsbedingungen")}
 							>
 								<Flex
 									direction="row"
@@ -275,6 +265,35 @@ const AppLayout = () => {
 										c={"gray"}
 									>
 										Konto löschen
+									</Text>
+								</Flex>
+							</Button>
+                            <Button
+								variant="subtle"
+								style={{
+									alignContent: "flex-start",
+									justifyContent: "flex-start",
+								}}
+								my="sm"
+								py="sm"
+								px={0}
+								onPress={() => signOut()}
+							>
+								<Flex
+									direction="row"
+									gap="sm"
+									align="center"
+								>
+									<IconExternalLink
+										size={20}
+										color="gray"
+									/>
+									<Text
+										align="left"
+										fw={"normal"}
+										c={"gray"}
+									>
+										Abmelden
 									</Text>
 								</Flex>
 							</Button>

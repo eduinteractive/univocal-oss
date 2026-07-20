@@ -5,7 +5,7 @@ import { applyColor, applyFontSizeProp, Avatar, Box, Button, Card, Flex, Space, 
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getTask, deleteTask, ProjectConnector } from "@/api/Project";
 import { useTenant } from "@/context/TenantContext";
-import SVHLoader from "@/components/common/SVHLoader";
+import UVCLoader from "@/components/common/UVCLoader";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import Markdown from "react-native-markdown-display";
 import { htmlToMarkdown } from "@/utils/Parser";
@@ -14,7 +14,7 @@ import useBudgets from "@/hooks/useBudgets";
 import useWikis from "@/hooks/useWikis";
 import useEvents from "@/hooks/useEvents";
 import useSurveys from "@/hooks/useSurveys";
-import SVHMaterials from "@/components/common/SVHMaterials";
+import UVCMaterials from "@/components/common/UVCMaterials";
 import { IconCircle, IconCircleCheck, IconEdit, IconExternalLink, IconLink, IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
 
@@ -97,7 +97,7 @@ export default () => {
 	}, [task, navigation]);
 
 	if (isLoading) {
-		return <SVHLoader />;
+		return <UVCLoader />;
 	}
 
 	if (!task) {
@@ -341,7 +341,7 @@ export default () => {
 					>
 						Materialien ({task.materials.length})
 					</Text>
-					<SVHMaterials materials={task.materials} />
+					<UVCMaterials materials={task.materials} />
 				</Card>
 			)}
 
