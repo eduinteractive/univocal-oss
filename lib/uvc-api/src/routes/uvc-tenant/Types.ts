@@ -81,6 +81,7 @@ export interface Budget extends SVHMetadata {
     _id: string;
     year?: number;
     ist_active?: boolean;
+    receipt_active?: boolean;
 }
 
 export enum BudgetPositionType {
@@ -100,6 +101,18 @@ export interface BudgetPosition {
     type: BudgetPositionType;
     soll_amount: number;
     ist_amount?: number;
+    without_assignment?: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface BudgetReceipt {
+    _id: string;
+    positionId: string;
+    amount: number;
+    description?: string;
+    date: Date;
+    file?: { title: string; link: string; mimetype: string } | null;
     createdAt: Date;
     updatedAt: Date;
 }

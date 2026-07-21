@@ -1,6 +1,6 @@
 import { APIHandler, createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, SVHMetadata, updateSVHMetadataAttrs } from "../base";
 import { CalendarEvent } from "../uvc-calendar/Types";
-import { Budget, BudgetPosition, BudgetPositionType, Notification, Tenant, TenantInvitation, TenantRequest, TenantUser, TenantVisibility } from "./Types";
+import { Budget, BudgetPosition, BudgetPositionType, BudgetReceipt, Notification, Tenant, TenantInvitation, TenantRequest, TenantUser, TenantVisibility } from "./Types";
 
 /**
  * Tenant Routes
@@ -201,6 +201,7 @@ interface updateBudgetRequest {
     body: updateSVHMetadataAttrs & {
         year?: number;
         ist_active?: boolean;
+        receipt_active?: boolean;
     }
 }
 
@@ -233,10 +234,11 @@ interface createBudgetPositionRequest {
     budgetId: string;
     body: {
         title: string;
-        description: string;
+        description?: string;
         type: BudgetPositionType;
         soll_amount: number;
         ist_amount?: number;
+        parent?: string;
     }
 }
 
@@ -271,6 +273,97 @@ interface deleteBudgetPositionRequest {
 
 export const deleteBudgetPosition = async (req: deleteBudgetPositionRequest): Promise<void> => {
     await APIHandler.delete(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/position/${req.positionId}`);
+}
+
+/**
+ * Budget Receipt Routes
+ */
+
+interface getBudgetReceiptsRequest {
+    tenantId: string;
+    budgetId: string;
+}
+
+export const getBudgetReceipts = async (req: getBudgetReceiptsRequest): Promise<BudgetReceipt[]> => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`);
+    return response.data;
+}
+
+interface createBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    body: {
+        positionId?: string;
+        amount: number;
+        description?: string;
+        date: string | Date;
+        file?: File;
+    }
+}
+
+export const createBudgetReceipt = async (req: createBudgetReceiptRequest): Promise<BudgetReceipt> => {
+    const formData = new FormData();
+    if (req.body.positionId) formData.append("positionId", req.body.positionId);
+    formData.append("amount", String(req.body.amount));
+    if (req.body.description !== undefined) formData.append("description", req.body.description);
+    formData.append(
+        "date",
+        typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
+    );
+    if (req.body.file) formData.append("file", req.body.file);
+
+    const response = await APIHandler.post(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+}
+
+interface updateBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    receiptId: string;
+    body: {
+        positionId: string;
+        amount?: number;
+        description?: string;
+        date?: string | Date;
+        file?: File;
+    }
+}
+
+export const updateBudgetReceipt = async (req: updateBudgetReceiptRequest): Promise<BudgetReceipt> => {
+    const formData = new FormData();
+    formData.append("positionId", req.body.positionId);
+    if (req.body.amount !== undefined) formData.append("amount", String(req.body.amount));
+    if (req.body.description !== undefined) formData.append("description", req.body.description);
+    if (req.body.date !== undefined) {
+        formData.append(
+            "date",
+            typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
+        );
+    }
+    if (req.body.file) formData.append("file", req.body.file);
+
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+}
+
+interface deleteBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    receiptId: string;
+}
+
+export const deleteBudgetReceipt = async (req: deleteBudgetReceiptRequest): Promise<void> => {
+    await APIHandler.delete(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`
+    );
 }
 
 /**

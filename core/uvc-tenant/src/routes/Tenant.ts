@@ -3,10 +3,10 @@ import * as BudgetController from "../controller/Budget";
 import * as TenantController from "../controller/Tenant";
 import * as TenantInvitationController from "../controller/TenantInvitation";
 import * as TenantRequestController from "../controller/TenantRequest";
-import { requireTenantPermission, validateRequestSchema } from "@eduinteractive/uvc-common";
+import { requireTenantPermission, uploader, validateRequestSchema } from "@eduinteractive/uvc-common";
 import { isBudgetAuthor } from "../middlewares/isBudgetAuthor";
 import { createNotificationChain, deleteNotificationChain, markNotificationAsSeenChain, reportTenantIssueChain, updateTenantChain } from "../controller/Tenant.validate";
-import { createBudgetChain, createBudgetPositionChain, deleteBudgetChain, deleteBudgetPositionChain, getBudgetChain, getBudgetPositionsChain, updateBudgetChain, updateBudgetPositionChain } from "../controller/Budget.validate";
+import { createBudgetChain, createBudgetPositionChain, createBudgetReceiptChain, deleteBudgetChain, deleteBudgetPositionChain, deleteBudgetReceiptChain, getBudgetChain, getBudgetPositionsChain, getBudgetReceiptsChain, updateBudgetChain, updateBudgetReceiptChain, updateBudgetPositionChain } from "../controller/Budget.validate";
 import { createInvitationChain, deleteTenantInvitationChain } from "../controller/TenantInvitation.validate";
 import { acceptTenantRequestChain, rejectTenantRequestChain } from "../controller/TenantRequest.validate";
 
@@ -30,6 +30,12 @@ TenantRouter.get("/budget/:budgetId/position",  getBudgetPositionsChain(), valid
 TenantRouter.post("/budget/:budgetId/position",  requireTenantPermission('budget:edit', true), isBudgetAuthor, createBudgetPositionChain(), validateRequestSchema, BudgetController.createBudgetPosition);
 TenantRouter.put("/budget/:budgetId/position/:positionId",  requireTenantPermission('budget:edit', true), isBudgetAuthor, updateBudgetPositionChain(), validateRequestSchema, BudgetController.updateBudgetPosition);
 TenantRouter.delete("/budget/:budgetId/position/:positionId",  requireTenantPermission('budget:edit', true), isBudgetAuthor, deleteBudgetPositionChain(), validateRequestSchema, BudgetController.deleteBudgetPosition);
+
+// Budget Receipt Routes
+TenantRouter.get("/budget/:budgetId/receipt",  getBudgetReceiptsChain(), validateRequestSchema, BudgetController.getBudgetReceipts);
+TenantRouter.post("/budget/:budgetId/receipt",  requireTenantPermission('budget:edit', true), uploader.single('file'), isBudgetAuthor, createBudgetReceiptChain(), validateRequestSchema, BudgetController.createBudgetReceipt);
+TenantRouter.put("/budget/:budgetId/receipt/:receiptId",  requireTenantPermission('budget:edit', true), uploader.single('file'), isBudgetAuthor, updateBudgetReceiptChain(), validateRequestSchema, BudgetController.updateBudgetReceipt);
+TenantRouter.delete("/budget/:budgetId/receipt/:receiptId",  requireTenantPermission('budget:edit', true), isBudgetAuthor, deleteBudgetReceiptChain(), validateRequestSchema, BudgetController.deleteBudgetReceipt);
 
 // Notifications Routes
 TenantRouter.get("/notification", TenantController.getNotifications)
