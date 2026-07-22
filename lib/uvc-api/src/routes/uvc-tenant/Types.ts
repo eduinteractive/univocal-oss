@@ -79,7 +79,7 @@ export enum TenantDashboardItemType {
 
 export interface Budget extends SVHMetadata {
     _id: string;
-    year?: number;
+    category?: string;
     ist_active?: boolean;
     receipt_active?: boolean;
 }

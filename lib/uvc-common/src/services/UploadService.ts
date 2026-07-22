@@ -41,6 +41,7 @@ export const uploadFile = async (key: string, file: Express.Multer.File, metadat
 
         return uploadResponse.Location
     } catch (err) {
+        console.debug(err);
         throw new BadRequestError("Es ist ein Fehler beim Hochladen der Datei aufgetreten.")
     }
 }

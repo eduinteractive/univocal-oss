@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Budget } from '@eduinteractive/uvc-api';
-import { EDINumberInput } from '@eduinteractive/mantine-common';
+import { ActionIcon, Popover, TagsInput, Text } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useTenant } from '../../../../context/TenantContext';
 import SVHMetaModal, {
     SVHMetaModalSubmitData,
 } from '../../../common/SVHMetaModal';
 import { useTranslation } from 'react-i18next';
+import classes from '../../../common/SVHInput.module.css';
 
 interface BudgetModalSubmitProps extends SVHMetaModalSubmitData {
     viewAccess: number;
-    year?: number;
+    category?: string;
 }
 
 interface BudgetModalProps {
     data?: Budget;
+    categories?: string[];
     visible: boolean;
     onClose: () => void;
     onSubmit: (body: BudgetModalSubmitProps) => void;
@@ -22,20 +25,24 @@ interface BudgetModalProps {
 const BudgetModal = (props: BudgetModalProps) => {
     const { currentTenant } = useTenant();
     const { t } = useTranslation();
-    const [year, setYear] = useState<number | undefined>(
-        props.data?.year || undefined
+    const [category, setCategory] = useState<string>(
+        props.data?.category || ''
     );
+    const [infoOpened, setInfoOpened] = useState(false);
 
     useEffect(() => {
         if (props.data) {
-            setYear(props.data.year || undefined);
+            setCategory(props.data.category || '');
         } else {
-            setYear(undefined);
+            setCategory('');
         }
     }, [currentTenant?.permissionLevel, props.data]);
 
     const handleSubmit = (data: SVHMetaModalSubmitData) => {
-        props.onSubmit({ ...data, year } as BudgetModalSubmitProps);
+        props.onSubmit({
+            ...data,
+            category: category.trim() || undefined,
+        } as BudgetModalSubmitProps);
     };
 
     return (
@@ -47,17 +54,42 @@ const BudgetModal = (props: BudgetModalProps) => {
             onClose={props.onClose}
             onSubmit={handleSubmit}
         >
-            <EDINumberInput
-                label={t('BUDGET.ATTRIBUTES.YEAR')}
-                placeholder={t('BUDGET.ATTRIBUTES.YEAR_PLACEHOLDER')}
-                value={year}
-                onChange={(value) => {
-                    if (value === '') {
-                        setYear(undefined);
-                    } else {
-                        setYear(value as number);
-                    }
-                }}
+            <TagsInput
+                classNames={classes}
+                my={10}
+                label={t('BUDGET.ATTRIBUTES.CATEGORY')}
+                placeholder={t('BUDGET.ATTRIBUTES.CATEGORY_PLACEHOLDER')}
+                data={props.categories || []}
+                value={category ? [category] : []}
+                onChange={(tags) => setCategory(tags[tags.length - 1] || '')}
+                maxTags={1}
+                clearable
+                rightSection={
+                    <Popover
+                        width={280}
+                        position="bottom-end"
+                        withArrow
+                        shadow="md"
+                        opened={infoOpened}
+                        onChange={setInfoOpened}
+                    >
+                        <Popover.Target>
+                            <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                onClick={() => setInfoOpened((open) => !open)}
+                                aria-label={t('BUDGET.ATTRIBUTES.CATEGORY')}
+                            >
+                                <IconInfoCircle size={18} />
+                            </ActionIcon>
+                        </Popover.Target>
+                        <Popover.Dropdown>
+                            <Text size="sm">
+                                {t('BUDGET.ATTRIBUTES.CATEGORY_DESCRIPTION')}
+                            </Text>
+                        </Popover.Dropdown>
+                    </Popover>
+                }
             />
         </SVHMetaModal>
     );

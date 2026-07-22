@@ -7,7 +7,7 @@ import {
     SAPI,
 } from '@eduinteractive/uvc-api';
 import BudgetModal from '../../../components/features/tenant/budgets/BudgetModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NotificationHandler } from '@eduinteractive/mantine-common';
 import SVHMetaGrid from '../../../components/common/SVHMetaGrid';
 import SVHFilter, {
@@ -24,9 +24,7 @@ const Budgets = () => {
     const [currentBudget, setCurrentBudget] = useState<Budget | null>(null);
     const [metadataFilter, setMetadataFilter] =
         useState<SVHFilterObject | null>(null);
-    const [currentYear, setCurrentYear] = useState<number>(
-        new Date().getFullYear()
-    );
+    const [currentCategory, setCurrentCategory] = useState<string | null>(null);
 
     const budgetsQuery = useQuery({
         queryKey: ['budgets', currentTenant?._id, metadataFilter],
@@ -37,19 +35,46 @@ const Budgets = () => {
             }),
     });
 
+    const budgetCategoriesQuery = useQuery({
+        queryKey: ['budgetCategories', currentTenant?._id],
+        queryFn: () =>
+            SAPI.TENANT.TENANT.getBudgetCategories({
+                tenantId: currentTenant!._id,
+            }),
+        enabled: !!currentTenant?._id,
+    });
+
     const budgetsStatisticsQuery = useQuery({
-        queryKey: ['budgetsStatistics', currentTenant?._id, currentYear],
+        queryKey: [
+            'budgetsStatistics',
+            currentTenant?._id,
+            currentCategory,
+        ],
         queryFn: () =>
             SAPI.TENANT.TENANT.getBudgetsStatistics({
                 tenantId: currentTenant!._id,
-                year: currentYear,
+                category: currentCategory!,
             }),
+        enabled: !!currentTenant?._id && !!currentCategory,
     });
+
+    useEffect(() => {
+        const categories = budgetCategoriesQuery.data || [];
+        if (categories.length === 0) {
+            setCurrentCategory(null);
+            return;
+        }
+        if (!currentCategory || !categories.includes(currentCategory)) {
+            setCurrentCategory(categories[0]);
+        }
+    }, [budgetCategoriesQuery.data, currentCategory]);
 
     const createBudgetMutation = useMutation({
         mutationFn: SAPI.TENANT.TENANT.createBudget,
         onSuccess: () => {
             budgetsQuery.refetch();
+            budgetCategoriesQuery.refetch();
+            budgetsStatisticsQuery.refetch();
             setCurrentBudget(null);
             setBudgetModalVisible(false);
             NotificationHandler.showSuccess(
@@ -63,6 +88,8 @@ const Budgets = () => {
         mutationFn: SAPI.TENANT.TENANT.updateBudget,
         onSuccess: () => {
             budgetsQuery.refetch();
+            budgetCategoriesQuery.refetch();
+            budgetsStatisticsQuery.refetch();
             setCurrentBudget(null);
             setBudgetModalVisible(false);
             NotificationHandler.showSuccess(
@@ -76,6 +103,8 @@ const Budgets = () => {
         mutationFn: SAPI.TENANT.TENANT.deleteBudget,
         onSuccess: () => {
             budgetsQuery.refetch();
+            budgetCategoriesQuery.refetch();
+            budgetsStatisticsQuery.refetch();
             NotificationHandler.showSuccess(
                 t('TENANT_PAGES.BUDGETS.SUCCESS.DELETED')
             );
@@ -97,8 +126,9 @@ const Budgets = () => {
                 statisticsTab={
                     <BudgetsStatistics
                         statistics={budgetsStatisticsQuery.data || []}
-                        currentYear={currentYear}
-                        onYearChange={setCurrentYear}
+                        categories={budgetCategoriesQuery.data || []}
+                        currentCategory={currentCategory}
+                        onCategoryChange={setCurrentCategory}
                     />
                 }
                 budgetsTab={
@@ -115,6 +145,7 @@ const Budgets = () => {
                         <BudgetModal
                             visible={budgetModalVisible}
                             data={currentBudget || undefined}
+                            categories={budgetCategoriesQuery.data || []}
                             onClose={() => {
                                 setBudgetModalVisible(false);
                                 setCurrentBudget(null);
@@ -135,7 +166,7 @@ const Budgets = () => {
                             }}
                         />
                         <SVHMetaGrid
-                            prefixKey="year"
+                            prefixKey="category"
                             permissionPrefix="budget"
                             data={budgetsQuery.data || []}
                             onEdit={(budget) => {

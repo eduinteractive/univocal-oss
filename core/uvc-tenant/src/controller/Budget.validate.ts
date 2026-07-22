@@ -6,7 +6,7 @@ import { Types } from "mongoose"
 export const createBudgetChain = () => {
     return [
         ...createSVHMetadataChain(),
-        body("year").optional().isInt().withMessage("year must be an integer")
+        body("category").optional().isString().withMessage("category must be a string")
     ]
 }
 
@@ -20,7 +20,7 @@ export const updateBudgetChain = () => {
     return [
         ...updateSVHMetadataChain(),
         check("budgetId").isMongoId().withMessage("budgetId must be a valid Mongo ID"),
-        body("year").optional().isInt().withMessage("year must be an integer"),
+        body("category").optional().isString().withMessage("category must be a string"),
         body("ist_active").optional().isBoolean().withMessage("ist_active must be a boolean"),
         body("receipt_active").optional().isBoolean().withMessage("receipt_active must be a boolean"),
     ]
@@ -92,6 +92,7 @@ export const updateBudgetReceiptChain = () => {
         body("amount").optional().isFloat({ min: 0 }).withMessage("amount must be a number"),
         body("description").optional().isString().withMessage("description must be a string"),
         body("date").optional().isISO8601().withMessage("date must be a date"),
+        body("file").optional().customSanitizer((value) => value ? JSON.parse(value) : undefined).isObject().withMessage("file must be an object"),
     ]
 }
 

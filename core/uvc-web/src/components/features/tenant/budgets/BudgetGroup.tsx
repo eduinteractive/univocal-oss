@@ -1,5 +1,5 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
-import { Budget, BudgetPosition } from '@eduinteractive/uvc-api';
+import { Budget, BudgetPosition, BudgetReceipt } from '@eduinteractive/uvc-api';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useTenant } from '../../../../context/TenantContext';
 import { checkPermission } from '../../../../utils/Permission';
@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 
 interface BudgetGroupProps {
     ist_active?: boolean;
+    receipt_active?: boolean;
+    receipts?: BudgetReceipt[];
     budget: Budget;
     group: BudgetPosition;
     positions: BudgetPosition[];
@@ -26,6 +28,49 @@ const BudgetGroup = (props: BudgetGroupProps) => {
         return checkPermission(currentTenant!, 'budget:edit') || props.budget.authorId === authData?._id;
     }, [currentTenant, authData, props.budget]);
 
+    const getPositionIstAmount = (
+        positionId: string,
+        ist_amount: number | undefined
+    ) => {
+        if (props.receipt_active) {
+            return Math.round(
+                ((props.receipts || [])
+                    .filter((receipt) => receipt.positionId === positionId)
+                    .reduce((sum, receipt) => sum + receipt.amount, 0) +
+                    Number.EPSILON) *
+                    100
+            ) / 100;
+        }
+        return Math.round(((ist_amount || 0) + Number.EPSILON) * 100) / 100;
+    };
+
+    const groupSollAmount = useMemo(
+        () =>
+            Math.round(
+                (props.positions.reduce(
+                    (prev, curr) => prev + curr.soll_amount,
+                    0
+                ) +
+                    Number.EPSILON) *
+                    100
+            ) / 100,
+        [props.positions]
+    );
+
+    const groupIstAmount = useMemo(
+        () =>
+            Math.round(
+                (props.positions.reduce(
+                    (prev, curr) =>
+                        prev + getPositionIstAmount(curr._id, curr.ist_amount),
+                    0
+                ) +
+                    Number.EPSILON) *
+                    100
+            ) / 100,
+        [props.positions, props.receipts, props.receipt_active]
+    );
+
     return (
         <Table withRowBorders withTableBorder withColumnBorders>
             <colgroup>
@@ -37,25 +82,9 @@ const BudgetGroup = (props: BudgetGroupProps) => {
             <Table.Thead>
                 <Table.Tr>
                     <Table.Th>{props.group.title}</Table.Th>
-                    <Table.Th>
-                        {props.positions
-                            .reduce((prev, curr) => prev + curr.soll_amount, 0)
-                            .toFixed(2)}{' '}
-                        €
-                    </Table.Th>
+                    <Table.Th>{groupSollAmount.toFixed(2)} €</Table.Th>
                     {props.ist_active && (
-                        <Table.Th>
-                            {props.positions
-                                .reduce(
-                                    (prev, curr) =>
-                                        curr?.ist_amount
-                                            ? prev + curr?.ist_amount
-                                            : prev,
-                                    0
-                                )
-                                .toFixed(2)}{' '}
-                            €
-                        </Table.Th>
+                        <Table.Th>{groupIstAmount.toFixed(2)} €</Table.Th>
                     )}
                     {hasPermission && (
                         <Table.Th w="100%">
@@ -84,10 +113,21 @@ const BudgetGroup = (props: BudgetGroupProps) => {
                 {props.positions.map((position) => (
                     <Table.Tr key={position._id}>
                         <Table.Td>{position.title}</Table.Td>
-                        <Table.Td>{position.soll_amount.toFixed(2)} €</Table.Td>
+                        <Table.Td>
+                            {(
+                                Math.round(
+                                    (position.soll_amount + Number.EPSILON) * 100
+                                ) / 100
+                            ).toFixed(2)}{' '}
+                            €
+                        </Table.Td>
                         {props.ist_active && (
                             <Table.Td>
-                                {position.ist_amount?.toFixed(2)} €
+                                {getPositionIstAmount(
+                                    position._id,
+                                    position.ist_amount
+                                ).toFixed(2)}{' '}
+                                €
                             </Table.Td>
                         )}
                         {hasPermission && (

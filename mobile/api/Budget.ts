@@ -2,7 +2,7 @@ import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject
 
 export interface Budget extends UVCMetadata {
     _id: string;
-    year?: number;
+    category?: string;
     ist_active?: boolean;
 }
 
@@ -50,7 +50,7 @@ export const getBudget = async (req: getBudgetRequest): Promise<{ budget: Budget
 interface createBudgetRequest {
     tenantId: string;
     body: createUVCMetadataAttrs & {
-        year?: number;
+        category?: string;
     }
 }
 
@@ -63,7 +63,7 @@ interface updateBudgetRequest {
     tenantId: string;
     budgetId: string;
     body: updateUVCMetadataAttrs & {
-        year?: number;
+        category?: string;
         ist_active?: boolean;
     }
 }

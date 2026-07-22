@@ -165,11 +165,27 @@ export const getBudgets = async (req: getBudgetsRequest): Promise<Budget[]> => {
 
 interface getBudgetsStatisticsRequest {
     tenantId: string;
-    year: number;
+    category: string;
 }
 
-export const getBudgetsStatistics = async (req: getBudgetsStatisticsRequest): Promise<{ _id: string, title: string, income: number, expense: number }[]> => {
-    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budgetstatistics`, { params: { year: req.year } });
+export const getBudgetsStatistics = async (req: getBudgetsStatisticsRequest): Promise<{
+    _id: string;
+    title: string;
+    income_soll: number;
+    expense_soll: number;
+    income_ist: number;
+    expense_ist: number;
+}[]> => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budgetstatistics`, { params: { category: req.category } });
+    return response.data;
+}
+
+interface getBudgetCategoriesRequest {
+    tenantId: string;
+}
+
+export const getBudgetCategories = async (req: getBudgetCategoriesRequest): Promise<string[]> => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budgetcategories`);
     return response.data;
 }
 
@@ -186,7 +202,7 @@ export const getBudget = async (req: getBudgetRequest): Promise<{ budget: Budget
 interface createBudgetRequest {
     tenantId: string;
     body: createSVHMetadataAttrs & {
-        year?: number;
+        category?: string;
     }
 }
 
@@ -199,7 +215,7 @@ interface updateBudgetRequest {
     tenantId: string;
     budgetId: string;
     body: updateSVHMetadataAttrs & {
-        year?: number;
+        category?: string;
         ist_active?: boolean;
         receipt_active?: boolean;
     }
@@ -297,7 +313,7 @@ interface createBudgetReceiptRequest {
         amount: number;
         description?: string;
         date: string | Date;
-        file?: File;
+        newFile?: File;
     }
 }
 
@@ -310,7 +326,7 @@ export const createBudgetReceipt = async (req: createBudgetReceiptRequest): Prom
         "date",
         typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
     );
-    if (req.body.file) formData.append("file", req.body.file);
+    if (req.body.newFile) formData.append("newFile", req.body.newFile);
 
     const response = await APIHandler.post(
         `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`,
@@ -329,7 +345,8 @@ interface updateBudgetReceiptRequest {
         amount?: number;
         description?: string;
         date?: string | Date;
-        file?: File;
+        file?: { title: string; link: string; mimetype: string };
+        newFile?: File;
     }
 }
 
@@ -344,7 +361,10 @@ export const updateBudgetReceipt = async (req: updateBudgetReceiptRequest): Prom
             typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
         );
     }
-    if (req.body.file) formData.append("file", req.body.file);
+    if (req.body.newFile) {
+        formData.append("newFile", req.body.newFile);
+    } 
+    if (req.body.file) formData.append("file", JSON.stringify(req.body.file));
 
     const response = await APIHandler.put(
         `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`,

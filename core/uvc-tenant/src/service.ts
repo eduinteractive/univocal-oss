@@ -12,7 +12,7 @@ if (!process.env.MONGODB_USER || !process.env.MONGODB_PASSWORD || !process.env.M
 }
 
 const app = express();
-requireSVHConfig(app);
+requireSVHConfig(app, { S3Support: true });
 
 app.use("/api/tenant/public", PublicRouter);
 app.use("/api/tenant/tenant/:tenantId", currentUser, requireAuth, requireTenant, TenantRouter);

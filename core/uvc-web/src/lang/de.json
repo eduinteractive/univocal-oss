@@ -274,26 +274,45 @@
         "POSITION_NEW": "Budgetposition hinzufügen",
         "POSITION_EDIT": "Budgetposition bearbeiten",
         "DIFFERENCE": "Differenz",
+        "STATISTICS_SOLL": "Plansummen (Soll)",
+        "STATISTICS_IST": "Realsummen (Ist)",
         "TAB_OVERVIEW": "Übersicht",
         "TAB_BUDGETS": "Budgets",
         "TAB_BUDGET": "Budget",
+        "TAB_RECEIPTS": "Belege",
         "TAB_DESCRIPTION": "Beschreibung",
         "TAB_SETTINGS": "Einstellungen",
         "SETTINGS_TITLE": "Budgeteinstellungen",
         "SETTING_IST": "Ist-Spalte",
         "SETTING_IST_DESCRIPTION": "Mit dieser Einstellung kannst du die Ist-Spalte aktivieren oder deaktivieren. Die Ist-Spalte zeigt den aktuellen Stand deines Budgets.",
+        "SETTING_RECEIPT": "Belege",
+        "SETTING_RECEIPT_DESCRIPTION": "Mit dieser Einstellung kannst du die Belegerfassung aktivieren oder deaktivieren. Belege können nur genutzt werden, wenn die Ist-Spalte aktiviert ist.",
         "FUNCTIONS_TITLE": "Budgetfunktionen",
         "FUNCTION_DOWNLOAD": "Download",
         "FUNCTION_DOWNLOAD_DESCRIPTION": "Mit dieser Option kannst du die aktuellen Budgetdaten herunterladen.",
+        "RECEIPT_NEW": "Beleg hinzufügen",
+        "RECEIPT_EDIT": "Beleg bearbeiten",
+        "RECEIPT_EMPTY": "Noch keine Belege vorhanden.",
+        "RECEIPT_FILE": "Datei",
+        "RECEIPT_UNASSIGNED": "Nicht zugeordnet",
         "ATTRIBUTES": {
-            "YEAR": "Abrechnungsjahr",
-            "YEAR_PLACEHOLDER": "Abrechnungsjahr eingeben...",
+            "CATEGORY": "Kategorie",
+            "CATEGORY_PLACEHOLDER": "Kategorie eingeben...",
+            "CATEGORY_DESCRIPTION": "bspw. Abrechnungsjahr - wird benutzt um Budgets für die Übersicht zu gruppieren",
             "SOLL_AMOUNT": "Soll-Betrag",
             "SOLL_AMOUNT_PLACEHOLDER": "Soll-Betrag eingeben...",
             "IST_AMOUNT": "Ist-Betrag",
             "IST_AMOUNT_PLACEHOLDER": "Ist-Betrag eingeben...",
             "SOLL_AMOUNT_ERROR": "Der Soll-Betrag darf nicht kleiner als 0 sein.",
-            "IST_AMOUNT_ERROR": "Der Ist-Betrag darf nicht kleiner als 0 sein."
+            "IST_AMOUNT_ERROR": "Der Ist-Betrag darf nicht kleiner als 0 sein.",
+            "AMOUNT": "Betrag",
+            "AMOUNT_PLACEHOLDER": "Betrag eingeben...",
+            "AMOUNT_ERROR": "Der Betrag darf nicht kleiner als 0 sein.",
+            "DATE": "Datum",
+            "DATE_PLACEHOLDER": "Datum auswählen...",
+            "DATE_ERROR": "Bitte gebe ein Datum ein.",
+            "POSITION_PLACEHOLDER": "Position auswählen (optional)...",
+            "POSITION_ERROR": "Bitte wähle eine Budgetposition aus."
         }
     },
     "CALENDAR": {
@@ -944,6 +963,13 @@
                     "CREATED": "Die Position wurde erfolgreich erstellt.",
                     "UPDATED": "Die Position wurde erfolgreich aktualisiert.",
                     "DELETED": "Die Position wurde erfolgreich gelöscht."
+                }
+            },
+            "RECEIPTS": {
+                "SUCCESS": {
+                    "CREATED": "Der Beleg wurde erfolgreich erstellt.",
+                    "UPDATED": "Der Beleg wurde erfolgreich aktualisiert.",
+                    "DELETED": "Der Beleg wurde erfolgreich gelöscht."
                 }
             }
         },
