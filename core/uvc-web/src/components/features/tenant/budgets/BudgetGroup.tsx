@@ -3,7 +3,7 @@ import { Budget, BudgetPosition, BudgetReceipt } from '@eduinteractive/uvc-api';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useTenant } from '../../../../context/TenantContext';
 import { checkPermission } from '../../../../utils/Permission';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAuth } from '../../../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,7 @@ const BudgetGroup = (props: BudgetGroupProps) => {
         return checkPermission(currentTenant!, 'budget:edit') || props.budget.authorId === authData?._id;
     }, [currentTenant, authData, props.budget]);
 
-    const getPositionIstAmount = (
+    const getPositionIstAmount = useCallback((
         positionId: string,
         ist_amount: number | undefined
     ) => {
@@ -42,7 +42,7 @@ const BudgetGroup = (props: BudgetGroupProps) => {
             ) / 100;
         }
         return Math.round(((ist_amount || 0) + Number.EPSILON) * 100) / 100;
-    };
+    }, [props.receipts, props.receipt_active]);
 
     const groupSollAmount = useMemo(
         () =>
@@ -68,7 +68,7 @@ const BudgetGroup = (props: BudgetGroupProps) => {
                     Number.EPSILON) *
                     100
             ) / 100,
-        [props.positions, props.receipts, props.receipt_active]
+        [props.positions, getPositionIstAmount]
     );
 
     return (

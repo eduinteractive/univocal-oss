@@ -1,7 +1,7 @@
 import { Flex, Group, Table } from '@mantine/core';
 import BudgetGroupButton from './BudgetGroupButton';
 import { Budget, BudgetPosition, BudgetPositionType, BudgetReceipt } from '@eduinteractive/uvc-api';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import BudgetGroupList from './BudgetGroupList';
 import { checkPermission } from '../../../../utils/Permission';
 import { useTenant } from '../../../../context/TenantContext';
@@ -40,7 +40,7 @@ const BudgetGroups = (props: BudgetGroupsProps) => {
         return checkPermission(currentTenant!, 'budget:edit') || props.budget.authorId === authData?._id;
     }, [currentTenant, authData, props.budget]);
 
-    const getPositionIstAmount = (
+    const getPositionIstAmount = useCallback((
         positionId: string,
         ist_amount: number | undefined
     ) => {
@@ -54,7 +54,7 @@ const BudgetGroups = (props: BudgetGroupsProps) => {
             ) / 100;
         }
         return Math.round(((ist_amount || 0) + Number.EPSILON) * 100) / 100;
-    };
+    }, [props.receipts, props.receipt_active]);
 
     const incomeSollValue = useMemo(
         () =>
@@ -90,7 +90,7 @@ const BudgetGroups = (props: BudgetGroupsProps) => {
                     }
                 }, 0)
                 .toFixed(2),
-        [props.positions, props.receipts, props.receipt_active]
+        [props.positions, getPositionIstAmount]
     );
 
     const expenseSollValue = useMemo(
