@@ -127,7 +127,7 @@ const BudgetGroups = (props: BudgetGroupsProps) => {
                     }
                 }, 0)
                 .toFixed(2),
-        [props.positions, props.receipts, props.receipt_active]
+        [props.positions, getPositionIstAmount]
     );
 
     useEffect(() => {
