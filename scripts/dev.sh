@@ -59,6 +59,20 @@ restore_dev_manifests() {
 }
 trap 'dev_exit=$?; restore_dev_manifests; exit "$dev_exit"' EXIT
 
+# Homebrew installs gettext as keg-only, so envsubst is not on PATH by default.
+if ! command -v envsubst >/dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1; then
+    GETTEXT_BIN="$(brew --prefix gettext 2>/dev/null)/bin"
+    if [ -x "${GETTEXT_BIN}/envsubst" ]; then
+      export PATH="${GETTEXT_BIN}:${PATH}"
+    fi
+  fi
+fi
+if ! command -v envsubst >/dev/null 2>&1; then
+  echo "envsubst not found. Install GNU gettext (macOS: brew install gettext)." >&2
+  exit 1
+fi
+
 # Render Shibboleth configmaps from ${SHIB_*} placeholders
 cp "${K8S_DEV_DIR}/shibboleth-configmap.yaml" "${K8S_DEV_DIR}/shibboleth-configmap.yaml.backup-shib"
 cp "${K8S_DEV_DIR}/shibboleth-apache-configmap.yaml" "${K8S_DEV_DIR}/shibboleth-apache-configmap.yaml.backup-shib"
