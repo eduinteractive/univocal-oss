@@ -77,6 +77,7 @@ const Login = (props: LoginProps) => {
                 type="button"
                 radius="xl"
                 variant="outline"
+                color="pink"
                 leftSection={<IconSchool size={18} stroke={1.5} />}
                 onClick={() => {
                     // Vollständiger Redirect ist notwendig, damit Shibboleth den SAML-Flow sauber starten kann.
