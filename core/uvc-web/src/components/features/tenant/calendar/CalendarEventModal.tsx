@@ -11,7 +11,6 @@ import {
     NotificationHandler,
 } from '@eduinteractive/mantine-common';
 import dayjs from 'dayjs';
-import { DateValue } from '@mantine/dates';
 import SVHMetaModal, {
     SVHMetaModalSubmitData,
 } from '../../../common/SVHMetaModal';
@@ -79,7 +78,7 @@ const CalendarEventModal = (props: CalendarEventModalProps) => {
         }
     }, [props.event, props.inferStartDate]);
 
-    const handleEndDateChange = (value: DateValue) => {
+    const handleEndDateChange = (value: Date | null) => {
         setEndDate(value || null);
     };
 

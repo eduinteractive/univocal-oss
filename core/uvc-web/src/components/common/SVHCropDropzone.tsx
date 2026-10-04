@@ -8,11 +8,31 @@ import {
 } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconPhoto, IconUpload, IconX } from '@tabler/icons-react';
-import { useState, useRef, useMemo } from 'react';
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+import { useState, useRef, useMemo, useEffect } from 'react';
+import Cropper from 'cropperjs';
 import { EDIModal, NotificationHandler } from '@eduinteractive/mantine-common';
 import { useTranslation } from 'react-i18next';
+
+const MAX_OUTPUT_SIZE = 750;
+
+const buildCropperTemplate = (aspectRatio: number) =>
+    '<cropper-canvas background style="height: 400px; width: 100%;">' +
+    '<cropper-image initial-center-size="contain"></cropper-image>' +
+    '<cropper-shade hidden></cropper-shade>' +
+    `<cropper-selection initial-coverage="0.8" aspect-ratio="${aspectRatio}" movable resizable outlined>` +
+    '<cropper-grid role="grid" bordered covered></cropper-grid>' +
+    '<cropper-crosshair centered></cropper-crosshair>' +
+    '<cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>' +
+    '<cropper-handle action="n-resize"></cropper-handle>' +
+    '<cropper-handle action="e-resize"></cropper-handle>' +
+    '<cropper-handle action="s-resize"></cropper-handle>' +
+    '<cropper-handle action="w-resize"></cropper-handle>' +
+    '<cropper-handle action="ne-resize"></cropper-handle>' +
+    '<cropper-handle action="nw-resize"></cropper-handle>' +
+    '<cropper-handle action="se-resize"></cropper-handle>' +
+    '<cropper-handle action="sw-resize"></cropper-handle>' +
+    '</cropper-selection>' +
+    '</cropper-canvas>';
 
 interface SVHCropDropzoneProps {
     aspectRatio?: number;
@@ -27,7 +47,63 @@ const SVHCropDropzone = (props: SVHCropDropzoneProps) => {
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [isCropping, setIsCropping] = useState(false); // Zustandsvariable für das Cropping
     const theme = useMantineTheme();
-    const cropperRef = useRef<HTMLImageElement>(null);
+    const imageRef = useRef<HTMLImageElement>(null);
+    const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    const cropperRef = useRef<Cropper | null>(null);
+    const aspectRatio = props.aspectRatio ? props.aspectRatio : 1;
+
+    const cropSource = useMemo(
+        () => (isCropping && uploadedFile ? URL.createObjectURL(uploadedFile) : ''),
+        [isCropping, uploadedFile]
+    );
+
+    useEffect(() => {
+        return () => {
+            if (cropSource) URL.revokeObjectURL(cropSource);
+        };
+    }, [cropSource]);
+
+    useEffect(() => {
+        if (!cropSource || !imageRef.current || !container) return;
+
+        const cropper = new Cropper(imageRef.current, {
+            container,
+            template: buildCropperTemplate(aspectRatio),
+        });
+        cropperRef.current = cropper;
+
+        const cropperCanvas = cropper.getCropperCanvas();
+        const cropperImage = cropper.getCropperImage();
+        const cropperSelection = cropper.getCropperSelection();
+
+        // Keep the selection inside the image bounds (equivalent to cropperjs 1 `viewMode: 1`).
+        const handleSelectionChange = (event: Event) => {
+            if (!cropperCanvas || !cropperImage) return;
+            const { x, y, width, height } = (
+                event as CustomEvent<{ x: number; y: number; width: number; height: number }>
+            ).detail;
+            const canvasRect = cropperCanvas.getBoundingClientRect();
+            const imageRect = cropperImage.getBoundingClientRect();
+            const left = imageRect.left - canvasRect.left;
+            const top = imageRect.top - canvasRect.top;
+            if (
+                x < left ||
+                y < top ||
+                x + width > left + imageRect.width ||
+                y + height > top + imageRect.height
+            ) {
+                event.preventDefault();
+            }
+        };
+
+        cropperSelection?.addEventListener('change', handleSelectionChange);
+
+        return () => {
+            cropperSelection?.removeEventListener('change', handleSelectionChange);
+            cropper.destroy();
+            cropperRef.current = null;
+        };
+    }, [cropSource, aspectRatio, container]);
 
     const handleDrop = (files: File[]) => {
         setUploadedFile(files[0]);
@@ -40,17 +116,23 @@ const SVHCropDropzone = (props: SVHCropDropzoneProps) => {
         setIsCropping(false);
     };
 
-    const handleCrop = () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const imageElement: any = cropperRef?.current;
-        const cropper: Cropper = imageElement?.cropper;
-        const croppedImage = cropper.getCroppedCanvas({
-            maxWidth: 750,
-            maxHeight: 750,
-        });
-        if (props.bordered) {
-            croppedImage.style.borderRadius = '50%';
-        }
+    const handleCrop = async () => {
+        const cropper = cropperRef.current;
+        const selection = cropper?.getCropperSelection();
+        const cropperImage = cropper?.getCropperImage();
+        if (!selection || !cropperImage) return;
+
+        // Export at the image's natural resolution, capped like cropperjs 1 `maxWidth`/`maxHeight`.
+        const naturalScale =
+            cropperImage.$image.naturalWidth /
+            cropperImage.getBoundingClientRect().width;
+        let width = selection.width * naturalScale;
+        let height = selection.height * naturalScale;
+        const downscale = Math.min(1, MAX_OUTPUT_SIZE / width, MAX_OUTPUT_SIZE / height);
+        width = Math.round(width * downscale);
+        height = Math.round(height * downscale);
+
+        const croppedImage = await selection.$toCanvas({ width, height });
         croppedImage.toBlob((blob) => {
             if (blob) {
                 const file = new File(
@@ -103,20 +185,17 @@ const SVHCropDropzone = (props: SVHCropDropzoneProps) => {
                         cursor: 'pointer',
                     }}
                 >
-                    <Cropper
-                        src={URL.createObjectURL(uploadedFile)}
+                    <div
+                        ref={setContainer}
                         style={{
                             height: 400,
                             width: '100%',
+                            overflow: 'hidden',
                             borderRadius: props.bordered ? '50%' : '0%',
                         }}
-                        initialAspectRatio={1}
-                        aspectRatio={props.aspectRatio ? props.aspectRatio : 1}
-                        viewMode={1}
-                        dragMode="move"
-                        zoomable={false}
-                        ref={cropperRef}
-                    />
+                    >
+                        <img ref={imageRef} src={cropSource} alt="" />
+                    </div>
                 </Box>
             </EDIModal>
         );

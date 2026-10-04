@@ -28,7 +28,7 @@ const Domains = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="sm">
+            <Title order={3} c="violet" mb="sm">
                 {t('DOMAIN_PAGES.DOMAINS.TITLE')}
             </Title>
             <DomainGrid data={domains} />

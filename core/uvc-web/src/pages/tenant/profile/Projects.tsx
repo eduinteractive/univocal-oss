@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTenant } from '../../../context/TenantContext';
 import { useState } from 'react';
 import {
@@ -27,6 +27,7 @@ const Projects = () => {
         null
     );
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
 
     const projectQuery = useQuery({
         queryKey: ['project', currentTenant?._id, metadataFilter],
@@ -39,7 +40,8 @@ const Projects = () => {
     const createProjectMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.createTenantProject,
         onSuccess: () => {
-            projectQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['project', currentTenant?._id] });
+            queryClient.invalidateQueries({ queryKey: ['projects', currentTenant?._id] });
             NotificationHandler.showSuccess(t('TENANT_PAGES.PROFILE.PROJECTS.SUCCESS.CREATED'));
             setCurrentSelectedProject(null);
         },
@@ -49,7 +51,8 @@ const Projects = () => {
     const updateProjectMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.updateTenantProject,
         onSuccess: () => {
-            projectQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['project', currentTenant?._id] });
+            queryClient.invalidateQueries({ queryKey: ['projects', currentTenant?._id] });
             NotificationHandler.showSuccess(
                 t('TENANT_PAGES.PROFILE.PROJECTS.SUCCESS.UPDATED')
             );
@@ -61,7 +64,8 @@ const Projects = () => {
     const deleteProjectMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.deleteTenantProject,
         onSuccess: () => {
-            projectQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['project', currentTenant?._id] });
+            queryClient.invalidateQueries({ queryKey: ['projects', currentTenant?._id] });
             NotificationHandler.showSuccess(t('TENANT_PAGES.PROFILE.PROJECTS.SUCCESS.DELETED'));
         },
         onError: NotificationHandler.showAxiosError,

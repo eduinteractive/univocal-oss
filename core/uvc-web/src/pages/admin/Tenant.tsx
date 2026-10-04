@@ -94,7 +94,7 @@ const Tenant = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue">
+            <Title order={3} c="violet">
                 {tenantQuery.data!.tenant.title} -{' '}
                 {t('ADMIN_PAGES.TENANT.TITLE')}
             </Title>

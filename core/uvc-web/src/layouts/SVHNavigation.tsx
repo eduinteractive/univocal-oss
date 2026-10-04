@@ -12,7 +12,6 @@ import {
     ScrollArea,
     Indicator,
     ThemeIcon,
-    Box,
     Image,
 } from '@mantine/core';
 import {
@@ -25,6 +24,7 @@ import {
     IconMail,
     IconMessage,
     IconDashboard,
+    IconChartBar,
     IconUsers,
     IconUserSquareRounded,
     IconMessages,
@@ -139,6 +139,12 @@ const navigationLinks = Object.freeze([
                 link: '/admin/dashboard',
                 color: 'red',
                 icon: IconDashboard,
+            },
+            {
+                label: 'Landing-Statistiken',
+                link: '/admin/landing',
+                color: 'red',
+                icon: IconChartBar,
             },
             {
                 label: 'Meldungen',
@@ -355,35 +361,34 @@ const SVHNavigation = () => {
             {!matchMedia && (
                 <Flex
                     align="center"
-                    justify={mobileOpened || desktopOpened ? 'start' : 'center'}
+                    justify={mobileOpened || desktopOpened ? 'flex-start' : 'center'}
                     h={60}
                     px="md"
-                    py="sm"
+                    gap="sm"
                 >
                     <Burger
                         opened={mobileOpened}
                         onClick={toggleMobile}
                         hiddenFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     <Burger
                         opened={desktopOpened}
                         onClick={toggleDesktop}
                         visibleFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     {(mobileOpened || desktopOpened) && (
-                        <Box h={30} mb="sm" mt="sm" pl="sm">
-                            <Image
-                                src={LOGO}
-                                alt="Univocal Logo"
-                                h="100%"
-                                w="auto"
-                                fit="contain"
-                            />
-                        </Box>
+                        <Image
+                            src={LOGO}
+                            alt="Univocal Logo"
+                            h={28}
+                            w="auto"
+                            fit="contain"
+                            style={{ flex: '0 0 auto' }}
+                        />
                     )}
                 </Flex>
             )}
@@ -457,7 +462,7 @@ const SVHNavigation = () => {
                                 }}
                                 color={
                                     currentTenant?._id === group._id
-                                        ? 'blue'
+                                        ? 'violet'
                                         : undefined
                                 }
                             >
@@ -547,28 +552,33 @@ const SVHNavigation = () => {
                 <Menu.Target>
                     <UnstyledButton
                         className="groupButton"
-                        style={{ borderBottom: 'none', overflow: 'hidden' }}
+                        style={{
+                            borderBottom: 'none',
+                            paddingInline: mobileOpened || desktopOpened ? 8 : 0,
+                        }}
                         w="100%"
                     >
                         <Group
                             gap={10}
                             wrap="nowrap"
-                            justify="center"
+                            justify={mobileOpened || desktopOpened ? 'flex-start' : 'center'}
                             w="100%"
-                            px="sm"
                         >
-                            <Avatar size={34} radius="xl" bg="blue">
-                                <Text size="xs" ta="center" c="white" mt={3}>
-                                    {getValidAvatarIdentifier(
-                                        (authData?.contact as UserContact)
-                                            .first_name,
-                                        (authData?.contact as UserContact)
-                                            .last_name
-                                    )}
-                                </Text>
+                            <Avatar
+                                size={34}
+                                radius="xl"
+                                color="violet"
+                                variant="filled"
+                            >
+                                {getValidAvatarIdentifier(
+                                    (authData?.contact as UserContact)
+                                        .first_name,
+                                    (authData?.contact as UserContact)
+                                        .last_name
+                                )}
                             </Avatar>
                             {(mobileOpened || desktopOpened) && (
-                                <Flex direction="column" wrap="wrap" maw="100%">
+                                <Flex direction="column" style={{ flex: 1, minWidth: 0 }}>
                                     <Text size="xs" fw={500}>
                                         {
                                             (authData?.contact as UserContact)

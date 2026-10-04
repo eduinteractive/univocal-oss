@@ -14,7 +14,7 @@ const TenantIntegration = (props: TenantIntegrationProps) => {
     return (
         <Card withBorder shadow="sm" h="100%">
             <Card.Section p="md" ta="center">
-                <Title order={5} c="blue">
+                <Title order={5} c="violet">
                     {props.title}
                 </Title>
                 <Text size="sm" c="dimmed">

@@ -119,7 +119,7 @@ const SurveyTransaction = () => {
             }
         }
 
-        let identifier: string | undefined = undefined;
+        let identifier: string | undefined;
         if (
             surveyQuery.data?.survey.options.executionMode ===
             SurveyExecutionMode.TAN
@@ -180,7 +180,7 @@ const SurveyTransaction = () => {
                             (label, index) => (
                                 <Button
                                     key={index}
-                                    color="blue"
+                                    color="violet"
                                     variant={
                                         (result[component._id] as number) ===
                                         index
@@ -321,7 +321,7 @@ const SurveyTransaction = () => {
                         ].map((label, index) => (
                             <Button
                                 key={label + index}
-                                color="blue"
+                                color="violet"
                                 variant={
                                     result[component._id] === index
                                         ? 'filled'

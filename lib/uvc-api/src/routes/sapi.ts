@@ -35,6 +35,9 @@ import * as ProjectPrivate from "./uvc-project/Private";
 import * as ProjectPublic from "./uvc-project/Public";
 import * as ProjectTenant from "./uvc-project/Tenant";
 
+import * as StatisticsAdmin from "./uvc-statistics/Admin";
+import * as StatisticsPublic from "./uvc-statistics/Public";
+
 import * as SurveyAdmin from "./uvc-survey/Admin";
 import * as SurveyPrivate from "./uvc-survey/Private";
 import * as SurveyPublic from "./uvc-survey/Public";
@@ -93,6 +96,11 @@ export class SAPI {
         PRIVATE: ProjectPrivate,
         PUBLIC: ProjectPublic,
         TENANT: ProjectTenant,
+    }
+
+    public static STATISTICS = {
+        ADMIN: StatisticsAdmin,
+        PUBLIC: StatisticsPublic,
     }
 
     public static SURVEY = {

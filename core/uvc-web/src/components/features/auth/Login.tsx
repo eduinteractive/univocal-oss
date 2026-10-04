@@ -1,10 +1,10 @@
-import { Button, Text, Anchor, TextInput } from '@mantine/core';
+import { Button, Divider, Text, Anchor, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { AUTH_FORM_STATE } from '../../../constants/Enums';
 import { NotificationHandler } from '@eduinteractive/mantine-common';
 import { eventEmitter } from '../../../context/AuthContext';
-import { IconLock, IconUser } from '@tabler/icons-react';
+import { IconLock, IconSchool, IconUser } from '@tabler/icons-react';
 import { SAPI } from '@eduinteractive/uvc-api';
 import { useTranslation } from 'react-i18next';
 
@@ -64,9 +64,11 @@ const Login = (props: LoginProps) => {
                 leftSection={<IconLock />}
                 mb="xs"
             />
-            <Button fullWidth mt="md" mb="lg" size="md" type="submit" radius="xl" loading={loginMutation.isPending}>
+            <Button fullWidth mt="md" mb="md" size="md" type="submit" radius="xl" loading={loginMutation.isPending}>
                 {t("AUTH.LOGIN_BUTTON")}
             </Button>
+
+            <Divider label="oder" labelPosition="center" mb="md" />
 
             <Button
                 fullWidth
@@ -74,8 +76,9 @@ const Login = (props: LoginProps) => {
                 size="md"
                 type="button"
                 radius="xl"
-                variant="filled"
-                color="violet"
+                variant="outline"
+                color="pink"
+                leftSection={<IconSchool size={18} stroke={1.5} />}
                 onClick={() => {
                     // Vollständiger Redirect ist notwendig, damit Shibboleth den SAML-Flow sauber starten kann.
                     window.location.href = '/api/auth/public/dfn/login';

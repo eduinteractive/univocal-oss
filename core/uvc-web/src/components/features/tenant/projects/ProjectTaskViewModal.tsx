@@ -176,7 +176,7 @@ const ProjectTaskViewModal = (props: ProjectTaskViewModalProps) => {
                                         tenantMembers.find(
                                             (m) => m._id === subtask.owner
                                         ) && (
-                                            <Avatar size={24} color="blue">
+                                            <Avatar size={24} color="violet">
                                                 {getValidAvatarIdentifier(
                                                     tenantMembers.find(
                                                         (m) =>
@@ -263,7 +263,7 @@ const ProjectTaskViewModal = (props: ProjectTaskViewModalProps) => {
                                 <Group gap="xs" wrap="nowrap">
                                     <ActionIcon
                                         variant="subtle"
-                                        color="blue"
+                                        color="violet"
                                         size="sm"
                                         onClick={() => {
                                             switch (connector.origin) {

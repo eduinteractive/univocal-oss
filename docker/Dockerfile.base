@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:24-alpine as base
 
 WORKDIR /service
 
@@ -13,16 +13,28 @@ COPY core ./core
 RUN pnpm install --frozen-lockfile --include-workspace-root --shamefully-hoist
 RUN pnpm --filter ./lib/... run build
 
+# Preserve core/*/package.json paths for later filtered installs.
+# A bare `COPY core/*/package.json ./core/` flattens all files to one package.json.
+RUN mkdir -p /tmp/core-package-json && \
+    for f in core/*/package.json; do \
+      mkdir -p "/tmp/core-package-json/$(dirname "$f")" && \
+      cp "$f" "/tmp/core-package-json/$f"; \
+    done
+
 # Finales Base-Image
-FROM node:20-alpine as uvc-base
+FROM node:24-alpine as uvc-base
 
 WORKDIR /service
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm \
+    && pnpm config set verify-deps-before-run false
+
+# node_modules is already complete. Without this, `pnpm run` reinstalls the whole workspace.
+ENV npm_config_verify_deps_before_run=false
 
 COPY --from=base /service/node_modules ./node_modules
 COPY --from=base /service/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=base /service/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=base /service/package.json ./package.json
 COPY --from=base /service/lib ./lib
-COPY --from=base /service/core/*/package.json ./core/
+COPY --from=base /tmp/core-package-json/core ./core

@@ -92,13 +92,10 @@ const clearShibbolethSessionCookiesIfWeb = (req: Request, res: Response) => {
     }
 };
 
-// Helper function to get client IP address
+/** Address the trusted proxy appended. `trust proxy` is 1, so req.ip ignores a caller-supplied X-Forwarded-For prefix. */
 const getClientIP = (req: Request): string => {
-    return (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-        (req.headers['x-real-ip'] as string) ||
-        req.connection?.remoteAddress ||
-        req.socket?.remoteAddress ||
-        'unknown';
+    const raw = req.ip || req.socket?.remoteAddress || "unknown";
+    return raw.replace(/^::ffff:/, "");
 };
 
 // Helper function to increment failed login attempts

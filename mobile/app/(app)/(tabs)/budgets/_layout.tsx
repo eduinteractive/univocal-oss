@@ -47,6 +47,24 @@ export default () => {
                     title: "Position bearbeiten",
                 }}
             />
+            <Stack.Screen
+                name="[budgetId]/receipts/index"
+                options={{
+                    title: "Belege",
+                }}
+            />
+            <Stack.Screen
+                name="[budgetId]/receipts/new"
+                options={{
+                    title: "Beleg erstellen",
+                }}
+            />
+            <Stack.Screen
+                name="[budgetId]/receipts/[receiptId]/edit"
+                options={{
+                    title: "Beleg bearbeiten",
+                }}
+            />
         </Stack>
     );
 };

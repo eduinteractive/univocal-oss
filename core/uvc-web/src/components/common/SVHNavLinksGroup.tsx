@@ -61,7 +61,7 @@ const SVHNavLinksGroup = ({
                         style={{
                             fontSize: theme.fontSizes.xs,
                             borderLeft: route.pathname.includes(linkItem.link)
-                                ? `3px solid var(--mantine-color-blue-light-color)`
+                                ? `3px solid var(--mantine-color-violet-light-color)`
                                 : 'none',
                         }}
                         className={classes.navLink}

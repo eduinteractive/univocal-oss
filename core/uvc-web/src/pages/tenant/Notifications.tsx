@@ -78,7 +78,7 @@ const Notifications = () => {
                     {t('TENANT_PAGES.NOTIFICATIONS.DELETE_DIALOG.DESCRIPTION')}
                 </Text>
             </EDIModal>
-            <Title order={3} c="blue" mb="sm">
+            <Title order={3} c="violet" mb="sm">
                 {t('TENANT_PAGES.NOTIFICATIONS.TITLE')}
             </Title>
             <TenantNotifications

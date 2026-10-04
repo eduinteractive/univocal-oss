@@ -2,8 +2,9 @@ import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject
 
 export interface Budget extends UVCMetadata {
     _id: string;
-    year?: number;
+    category?: string;
     ist_active?: boolean;
+    receipt_active?: boolean;
 }
 
 export enum BudgetPositionType {
@@ -23,9 +24,27 @@ export interface BudgetPosition {
     type: BudgetPositionType;
     soll_amount: number;
     ist_amount?: number;
+    without_assignment?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface BudgetReceipt {
+    _id: string;
+    positionId: string;
+    amount: number;
+    description?: string;
+    date: Date;
+    file?: { title: string; link: string; mimetype: string } | null;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type ReceiptFileUpload = {
+    uri: string;
+    name: string;
+    type: string;
+};
 
 interface getBudgetsRequest {
     tenantId: string;
@@ -50,7 +69,7 @@ export const getBudget = async (req: getBudgetRequest): Promise<{ budget: Budget
 interface createBudgetRequest {
     tenantId: string;
     body: createUVCMetadataAttrs & {
-        year?: number;
+        category?: string;
     }
 }
 
@@ -63,8 +82,9 @@ interface updateBudgetRequest {
     tenantId: string;
     budgetId: string;
     body: updateUVCMetadataAttrs & {
-        year?: number;
+        category?: string;
         ist_active?: boolean;
+        receipt_active?: boolean;
     }
 }
 
@@ -137,3 +157,131 @@ interface deleteBudgetPositionRequest {
 export const deleteBudgetPosition = async (req: deleteBudgetPositionRequest): Promise<void> => {
     await APIHandler.delete(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/position/${req.positionId}`);
 }
+
+/**
+ * Budget Receipt Routes
+ */
+
+interface getBudgetReceiptsRequest {
+    tenantId: string;
+    budgetId: string;
+}
+
+export const getBudgetReceipts = async (req: getBudgetReceiptsRequest): Promise<BudgetReceipt[]> => {
+    const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`);
+    return response.data;
+}
+
+interface createBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    body: {
+        positionId?: string;
+        amount: number;
+        description?: string;
+        date: string | Date;
+        newFile?: ReceiptFileUpload;
+    }
+}
+
+export const createBudgetReceipt = async (req: createBudgetReceiptRequest): Promise<BudgetReceipt> => {
+    const formData = new FormData();
+    if (req.body.positionId) formData.append("positionId", req.body.positionId);
+    formData.append("amount", String(req.body.amount));
+    if (req.body.description !== undefined) formData.append("description", req.body.description);
+    formData.append(
+        "date",
+        typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
+    );
+    if (req.body.newFile) {
+        formData.append("newFile", {
+            uri: req.body.newFile.uri,
+            name: req.body.newFile.name,
+            type: req.body.newFile.type,
+        } as any);
+    }
+
+    const response = await APIHandler.post(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+}
+
+interface updateBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    receiptId: string;
+    body: {
+        positionId: string;
+        amount?: number;
+        description?: string;
+        date?: string | Date;
+        file?: { title: string; link: string; mimetype: string };
+        newFile?: ReceiptFileUpload;
+    }
+}
+
+export const updateBudgetReceipt = async (req: updateBudgetReceiptRequest): Promise<BudgetReceipt> => {
+    const formData = new FormData();
+    formData.append("positionId", req.body.positionId);
+    if (req.body.amount !== undefined) formData.append("amount", String(req.body.amount));
+    if (req.body.description !== undefined) formData.append("description", req.body.description);
+    if (req.body.date !== undefined) {
+        formData.append(
+            "date",
+            typeof req.body.date === "string" ? req.body.date : req.body.date.toISOString()
+        );
+    }
+    if (req.body.newFile) {
+        formData.append("newFile", {
+            uri: req.body.newFile.uri,
+            name: req.body.newFile.name,
+            type: req.body.newFile.type,
+        } as any);
+    }
+    if (req.body.file) formData.append("file", JSON.stringify(req.body.file));
+
+    const response = await APIHandler.put(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+}
+
+interface deleteBudgetReceiptRequest {
+    tenantId: string;
+    budgetId: string;
+    receiptId: string;
+}
+
+export const deleteBudgetReceipt = async (req: deleteBudgetReceiptRequest): Promise<void> => {
+    await APIHandler.delete(
+        `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`
+    );
+}
+
+export const getBudgetReceiptDownloadUrl = (
+    tenantId: string,
+    budgetId: string,
+    receiptId: string,
+    fileLink: string
+): string => {
+    return `${APIHandler.defaults.baseURL}/tenant/tenant/${tenantId}/budget/${budgetId}/receipt/${receiptId}/download/${encodeURIComponent(fileLink)}`;
+};
+
+/** Ist amount for a position: receipt sum when receipt_active, else ist_amount */
+export const getPositionIstAmount = (
+    position: BudgetPosition,
+    receipts: BudgetReceipt[],
+    receiptActive?: boolean
+): number => {
+    if (receiptActive) {
+        return receipts
+            .filter((r) => r.positionId === position._id)
+            .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+    }
+    return position.ist_amount || 0;
+};

@@ -19,7 +19,7 @@ const TenantSettingsTab = (props: TenantSettingsTabsProps) => {
             }}
         >
             <Card.Section p="md">
-                <Title order={3} c="blue">
+                <Title order={3} c="violet">
                     {t('TENANT.SETTINGS.TITLE')}
                 </Title>
                 <Text size="sm">

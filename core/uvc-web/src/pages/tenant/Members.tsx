@@ -120,7 +120,7 @@ const Members = () => {
                     setDeleteUserId(null);
                 }}
             />
-            <Title order={3} c="blue">
+            <Title order={3} c="violet">
                 {t('TENANT_PAGES.MEMBERS.TITLE')}
             </Title>
             <Text size="sm" mb="sm">

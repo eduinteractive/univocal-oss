@@ -18,7 +18,7 @@ const AuthWrapper = (props: AuthWrapperProps) => {
                 direction="column"
                 flex={1}
                 mih="100%"
-                bg="blue.1"
+                bg="violet.0"
                 pos="absolute"
                 style={{
                     overflow: 'hidden',

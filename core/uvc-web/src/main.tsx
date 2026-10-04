@@ -8,35 +8,35 @@ import '@mantine/tiptap/styles.css';
 import '@mantine/dropzone/styles.css';
 import '@mantine/charts/styles.css';
 import 'dayjs/locale/de';
-import 'cropperjs/dist/cropper.css';
 import '@eduinteractive/mantine-common/build/style.css';
 import App from './App.tsx';
 import './index.css';
-import { createTheme, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
+import { uvcTheme } from './theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Notifications } from '@mantine/notifications';
 import { TenantProvider } from './context/TenantContext.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { DatesProvider } from '@mantine/dates';
+import { configureApiForSiteHost } from './utils/SiteHost';
+
+configureApiForSiteHost();
 
 const svhQueryClient = new QueryClient();
-
-const svhTheme = createTheme({});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={svhQueryClient}>
-            <MantineProvider theme={svhTheme} defaultColorScheme="light">
+            <MantineProvider theme={uvcTheme} defaultColorScheme="light">
                 <TenantProvider>
                     <AuthProvider>
                         <DatesProvider
                             settings={{
                                 locale: 'de',
                                 firstDayOfWeek: 1,
-                                timezone: 'Europe/Berlin',
                             }}
                         >
-                            <Notifications />
+                            <Notifications pauseResetOnHover="notification" />
                             <App />
                         </DatesProvider>
                     </AuthProvider>

@@ -6,6 +6,7 @@ import "../page.css";
 import UVCHero from "../../components/UVCHero";
 import UseCaseList from "../../components/features/functions/UseCases";
 import SectionDivider from "../../components/features/functions/SectionDivider";
+import { LandingPageView } from "../../components/LandingStats";
 import { COLORS } from "../../constants/Colors";
 import {
 	ASTA_USE_CASES,
@@ -28,6 +29,7 @@ const UVC_FEATURE_TILES: UVCTile[] = [
 	{ label: "Umfragen", iconPath: "/icons/Umfragen.png" },
 	{ label: "Events", iconPath: "/icons/Veranstaltungen.png" },
 	{ label: "Finanzen", iconPath: "/icons/Finanzen.png" },
+	{ label: "Webpräsenz", iconPath: "/icons/Webpraesenz.png" },
 ];
 
 /** Same frame for every icon so dimensions match. `contain` scales differing PNG crops uniformly. */
@@ -38,6 +40,7 @@ const ICON_FRAME = {
 } as const;
 
 type FeatureCard = {
+	section: string;
 	title: string;
 	body: React.ReactNode;
 	useCases: UseCase[];
@@ -54,6 +57,7 @@ const B = (props: { children: React.ReactNode }) => (
 
 const FEATURE_CARDS: FeatureCard[] = [
 	{
+		section: "fachschaften",
 		title: "Für Fachschaften: Euer Campus, eure Orga, eine App",
 		body: (
 			<>
@@ -63,12 +67,13 @@ const FEATURE_CARDS: FeatureCard[] = [
 				im <B>Wiki</B> fest. Dank <B>Projektmanagement</B> und <B>Gruppenchat</B> behaltet ihr bei allen
 				Aufgaben den Überblick. Das Beste: Über die <B>mobile App</B> habt ihr alles direkt in der
 				Hosentasche, und neue Aktive lassen sich über die <B>Mitgliederverwaltung</B> blitzschnell
-				integrieren.
+				integrieren. Mit eurer eigenen <B>Webpräsenz</B> seid ihr außerdem für alle auf dem Campus sichtbar.
 			</>
 		),
 		useCases: FACHSCHAFT_USE_CASES,
 	},
 	{
+		section: "asten",
 		title: "Für ASten: Professionelle Verwaltung für die Studierendenschaft",
 		body: (
 			<>
@@ -83,6 +88,7 @@ const FEATURE_CARDS: FeatureCard[] = [
 		useCases: ASTA_USE_CASES,
 	},
 	{
+		section: "gremien",
 		title: "Für Gremien und Ausschüsse: Strukturierte Arbeit, rechtssichere Ergebnisse",
 		body: (
 			<>
@@ -104,11 +110,12 @@ const Funktionen = () => {
 	const tileWidth = {
 		base: `calc((100% - ${g}) / 2)`,
 		sm: `calc((100% - ${g} * 3) / 4)`,
-		lg: `calc((100% - ${g} * 6) / 7)`,
+		lg: `calc((100% - ${g} * 7) / 8)`,
 	} as const;
 
 	return (
 		<>
+			<LandingPageView path="/funktionen" />
 			<UVCHero
 				title="Funktionen"
 				content="Univocal vereint alle Werkzeuge für die studentische Selbstverwaltung auf einer Plattform: Projektmanagement, Kalender, Gruppenchat, Wiki, Umfragen, Events und Finanzen – auf dem Desktop und in der mobilen App."
@@ -116,6 +123,7 @@ const Funktionen = () => {
 			/>
 
 			<Box
+				data-landing-section="werkzeuge"
 				bg={COLORS.SECONDARY}
 				px={{ base: "md", sm: "xl" }}
 				pb={{ base: "3rem", sm: "4rem" }}
@@ -201,7 +209,7 @@ const Funktionen = () => {
 					{FEATURE_CARDS.map((card, index) => (
 						<Fragment key={card.title}>
 							{index > 0 && <SectionDivider />}
-							<Stack gap="xl">
+							<Stack gap="xl" data-landing-section={card.section}>
 								<Box
 									bg={COLORS.SECONDARY}
 									p={{ base: "lg", sm: "xl" }}

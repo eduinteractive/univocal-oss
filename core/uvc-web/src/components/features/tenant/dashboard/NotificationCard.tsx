@@ -42,7 +42,7 @@ const NotificationCard = (props: NotificationCardProps) => {
                 <Group justify="right" mt="md">
                     <NavLink
                         component={Link}
-                        c="blue"
+                        c="violet"
                         w="max-content"
                         to="/sv/notifications"
                         label={t('DASHBOARD.SHOW_MORE')}

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE_HASH_FILE=".temp/.uvc-base.hash"
-CURRENT_HASH=$(find lib/ pnpm-lock.yaml pnpm-workspace.yaml package.json -type f -exec sha256sum {} + | sha256sum)
+CURRENT_HASH=$(find lib/ pnpm-lock.yaml pnpm-workspace.yaml package.json docker/Dockerfile.base -type f -exec sha256sum {} + | sha256sum)
 
 if [[ -f $BASE_HASH_FILE && $(cat $BASE_HASH_FILE) == $CURRENT_HASH ]]; then
   echo "✅ uvc-base ist aktuell, kein Rebuild nötig."
@@ -58,6 +58,20 @@ restore_dev_manifests() {
   set -e
 }
 trap 'dev_exit=$?; restore_dev_manifests; exit "$dev_exit"' EXIT
+
+# Homebrew installs gettext as keg-only, so envsubst is not on PATH by default.
+if ! command -v envsubst >/dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1; then
+    GETTEXT_BIN="$(brew --prefix gettext 2>/dev/null)/bin"
+    if [ -x "${GETTEXT_BIN}/envsubst" ]; then
+      export PATH="${GETTEXT_BIN}:${PATH}"
+    fi
+  fi
+fi
+if ! command -v envsubst >/dev/null 2>&1; then
+  echo "envsubst not found. Install GNU gettext (macOS: brew install gettext)." >&2
+  exit 1
+fi
 
 # Render Shibboleth configmaps from ${SHIB_*} placeholders
 cp "${K8S_DEV_DIR}/shibboleth-configmap.yaml" "${K8S_DEV_DIR}/shibboleth-configmap.yaml.backup-shib"

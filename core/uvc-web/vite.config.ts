@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
                 usePolling: true,
                 interval: 300, // Erhöhtes Polling-Intervall für reduzierte CPU-Last
             },
-            allowedHosts: ['apps.univocal.local.de', 'apps.univocal.de']
+            allowedHosts: ['apps.univocal.local.de', 'apps.univocal.de', '.univocal.local.de', '.univocal.de']
         },
         define: {
             'process.env.VITE_KUBERNETES_HOST': JSON.stringify(env.VITE_KUBERNETES_HOST),

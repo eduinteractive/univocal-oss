@@ -20,6 +20,7 @@ interface BudgetPositionModalSubmitData {
 
 interface BudgetPositionModalProps {
     ist_active?: boolean;
+    receipt_active?: boolean;
     data: BudgetPosition | { type: BudgetPositionType; parent?: string } | null;
     visible: boolean;
     onClose: () => void;
@@ -61,8 +62,8 @@ const BudgetPositionModal = (props: BudgetPositionModalProps) => {
         props.onSubmit({
             title,
             description,
-            soll_amount,
-            ist_amount,
+            soll_amount: Math.round((soll_amount + Number.EPSILON) * 100) / 100,
+            ist_amount: Math.round((ist_amount + Number.EPSILON) * 100) / 100,
             type: props.data!.type,
             parent: props.data ? props.data?.parent : undefined,
         });
@@ -113,18 +114,20 @@ const BudgetPositionModal = (props: BudgetPositionModalProps) => {
                             required
                             fixedDecimalScale
                         />
-                        {props.ist_active && <EDINumberInput
-                            label={t("BUDGET.ATTRIBUTES.IST_AMOUNT")}
-                            placeholder={t("BUDGET.ATTRIBUTES.IST_AMOUNT_PLACEHOLDER")}
-                            value={ist_amount}
-                            onChange={(value) =>
-                                setIstAmount(
-                                    typeof value === 'number' ? value : 0
-                                )
-                            }
-                            decimalScale={2}
-                            fixedDecimalScale
-                        />}
+                        {props.ist_active && !props.receipt_active && (
+                            <EDINumberInput
+                                label={t("BUDGET.ATTRIBUTES.IST_AMOUNT")}
+                                placeholder={t("BUDGET.ATTRIBUTES.IST_AMOUNT_PLACEHOLDER")}
+                                value={ist_amount}
+                                onChange={(value) =>
+                                    setIstAmount(
+                                        typeof value === 'number' ? value : 0
+                                    )
+                                }
+                                decimalScale={2}
+                                fixedDecimalScale
+                            />
+                        )}
                     </>
                 )}
         </EDIModal>

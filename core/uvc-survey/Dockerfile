@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-survey ./core/uvc-survey
-
-RUN pnpm install --filter ./core/uvc-survey --frozen-lockfile --include-workspace-root
 
 WORKDIR /service/core/uvc-survey
 

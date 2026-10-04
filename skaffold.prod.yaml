@@ -50,6 +50,10 @@ profiles:
         context: .
         docker:
           dockerfile: core/uvc-project/Dockerfile.prod
+      - image: REGISTRY_URL_PLACEHOLDER/uvc-statistics
+        context: .
+        docker:
+          dockerfile: core/uvc-statistics/Dockerfile.prod
       - image: REGISTRY_URL_PLACEHOLDER/uvc-landing
         context: .
         docker:

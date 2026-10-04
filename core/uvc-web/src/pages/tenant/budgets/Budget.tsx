@@ -5,11 +5,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
     BudgetPosition,
     BudgetPositionType,
+    BudgetReceipt,
     SAPI,
 } from '@eduinteractive/uvc-api';
 import SVHPageWrapper from '../../../components/common/SVHPageWrapper';
 import BudgetGroups from '../../../components/features/tenant/budgets/BudgetGroups';
 import BudgetPositionModal from '../../../components/features/tenant/budgets/BudgetPositionModal';
+import BudgetReceipts from '../../../components/features/tenant/budgets/BudgetReceipts';
+import BudgetReceiptModal from '../../../components/features/tenant/budgets/BudgetReceiptModal';
 import { NotificationHandler } from '@eduinteractive/mantine-common';
 import BudgetTabs from '../../../components/features/tenant/budgets/BudgetTabs';
 import BudgetModal from '../../../components/features/tenant/budgets/BudgetModal';
@@ -21,15 +24,29 @@ const Budget = () => {
     const [budgetModalVisible, setBudgetModalVisible] = useState(false);
     const [budgetPositionModalVisible, setBudgetPositionModalVisible] =
         useState(false);
+    const [budgetReceiptModalVisible, setBudgetReceiptModalVisible] =
+        useState(false);
     const [currentBudgetPosition, setCurrentBudgetPosition] = useState<
         BudgetPosition | { type: BudgetPositionType } | null
     >(null);
+    const [currentBudgetReceipt, setCurrentBudgetReceipt] =
+        useState<BudgetReceipt | null>(null);
     const { t } = useTranslation();
 
     const budgetQuery = useQuery({
         queryKey: ['budget', currentTenant?._id, budgetId],
         queryFn: () =>
             SAPI.TENANT.TENANT.getBudget({ tenantId: currentTenant!._id, budgetId: budgetId! }),
+    });
+
+    const receiptsQuery = useQuery({
+        queryKey: ['budget-receipts', currentTenant?._id, budgetId],
+        queryFn: () =>
+            SAPI.TENANT.TENANT.getBudgetReceipts({
+                tenantId: currentTenant!._id,
+                budgetId: budgetId!,
+            }),
+        enabled: !!budgetQuery.data?.budget.receipt_active,
     });
 
     const updateBudgetMutation = useMutation({
@@ -82,6 +99,46 @@ const Budget = () => {
         onError: NotificationHandler.showAxiosError,
     });
 
+    const createBudgetReceiptMutation = useMutation({
+        mutationFn: SAPI.TENANT.TENANT.createBudgetReceipt,
+        onSuccess: () => {
+            receiptsQuery.refetch();
+            budgetQuery.refetch();
+            setBudgetReceiptModalVisible(false);
+            setCurrentBudgetReceipt(null);
+            NotificationHandler.showSuccess(
+                t('TENANT_PAGES.BUDGETS.RECEIPTS.SUCCESS.CREATED')
+            );
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
+
+    const updateBudgetReceiptMutation = useMutation({
+        mutationFn: SAPI.TENANT.TENANT.updateBudgetReceipt,
+        onSuccess: () => {
+            receiptsQuery.refetch();
+            budgetQuery.refetch();
+            setBudgetReceiptModalVisible(false);
+            setCurrentBudgetReceipt(null);
+            NotificationHandler.showSuccess(
+                t('TENANT_PAGES.BUDGETS.RECEIPTS.SUCCESS.UPDATED')
+            );
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
+
+    const deleteBudgetReceiptMutation = useMutation({
+        mutationFn: SAPI.TENANT.TENANT.deleteBudgetReceipt,
+        onSuccess: () => {
+            receiptsQuery.refetch();
+            budgetQuery.refetch();
+            NotificationHandler.showSuccess(
+                t('TENANT_PAGES.BUDGETS.RECEIPTS.SUCCESS.DELETED')
+            );
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
+
     if (!budgetQuery.data) {
         return null;
     }
@@ -93,6 +150,8 @@ const Budget = () => {
                 contentTab={
                     <BudgetGroups
                         ist_active={budgetQuery.data.budget.ist_active}
+                        receipt_active={budgetQuery.data.budget.receipt_active}
+                        receipts={receiptsQuery.data || []}
                         budget={budgetQuery.data.budget}
                         positions={budgetQuery.data.positions || []}
                         onAdd={(type, parent) => {
@@ -112,13 +171,36 @@ const Budget = () => {
                         }}
                     />
                 }
+                receiptsTab={
+                    <BudgetReceipts
+                        budget={budgetQuery.data.budget}
+                        receipts={receiptsQuery.data || []}
+                        positions={budgetQuery.data.positions || []}
+                        onAdd={() => {
+                            setCurrentBudgetReceipt(null);
+                            setBudgetReceiptModalVisible(true);
+                        }}
+                        onEdit={(receipt) => {
+                            setCurrentBudgetReceipt(receipt);
+                            setBudgetReceiptModalVisible(true);
+                        }}
+                        onDelete={(receiptId) => {
+                            deleteBudgetReceiptMutation.mutate({
+                                tenantId: currentTenant!._id,
+                                budgetId: budgetId!,
+                                receiptId,
+                            });
+                        }}
+                    />
+                }
                 data={budgetQuery.data.budget}
+                receipts={receiptsQuery.data || []}
                 onEdit={() => setBudgetModalVisible(true)}
-                onUpdate={(ist_active) => {
+                onUpdate={(body) => {
                     updateBudgetMutation.mutate({
                         tenantId: currentTenant!._id,
                         budgetId: budgetId!,
-                        body: { ist_active },
+                        body,
                     });
                 }}
             />
@@ -137,6 +219,7 @@ const Budget = () => {
             />
             <BudgetPositionModal
                 ist_active={budgetQuery.data.budget.ist_active}
+                receipt_active={budgetQuery.data.budget.receipt_active}
                 data={currentBudgetPosition}
                 visible={budgetPositionModalVisible}
                 onClose={() => setBudgetPositionModalVisible(false)}
@@ -152,7 +235,6 @@ const Budget = () => {
                             body,
                         });
                     } else {
-                        // Create
                         createBudgetPositionMutation.mutate({
                             tenantId: currentTenant!._id,
                             budgetId: budgetId!,
@@ -161,6 +243,44 @@ const Budget = () => {
                     }
                     setBudgetPositionModalVisible(false);
                     setCurrentBudgetPosition(null);
+                }}
+            />
+            <BudgetReceiptModal
+                data={currentBudgetReceipt}
+                positions={budgetQuery.data.positions || []}
+                visible={budgetReceiptModalVisible}
+                onClose={() => {
+                    setBudgetReceiptModalVisible(false);
+                    setCurrentBudgetReceipt(null);
+                }}
+                onSubmit={(body) => {
+                    if (currentBudgetReceipt) {
+                        updateBudgetReceiptMutation.mutate({
+                            tenantId: currentTenant!._id,
+                            budgetId: budgetId!,
+                            receiptId: currentBudgetReceipt._id,
+                            body: {
+                                positionId: body.positionId!,
+                                amount: body.amount,
+                                description: body.description,
+                                date: body.date,
+                                newFile: body.newFile,
+                                file: body.file,
+                            },
+                        });
+                    } else {
+                        createBudgetReceiptMutation.mutate({
+                            tenantId: currentTenant!._id,
+                            budgetId: budgetId!,
+                            body: {
+                                positionId: body.positionId,
+                                amount: body.amount,
+                                description: body.description,
+                                date: body.date,
+                                newFile: body.newFile,
+                            },
+                        });
+                    }
                 }}
             />
         </SVHPageWrapper>

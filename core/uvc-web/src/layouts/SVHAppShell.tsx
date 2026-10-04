@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { createContext, useContext } from 'react';
 import SVHHeader from './SVHHeader';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SidebarContext = createContext({
     mobileOpened: false,
     desktopOpened: false,
@@ -66,5 +67,4 @@ const SVHAppShell = () => {
     );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export default SVHAppShell;

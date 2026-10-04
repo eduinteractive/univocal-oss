@@ -48,7 +48,7 @@ const EventMeta = (props: EventMetaProps) => {
                                     'DD.MM.YYYY HH:mm'
                                 )}`}
                         </Title>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {props.data?.title}
                         </Title>
                     </Flex>
@@ -141,6 +141,16 @@ const EventMeta = (props: EventMetaProps) => {
                         <EventCertificatePDF
                             event={props.data as SVHEvent}
                             tenant={currentTenant!}
+                            labels={{
+                                title: t('EVENTS.CERTIFICATE.TITLE'),
+                                description: t('EVENTS.CERTIFICATE.DESCRIPTION', {
+                                    title: props.data?.title,
+                                    date: dayjs(props.data?.startDate).format('DD.MM.YYYY'),
+                                }),
+                                generatedAt: t('EVENTS.CERTIFICATE.GENERATED_AT', {
+                                    date: dayjs(new Date()).format('DD.MM.YYYY'),
+                                }),
+                            }}
                         />
                     }
                     fileName={t('EVENTS.CERTIFICATE.DOWNLOAD_FILENAME')}

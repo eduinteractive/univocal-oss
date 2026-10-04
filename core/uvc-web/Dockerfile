@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-web ./core/uvc-web
-
-RUN pnpm install --filter ./core/uvc-web --frozen-lockfile
 
 WORKDIR /service/core/uvc-web
 

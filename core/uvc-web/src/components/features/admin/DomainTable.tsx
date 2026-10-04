@@ -61,7 +61,7 @@ const DomainTable = (props: DomainTableProps) => {
                             <Table.Td>{domain.shortcode}</Table.Td>
                             <Table.Td>
                                 <ActionIcon
-                                    color="blue"
+                                    color="violet"
                                     variant="subtle"
                                     size="md"
                                     onClick={() => {

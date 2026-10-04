@@ -15,6 +15,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.9,
 		},
 		{
+			url: "https://univocal.de/forschung",
+			lastModified: new Date("2026-10-04"),
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
+			url: "https://univocal.de/forschung/beitraege",
+			lastModified: new Date("2026-10-04"),
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
+			url: "https://univocal.de/forschung/opendata",
+			lastModified: new Date("2026-10-04"),
+			changeFrequency: "monthly",
+			priority: 0.6,
+		},
+		{
 			url: "https://univocal.de/faq",
 			lastModified: new Date("2025-04-04"),
 			changeFrequency: "monthly",

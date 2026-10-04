@@ -61,7 +61,7 @@ const SVHFilter = (props: SVHFilterProps) => {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    props.onFilter && props.onFilter({ text, sort });
+                    props.onFilter?.({ text, sort });
                 }}
             >
                 <Group gap="sm" align="center">
@@ -83,8 +83,7 @@ const SVHFilter = (props: SVHFilterProps) => {
                                 const option = Object.values(
                                     SVHSortOptions
                                 ).find((option) => option.label === value);
-                                props.onFilter &&
-                                    props.onFilter({ text, sort: option });
+                                props.onFilter?.({ text, sort: option });
                             }}
                         />
                     )}
@@ -94,8 +93,7 @@ const SVHFilter = (props: SVHFilterProps) => {
                         onChange={(event) => setText(event.currentTarget.value)}
                         onKeyUp={(event) => {
                             if (event.key === 'Enter') {
-                                props.onFilter &&
-                                    props.onFilter({ text, sort });
+                                props.onFilter?.({ text, sort });
                             }
                         }}
                         rightSection={

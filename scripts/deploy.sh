@@ -83,6 +83,20 @@ export APP_VERSION DOC_VERSION DOC_OWNER DOC_APPROVED_BY BUILD_DATE BUILD_TIMEST
 export REGISTRY_URL REGISTRY_SECRET
 export SHIB_ENTITY_ID SHIB_DISCOVERY_URL SHIB_METADATA_URL SHIB_SUPPORT_CONTACT SHIB_APACHE_SERVER_NAME
 
+# Homebrew installs gettext as keg-only, so envsubst is not on PATH by default.
+if ! command -v envsubst >/dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1; then
+    GETTEXT_BIN="$(brew --prefix gettext 2>/dev/null)/bin"
+    if [ -x "${GETTEXT_BIN}/envsubst" ]; then
+      export PATH="${GETTEXT_BIN}:${PATH}"
+    fi
+  fi
+fi
+if ! command -v envsubst >/dev/null 2>&1; then
+  echo "envsubst not found. Install GNU gettext (macOS: brew install gettext)." >&2
+  exit 1
+fi
+
 # Backup original files
 cp core/uvc-infra/k8s/prod/kustomization.yaml core/uvc-infra/k8s/prod/kustomization.yaml.backup
 find core/uvc-infra/k8s/prod -name "*.yaml" -type f ! -name "kustomization.yaml" ! -name "*.backup" -exec sh -c 'cp "$1" "$1.backup"' _ {} \;

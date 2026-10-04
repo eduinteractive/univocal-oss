@@ -31,6 +31,8 @@ export default () => {
 
 	const position = budgetQuery.data?.positions.find(p => p._id === positionId);
 	const isBudgetActive = budgetQuery.data?.budget.ist_active;
+	const receiptActive = !!budgetQuery.data?.budget.receipt_active;
+	const showManualIst = isBudgetActive && !receiptActive;
 	
 	// Determine if this is a group or individual position
 	const isGroup = position?.type === BudgetPositionType.GROUP_INCOME || position?.type === BudgetPositionType.GROUP_EXPENSE;
@@ -114,7 +116,7 @@ export default () => {
 				return NotificationHandler.showError("Bitte gebe einen gültigen Soll-Betrag ein");
 			}
 
-			if (isBudgetActive && istAmount.trim()) {
+			if (showManualIst && istAmount.trim()) {
 				istAmountNum = parseFloat(istAmount.replace(",", "."));
 				if (isNaN(istAmountNum) || istAmountNum < 0) {
 					return NotificationHandler.showError("Bitte gebe einen gültigen Ist-Betrag ein");
@@ -131,7 +133,7 @@ export default () => {
 				description: description.trim(),
 				type: position!.type,
 				soll_amount: sollAmountNum,
-				ist_amount: isBudgetActive && !isGroup ? istAmountNum : undefined,
+				ist_amount: showManualIst && !isGroup ? istAmountNum : undefined,
 			},
 		});
 	};
@@ -220,7 +222,7 @@ export default () => {
 								required
 							/>
 
-							{isBudgetActive && (
+							{showManualIst && (
 								<TextInput
 									size="sm"
 									label="Ist-Betrag (€)"
@@ -229,6 +231,11 @@ export default () => {
 									onChangeText={(text) => setIstAmount(text)}
 									keyboardType="decimal-pad"
 								/>
+							)}
+							{receiptActive && isBudgetActive && !isGroup && (
+								<Text fs="sm" c="gray.6">
+									Der Ist-Betrag wird aus den Belegen dieser Position berechnet.
+								</Text>
 							)}
 						</>
 					)}

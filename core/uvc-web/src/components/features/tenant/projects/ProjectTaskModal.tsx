@@ -327,7 +327,7 @@ const ProjectTaskModal = (props: ProjectTaskModalProps) => {
                                         tenantMembers.find(
                                             (m) => m._id === subtask.owner
                                         ) && (
-                                            <Avatar size={24} color="blue">
+                                            <Avatar size={24} color="violet">
                                                 {getValidAvatarIdentifier(
                                                     tenantMembers.find(
                                                         (m) =>
@@ -441,7 +441,7 @@ const ProjectTaskModal = (props: ProjectTaskModalProps) => {
                                 <Group gap="xs" wrap="nowrap">
                                     <ActionIcon
                                         variant="subtle"
-                                        color="blue"
+                                        color="violet"
                                         onClick={() => {
                                             switch (connector.origin) {
                                                 case ProjectConnector.BUDGET:

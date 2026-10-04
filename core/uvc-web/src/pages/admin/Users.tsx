@@ -58,7 +58,7 @@ const AdminUsers = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="xs">
+            <Title order={3} c="violet" mb="xs">
                 {t('ADMIN_PAGES.USERS.TITLE')}
             </Title>
             <Flex gap="sm" align="flex-end" mb="sm" wrap="wrap">
@@ -107,7 +107,7 @@ const AdminUsers = () => {
                                 <Table.Td>{getStatusLabel(user.activationStatus)}</Table.Td>
                                 <Table.Td>
                                     <ActionIcon
-                                        color="blue"
+                                        color="violet"
                                         variant="subtle"
                                         onClick={() => navigate(`/admin/users/${user._id}`)}
                                         title={t('ADMIN_PAGES.USERS.VIEW')}

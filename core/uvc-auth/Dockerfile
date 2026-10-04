@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-auth ./core/uvc-auth
-
-RUN pnpm install --filter ./core/uvc-auth --frozen-lockfile --include-workspace-root
 
 WORKDIR /service/core/uvc-auth
 

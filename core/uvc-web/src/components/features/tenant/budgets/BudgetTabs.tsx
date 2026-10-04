@@ -14,8 +14,9 @@ import {
     Budget,
     BudgetPosition,
     BudgetPositionType,
+    BudgetReceipt,
 } from '@eduinteractive/uvc-api';
-import { IconDownload, IconEdit, IconFileDescription, IconSettings, IconTaxEuro } from '@tabler/icons-react';
+import { IconDownload, IconEdit, IconFileDescription, IconReceipt, IconSettings, IconTaxEuro } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 import { BudgetGroupsWithPosition } from './BudgetGroups';
 import { CSVLink } from 'react-csv';
@@ -28,9 +29,11 @@ import { useTranslation } from 'react-i18next';
 interface BudgetTabsProps {
     data?: Budget;
     contentTab: React.ReactNode;
+    receiptsTab?: React.ReactNode;
     positions: BudgetPosition[];
+    receipts?: BudgetReceipt[];
     onEdit: () => void;
-    onUpdate: (ist_active: boolean) => void;
+    onUpdate: (body: { ist_active?: boolean; receipt_active?: boolean }) => void;
 }
 
 const BudgetTabs = (props: BudgetTabsProps) => {
@@ -53,6 +56,25 @@ const BudgetTabs = (props: BudgetTabsProps) => {
     useEffect(() => {
         const incomeGroups: BudgetGroupsWithPosition[] = [];
         const expenseGroups: BudgetGroupsWithPosition[] = [];
+
+        const getPositionIstAmount = (
+            positionId: string,
+            ist_amount: number | undefined
+        ) => {
+            if (props.data?.receipt_active) {
+                return Math.round(
+                    ((props.receipts || [])
+                        .filter((receipt) => receipt.positionId === positionId)
+                        .reduce((sum, receipt) => sum + receipt.amount, 0) +
+                        Number.EPSILON) *
+                        100
+                ) / 100;
+            }
+            return Math.round(((ist_amount || 0) + Number.EPSILON) * 100) / 100;
+        };
+
+        const positionIst = (position: BudgetPosition) =>
+            getPositionIstAmount(position._id, position.ist_amount);
 
         props.positions.forEach((position) => {
             if (position.type === BudgetPositionType.GROUP_INCOME) {
@@ -97,7 +119,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     (sum, group) =>
                         sum +
                         group.positions.reduce(
-                            (sum, position) => sum + (position.ist_amount || 0),
+                            (sum, position) => sum + positionIst(position),
                             0
                         ),
                     0
@@ -110,7 +132,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                 .reduce((sum, position) => sum + position.soll_amount, 0)
                 .toFixed(2);
             const groupIst = group.positions
-                .reduce((sum, position) => sum + (position.ist_amount || 0), 0)
+                .reduce((sum, position) => sum + positionIst(position), 0)
                 .toFixed(2);
 
             csvRows.push({
@@ -125,7 +147,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     GroupTitle: position.title,
                     GroupDescription: position.description,
                     SollAmount: position.soll_amount.toFixed(2),
-                    IstAmount: position.ist_amount?.toFixed(2) || '0',
+                    IstAmount: positionIst(position).toFixed(2),
                 });
             });
         });
@@ -148,7 +170,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     (sum, group) =>
                         sum +
                         group.positions.reduce(
-                            (sum, position) => sum + (position.ist_amount || 0),
+                            (sum, position) => sum + positionIst(position),
                             0
                         ),
                     0
@@ -161,7 +183,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                 .reduce((sum, position) => sum + position.soll_amount, 0)
                 .toFixed(2);
             const groupIst = group.positions
-                .reduce((sum, position) => sum + (position.ist_amount || 0), 0)
+                .reduce((sum, position) => sum + positionIst(position), 0)
                 .toFixed(2);
 
             csvRows.push({
@@ -176,7 +198,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     GroupTitle: position.title,
                     GroupDescription: position.description,
                     SollAmount: position.soll_amount.toFixed(2),
-                    IstAmount: position.ist_amount?.toFixed(2) || '0',
+                    IstAmount: positionIst(position).toFixed(2),
                 });
             });
         });
@@ -208,7 +230,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     (sum, group) =>
                         sum +
                         group.positions.reduce(
-                            (sum, position) => sum + (position.ist_amount || 0),
+                            (sum, position) => sum + positionIst(position),
                             0
                         ),
                     0
@@ -217,7 +239,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                     (sum, group) =>
                         sum +
                         group.positions.reduce(
-                            (sum, position) => sum + (position.ist_amount || 0),
+                            (sum, position) => sum + positionIst(position),
                             0
                         ),
                     0
@@ -226,7 +248,7 @@ const BudgetTabs = (props: BudgetTabsProps) => {
         });
 
         setCsvData(csvRows);
-    }, [props.positions, t]);
+    }, [props.positions, props.receipts, props.data?.receipt_active, t]);
 
     const headers = useMemo(
         () => [
@@ -242,6 +264,9 @@ const BudgetTabs = (props: BudgetTabsProps) => {
         <SVHTabs defaultValue="content" title={props.data?.title}>
             <Tabs.List>
                 <Tabs.Tab value="content" leftSection={<IconTaxEuro />}>{t('BUDGET.TAB_BUDGET')}</Tabs.Tab>
+                {props.data?.receipt_active && (
+                    <Tabs.Tab value="receipts" leftSection={<IconReceipt />}>{t('BUDGET.TAB_RECEIPTS')}</Tabs.Tab>
+                )}
                 <Tabs.Tab value="general" leftSection={<IconFileDescription />}>{t('BUDGET.TAB_DESCRIPTION')}</Tabs.Tab>
                 <Tabs.Tab value="settings" leftSection={<IconSettings />}>{t('BUDGET.TAB_SETTINGS')}</Tabs.Tab>
             </Tabs.List>
@@ -249,11 +274,16 @@ const BudgetTabs = (props: BudgetTabsProps) => {
             <Tabs.Panel value="content" p="md">
                 {props.contentTab}
             </Tabs.Panel>
+            {props.data?.receipt_active && (
+                <Tabs.Panel value="receipts" p="md">
+                    {props.receiptsTab}
+                </Tabs.Panel>
+            )}
             <Tabs.Panel value="general" p="md">
                 <Flex justify="space-between">
                     <Flex direction="column" gap={0}>
                         <Text c="dimmed" size="sm">
-                            {props.data?.year}
+                            {props.data?.category}
                         </Text>
                         <Title order={3}>{props.data?.title}</Title>
                         <Text size="sm">{props.data?.description}</Text>
@@ -294,7 +324,12 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                                     size="lg"
                                     checked={props.data?.ist_active}
                                     onChange={(e) =>
-                                        props.onUpdate(e.target.checked)
+                                        props.onUpdate({
+                                            ist_active: e.target.checked,
+                                            ...(e.target.checked
+                                                ? {}
+                                                : { receipt_active: false }),
+                                        })
                                     }
                                 />
                             </Flex>
@@ -302,6 +337,31 @@ const BudgetTabs = (props: BudgetTabsProps) => {
                                 <Text>{t('BUDGET.SETTING_IST')}</Text>
                                 <Text size="xs" c="dimmed">
                                     {t('BUDGET.SETTING_IST_DESCRIPTION')}
+                                </Text>
+                            </Box>
+                        </Group>
+                        <Group align="center" gap="xl" justify="center" mb="md">
+                            <Flex justify="center" w={150}>
+                                <Switch
+                                    onLabel="An"
+                                    offLabel="Aus"
+                                    size="lg"
+                                    disabled={!props.data?.ist_active}
+                                    checked={
+                                        !!props.data?.ist_active &&
+                                        !!props.data?.receipt_active
+                                    }
+                                    onChange={(e) =>
+                                        props.onUpdate({
+                                            receipt_active: e.target.checked,
+                                        })
+                                    }
+                                />
+                            </Flex>
+                            <Box style={{ flex: 1 }}>
+                                <Text>{t('BUDGET.SETTING_RECEIPT')}</Text>
+                                <Text size="xs" c="dimmed">
+                                    {t('BUDGET.SETTING_RECEIPT_DESCRIPTION')}
                                 </Text>
                             </Box>
                         </Group>

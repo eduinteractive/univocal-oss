@@ -1,6 +1,6 @@
 {
     "name": "uvc-chat",
-    "version": "1.0.4",
+    "version": "1.1.0",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -41,7 +41,7 @@
     "dependencies": {
         "@eduinteractive/uvc-common": "workspace:*",
         "axios": "catalog:uvc-express-boilerplate",
-        "cookie": "^1.1.1",
+        "cookie": "^2.0.1",
         "express": "catalog:uvc-express-boilerplate",
         "express-validator": "catalog:uvc-express-boilerplate",
         "jsonwebtoken": "catalog:uvc-express-boilerplate",
@@ -49,6 +49,6 @@
         "mongodb": "catalog:uvc-express-boilerplate",
         "mongoose": "catalog:uvc-express-boilerplate",
         "redis": "catalog:uvc-express-boilerplate",
-        "socket.io": "^4.8.3"
+        "socket.io": "^4.8.4"
     }
 }

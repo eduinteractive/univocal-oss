@@ -1,6 +1,6 @@
 {
 	"name": "uvc-auth",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
@@ -40,7 +40,7 @@
 	},
 	"dependencies": {
 		"@eduinteractive/uvc-common": "workspace:*",
-        "expo-server-sdk": "^4.0.0",
+        "expo-server-sdk": "^7.2.0",
 		"axios": "catalog:uvc-express-boilerplate",
 		"bcryptjs": "catalog:",
 		"express": "catalog:uvc-express-boilerplate",

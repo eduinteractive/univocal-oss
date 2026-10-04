@@ -16,7 +16,7 @@ const Homepage = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title ta="center" c="blue" order={3} mt="md">
+            <Title ta="center" c="violet" order={3} mt="md">
                 {t('PAGES.HOMEPAGE.WELCOME')}
             </Title>
             <Text size="sm" ta="center" fw="bold" mt="xs">

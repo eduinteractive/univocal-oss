@@ -16,6 +16,7 @@ interface BudgetPositionAttrs {
     type: BudgetPositionType;
     soll_amount: number;
     ist_amount?: number;
+    without_assignment?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -33,6 +34,7 @@ export interface BudgetPositionDoc extends Document {
     type: BudgetPositionType;
     soll_amount: number;
     ist_amount?: number;
+    without_assignment?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -46,6 +48,7 @@ const BudgetPositionSchema = new Schema({
     type: { type: String, required: true },
     soll_amount: { type: Number, required: true },
     ist_amount: { type: Number, required: false, default: 0 },
+    without_assignment: { type: Boolean, required: false, default: false },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
 })

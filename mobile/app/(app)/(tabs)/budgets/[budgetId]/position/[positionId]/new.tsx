@@ -29,6 +29,8 @@ export default () => {
 	const isIncomeGroup = parentGroup?.type === BudgetPositionType.GROUP_INCOME;
 	const isExpenseGroup = parentGroup?.type === BudgetPositionType.GROUP_EXPENSE;
 	const isBudgetActive = budgetQuery.data?.budget.ist_active;
+	const receiptActive = !!budgetQuery.data?.budget.receipt_active;
+	const showManualIst = isBudgetActive && !receiptActive;
 
 	const positionType = isIncomeGroup 
 		? BudgetPositionType.INCOME 
@@ -66,7 +68,7 @@ export default () => {
 		}
 
 		let istAmountNum = 0;
-		if (isBudgetActive && istAmount.trim()) {
+		if (showManualIst && istAmount.trim()) {
 			istAmountNum = parseFloat(istAmount.replace(",", "."));
 			if (isNaN(istAmountNum) || istAmountNum < 0) {
 				return NotificationHandler.showError("Bitte gebe einen gültigen Ist-Betrag ein");
@@ -81,7 +83,7 @@ export default () => {
 				description: description.trim(),
 				type: positionType,
 				soll_amount: sollAmountNum,
-				ist_amount: isBudgetActive ? istAmountNum : undefined,
+				ist_amount: showManualIst ? istAmountNum : undefined,
 				parent: positionId as string,
 			},
 		});
@@ -148,7 +150,7 @@ export default () => {
 						required
 					/>
 
-					{isBudgetActive && (
+					{showManualIst && (
 						<TextInput
 							size="sm"
 							label="Ist-Betrag (€)"
@@ -157,6 +159,11 @@ export default () => {
 							onChangeText={(text) => setIstAmount(text)}
 							keyboardType="decimal-pad"
 						/>
+					)}
+					{receiptActive && isBudgetActive && (
+						<Text fs="sm" c="gray.6">
+							Der Ist-Betrag wird aus den Belegen dieser Position berechnet.
+						</Text>
 					)}
 
 					<Button

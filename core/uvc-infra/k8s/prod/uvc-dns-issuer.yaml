@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: kevin.saukel@saukels.de
+    privateKeySecretRef:
+      name: letsencrypt-dns
+    solvers:
+      # Requires cert-manager-webhook-ionos-cloud and the secret
+      # `cert-manager-webhook-ionos-cloud` (key `auth-token`) in the cert-manager namespace.
+      # The zone univocal.de must exist in IONOS Cloud DNS. See Readme.md section 1.7.
+      - selector:
+          dnsZones:
+            - univocal.de
+        dns01:
+          webhook:
+            groupName: acme.ionos.com
+            solverName: ionos-cloud
+            config:
+              secretRef: cert-manager-webhook-ionos-cloud
+              authTokenSecretKey: auth-token

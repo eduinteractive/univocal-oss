@@ -19,7 +19,7 @@ const NewChat = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="xs">
+            <Title order={3} c="violet" mb="xs">
                 {t('PAGES.USER.NEW_CHAT.TITLE')}
             </Title>
             {usersQuery.data?.map((user) => (
@@ -33,7 +33,7 @@ const NewChat = () => {
                 >
                     <Group justify="space-between" wrap="nowrap">
                         <Group gap="xs">
-                            <Avatar size={34} radius="xl" bg="blue">
+                            <Avatar size={34} radius="xl" bg="violet">
                                 <Text size="xs" ta="center" c="white" mt={3}>
                                     {getValidAvatarIdentifier(
                                         user.firstName,

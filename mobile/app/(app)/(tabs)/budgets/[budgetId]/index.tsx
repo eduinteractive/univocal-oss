@@ -1,8 +1,15 @@
 import { RelativePathString, router, useLocalSearchParams, useNavigation } from "expo-router";
 import { ScrollView, RefreshControl, Alert } from "react-native";
 import UVCLoader from "@/components/common/UVCLoader";
-import { deleteBudget, getBudget } from "@/api/Budget";
-import { BudgetPosition, BudgetPositionType } from "@/api/Budget";
+import {
+	deleteBudget,
+	getBudget,
+	getBudgetReceipts,
+	getPositionIstAmount,
+	BudgetPosition,
+	BudgetPositionType,
+	BudgetReceipt,
+} from "@/api/Budget";
 import { useTenant } from "@/context/TenantContext";
 import { useLayoutEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +22,15 @@ interface BudgetGroupsWithPosition {
 	positions: BudgetPosition[];
 }
 
+const sortGroups = (groups: BudgetGroupsWithPosition[]) => {
+	return [...groups].sort((a, b) => {
+		const aUnassigned = a.group.without_assignment || a.positions.some((p) => p.without_assignment);
+		const bUnassigned = b.group.without_assignment || b.positions.some((p) => p.without_assignment);
+		if (aUnassigned === bUnassigned) return 0;
+		return aUnassigned ? 1 : -1;
+	});
+};
+
 export default () => {
 	const { budgetId } = useLocalSearchParams();
 	const { currentTenant } = useTenant();
@@ -25,6 +41,21 @@ export default () => {
 		queryKey: ["budget", budgetId],
 		queryFn: () => getBudget({ tenantId: currentTenant!._id, budgetId: budgetId as string }),
 	});
+
+	const receiptActive = !!budgetQuery.data?.budget.receipt_active;
+	const istActive = !!budgetQuery.data?.budget.ist_active;
+
+	const receiptsQuery = useQuery({
+		queryKey: ["budget-receipts", budgetId],
+		queryFn: () =>
+			getBudgetReceipts({
+				tenantId: currentTenant!._id,
+				budgetId: budgetId as string,
+			}),
+		enabled: !!currentTenant && !!budgetId && receiptActive,
+	});
+
+	const receipts: BudgetReceipt[] = receiptsQuery.data || [];
 
 	const handleDelete = () => {
 		Alert.alert("Löschen bestätigen", "Möchtest du dieses Budget wirklich löschen?", [
@@ -95,7 +126,6 @@ export default () => {
 
 	const { positions } = budgetQuery.data;
 
-	// Group positions by type and parent
 	const incomeGroups: BudgetGroupsWithPosition[] = [];
 	const expenseGroups: BudgetGroupsWithPosition[] = [];
 
@@ -113,25 +143,135 @@ export default () => {
 		}
 	});
 
-	// Calculate totals
-	const totalIncome = incomeGroups.reduce(
-		(sum, group) => sum + group.positions.reduce((sum, position) => sum + position.soll_amount, 0),
+	const sortedIncomeGroups = sortGroups(incomeGroups);
+	const sortedExpenseGroups = sortGroups(expenseGroups);
+
+	const totalIncome = sortedIncomeGroups.reduce(
+		(sum, group) => sum + group.positions.reduce((s, position) => s + position.soll_amount, 0),
 		0
 	);
 
-	const totalExpenses = expenseGroups.reduce(
-		(sum, group) => sum + group.positions.reduce((sum, position) => sum + position.soll_amount, 0),
+	const totalExpenses = sortedExpenseGroups.reduce(
+		(sum, group) => sum + group.positions.reduce((s, position) => s + position.soll_amount, 0),
 		0
 	);
 
-	const totalActualIncome = incomeGroups.reduce(
-		(sum, group) => sum + group.positions.reduce((sum, position) => sum + (position.ist_amount || 0), 0),
+	const totalActualIncome = sortedIncomeGroups.reduce(
+		(sum, group) =>
+			sum +
+			group.positions.reduce(
+				(s, position) => s + getPositionIstAmount(position, receipts, receiptActive),
+				0
+			),
 		0
 	);
 
-	const totalActualExpenses = expenseGroups.reduce(
-		(sum, group) => sum + group.positions.reduce((sum, position) => sum + (position.ist_amount || 0), 0),
+	const totalActualExpenses = sortedExpenseGroups.reduce(
+		(sum, group) =>
+			sum +
+			group.positions.reduce(
+				(s, position) => s + getPositionIstAmount(position, receipts, receiptActive),
+				0
+			),
 		0
+	);
+
+	const renderGroup = (group: BudgetGroupsWithPosition) => (
+		<Card
+			key={group.group._id}
+			variant="outline"
+			radius="xs"
+			p="sm"
+			color="gray.2"
+		>
+			<Flex
+				direction="row"
+				justify="space-between"
+				align="center"
+				pb="md"
+			>
+				<Button
+					variant="subtle"
+					size="xs"
+					onPress={() => {
+						router.navigate(
+							`/budgets/${budgetId}/position/${group.group._id}/edit` as RelativePathString
+						);
+					}}
+					style={{ flex: 1, justifyContent: "flex-start" }}
+					pl={0}
+				>
+					<Text fw="600">{group.group.title}</Text>
+				</Button>
+				<Button
+					variant="subtle"
+					size="sm"
+					onPress={() => {
+						router.navigate(
+							`/budgets/${budgetId}/position/${group.group._id}/new` as RelativePathString
+						);
+					}}
+				>
+					<IconPlus size={16} color={applyColor("gray.6")} />
+				</Button>
+			</Flex>
+			<Flex direction="row" justify="space-between" mb="sm" pr="sm">
+				<Text c="gray.5">Position</Text>
+				<Flex direction="row" gap="xl">
+					<Text c="gray.5" mr="md">
+						Soll
+					</Text>
+					{istActive && <Text c="gray.5">Ist</Text>}
+				</Flex>
+			</Flex>
+			<Divider my="sm" color="gray.2" />
+			{group.positions.map((position) => (
+				<Box key={position._id} mb="xs">
+					<Button
+						variant="subtle"
+						size="sm"
+						onPress={() => {
+							router.navigate(
+								`/budgets/${budgetId}/position/${position._id}/edit` as RelativePathString
+							);
+						}}
+						style={{
+							width: "100%",
+							justifyContent: "space-between",
+							paddingHorizontal: 0,
+						}}
+					>
+						<Flex
+							direction="row"
+							justify="space-between"
+							style={{ width: "100%" }}
+						>
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								mr="sm"
+								flex={1}
+							>
+								{position.title}
+							</Text>
+							<Flex direction="row" gap="xl">
+								<Text>{position.soll_amount.toFixed(2)}€</Text>
+								{istActive && (
+									<Text c="gray.5">
+										{getPositionIstAmount(
+											position,
+											receipts,
+											receiptActive
+										).toFixed(2)}
+										€
+									</Text>
+								)}
+							</Flex>
+						</Flex>
+					</Button>
+				</Box>
+			))}
+		</Card>
 	);
 
 	return (
@@ -139,16 +279,15 @@ export default () => {
 			style={{ flex: 1, backgroundColor: "white" }}
 			refreshControl={
 				<RefreshControl
-					refreshing={budgetQuery.isRefetching}
-					onRefresh={budgetQuery.refetch}
+					refreshing={budgetQuery.isRefetching || receiptsQuery.isRefetching}
+					onRefresh={() => {
+						budgetQuery.refetch();
+						if (receiptActive) receiptsQuery.refetch();
+					}}
 				/>
 			}
 		>
-			<Flex
-				gap="md"
-				p="sm"
-				direction="column"
-			>
+			<Flex gap="md" p="sm" direction="column">
 				<Card
 					variant="filled"
 					color="primary.1"
@@ -157,95 +296,49 @@ export default () => {
 					mb="sm"
 					mt="lg"
 				>
-					<Flex
-						direction="row"
-						align="center"
-						justify="space-between"
-					>
-						<Flex
-							direction="row"
-							align="center"
-							gap="sm"
-						>
-							<Text
-								fs="md"
-								fw="bold"
-								c="gray.8"
-							>
-								Zusammenfassung
-							</Text>
-						</Flex>
-					</Flex>
+					<Text fs="md" fw="bold" c="gray.8">
+						Zusammenfassung
+					</Text>
 				</Card>
 
-				<Card
-					variant="outline"
-					radius="xs"
-					p="sm"
-					color="gray.2"
-				>
-					<Flex
-						direction="column"
-						gap="sm"
-					>
-						<Flex
-							direction="row"
-							justify="space-between"
-						>
+				<Card variant="outline" radius="xs" p="sm" color="gray.2">
+					<Flex direction="column" gap="sm">
+						<Flex direction="row" justify="space-between">
 							<Text>Einnahmen (Soll):</Text>
 							<Text fw="500">{totalIncome.toFixed(2)}€</Text>
 						</Flex>
-						{budgetQuery.data.budget.ist_active && (
-							<Flex
-								direction="row"
-								justify="space-between"
-							>
+						{istActive && (
+							<Flex direction="row" justify="space-between">
 								<Text>Einnahmen (Ist):</Text>
 								<Text fw="500">{totalActualIncome.toFixed(2)}€</Text>
 							</Flex>
 						)}
-						<Flex
-							direction="row"
-							justify="space-between"
-						>
+						<Flex direction="row" justify="space-between">
 							<Text>Ausgaben (Soll):</Text>
 							<Text fw="500">{totalExpenses.toFixed(2)}€</Text>
 						</Flex>
-						{budgetQuery.data.budget.ist_active && (
-							<Flex
-								direction="row"
-								justify="space-between"
-							>
+						{istActive && (
+							<Flex direction="row" justify="space-between">
 								<Text>Ausgaben (Ist):</Text>
 								<Text fw="500">{totalActualExpenses.toFixed(2)}€</Text>
 							</Flex>
 						)}
-						<Divider
-							my="sm"
-							color="gray.2"
-						/>
-						<Flex
-							direction="row"
-							justify="space-between"
-						>
+						<Divider my="sm" color="gray.2" />
+						<Flex direction="row" justify="space-between">
 							<Text fw="600">Ergebnis (Soll):</Text>
-							<Text fw="600">{totalIncome - totalExpenses}€</Text>
+							<Text fw="600">{(totalIncome - totalExpenses).toFixed(2)}€</Text>
 						</Flex>
-						{budgetQuery.data.budget.ist_active && (
-							<Flex
-								direction="row"
-								justify="space-between"
-							>
+						{istActive && (
+							<Flex direction="row" justify="space-between">
 								<Text fw="600">Ergebnis (Ist):</Text>
 								<Text fw="600">
-									{totalActualIncome - totalActualExpenses}€
+									{(totalActualIncome - totalActualExpenses).toFixed(2)}€
 								</Text>
 							</Flex>
 						)}
 					</Flex>
 				</Card>
 
-				{/* Income Groups */}
 				<Card
 					variant="filled"
 					color="green.1"
@@ -254,24 +347,10 @@ export default () => {
 					mb="sm"
 					mt="lg"
 				>
-					<Flex
-						direction="row"
-						align="center"
-						justify="space-between"
-					>
-						<Flex
-							direction="row"
-							align="center"
-							gap="sm"
-						>
-							<Text
-								fs="md"
-								fw="bold"
-								c="gray.8"
-							>
-								Einnahmen
-							</Text>
-						</Flex>
+					<Flex direction="row" align="center" justify="space-between">
+						<Text fs="md" fw="bold" c="gray.8">
+							Einnahmen
+						</Text>
 						<Button
 							variant="subtle"
 							size="sm"
@@ -281,141 +360,12 @@ export default () => {
 								);
 							}}
 						>
-							<IconPlus
-								size={16}
-								color={applyColor("gray.6")}
-							/>
+							<IconPlus size={16} color={applyColor("gray.6")} />
 						</Button>
 					</Flex>
 				</Card>
-				{incomeGroups.map((group) => (
-					<Card
-						key={group.group._id}
-						variant="outline"
-						radius="xs"
-						p="sm"
-						color="gray.2"
-					>
-						<Flex
-							direction="row"
-							justify="space-between"
-							align="center"
-							pb="md"
-						>
-							<Button
-								variant="subtle"
-								size="xs"
-								onPress={() => {
-									router.navigate(
-										`/budgets/${budgetId}/position/${group.group._id}/edit` as RelativePathString
-									);
-								}}
-								style={{ flex: 1, justifyContent: 'flex-start' }}
-                                pl={0}  
-							>
-								<Text
-									fw="600"
-								>
-									{group.group.title}
-								</Text>
-							</Button>
-							<Button
-								variant="subtle"
-								size="sm"
-								onPress={() => {
-									router.navigate(
-										`/budgets/${budgetId}/position/${group.group._id}/new` as RelativePathString
-									);
-								}}
-							>
-								<IconPlus
-									size={16}
-									color={applyColor("gray.6")}
-								/>
-							</Button>
-						</Flex>
-						<Flex
-							direction="row"
-							justify="space-between"
-							mb="sm"
-							pr="sm"
-						>
-							<Text c="gray.5">Position</Text>
-							<Flex
-								direction="row"
-								gap="xl"
-							>
-								<Text
-									c="gray.5"
-									mr="md"
-								>
-									Soll
-								</Text>
-								{budgetQuery.data.budget.ist_active && (
-									<Text c="gray.5">Ist</Text>
-								)}
-							</Flex>
-						</Flex>
-						<Divider
-							my="sm"
-							color="gray.2"
-						/>
-						{group.positions.map((position) => (
-							<Box
-								key={position._id}
-								mb="xs"
-							>
-								<Button
-									variant="subtle"
-									size="sm"
-									onPress={() => {
-										router.navigate(
-											`/budgets/${budgetId}/position/${position._id}/edit` as RelativePathString
-										);
-									}}
-									style={{ width: '100%', justifyContent: 'space-between', paddingHorizontal: 0 }}
-								>
-									<Flex
-										direction="row"
-										justify="space-between"
-										style={{ width: '100%' }}
-									>
-										<Text
-											className="flex-1 mr-4"
-											numberOfLines={1}
-											ellipsizeMode="tail"
-											mr="sm"
-											flex={1}
-										>
-											{position.title}
-										</Text>
-										<Flex
-											direction="row"
-											gap="xl"
-										>
-											<Text>
-												{position.soll_amount.toFixed(
-													2
-												)}
-												€
-											</Text>
-											{budgetQuery.data.budget.ist_active && (
-												<Text className="text-gray-500">
-													{position.ist_amount?.toFixed(
-														2
-													) || "0.00"}
-													€
-												</Text>
-											)}
-										</Flex>
-									</Flex>
-								</Button>
-							</Box>
-						))}
-					</Card>
-				))}
+				{sortedIncomeGroups.map(renderGroup)}
 
-				{/* Expense Groups */}
 				<Card
 					variant="filled"
 					color="red.1"
@@ -424,24 +374,10 @@ export default () => {
 					mb="sm"
 					mt="lg"
 				>
-					<Flex
-						direction="row"
-						align="center"
-						justify="space-between"
-					>
-						<Flex
-							direction="row"
-							align="center"
-							gap="sm"
-						>
-							<Text
-								fs="md"
-								fw="bold"
-								c="gray.8"
-							>
-								Ausgaben
-							</Text>
-						</Flex>
+					<Flex direction="row" align="center" justify="space-between">
+						<Text fs="md" fw="bold" c="gray.8">
+							Ausgaben
+						</Text>
 						<Button
 							variant="subtle"
 							size="sm"
@@ -451,139 +387,64 @@ export default () => {
 								);
 							}}
 						>
-							<IconPlus
-								size={16}
-								color={applyColor("gray.6")}
-							/>
+							<IconPlus size={16} color={applyColor("gray.6")} />
 						</Button>
 					</Flex>
 				</Card>
-				{expenseGroups.map((group) => (
-					<Card
-						key={group.group._id}
-						variant="outline"
-						radius="xs"
-						p="sm"
-						color="gray.2"
-					>
-						<Flex
-							direction="row"
-							justify="space-between"
-							align="center"
-							pb="md"
-						>
-							<Button
-								variant="subtle"
-								size="xs"
-								onPress={() => {
-									router.navigate(
-										`/budgets/${budgetId}/position/${group.group._id}/edit` as RelativePathString
-									);
-								}}
-								style={{ flex: 1, justifyContent: 'flex-start' }}
-                                pl={0}
-							>
-								<Text
-									fw="600"
-								>
-									{group.group.title}
-								</Text>
-							</Button>
-							<Button
-								variant="subtle"
-								size="sm"
-								onPress={() => {
-									router.navigate(
-										`/budgets/${budgetId}/position/${group.group._id}/new` as RelativePathString
-									);
-								}}
-							>
-								<IconPlus
-									size={16}
-									color={applyColor("gray.6")}
-								/>
-							</Button>
-						</Flex>
-						<Flex
-							direction="row"
-							justify="space-between"
+				{sortedExpenseGroups.map(renderGroup)}
+
+				{receiptActive && (
+					<>
+						<Card
+							variant="filled"
+							color="primary.1"
+							radius={0}
+							p="md"
 							mb="sm"
-							pr="sm"
+							mt="lg"
 						>
-							<Text
-								c="gray.5"
-								mr="md"
-							>
-								Position
-							</Text>
 							<Flex
 								direction="row"
-								gap="xl"
+								align="center"
+								justify="space-between"
 							>
-								<Text c="gray.5">Soll</Text>
-								{budgetQuery.data.budget.ist_active && (
-									<Text c="gray.5">Ist</Text>
-								)}
-							</Flex>
-						</Flex>
-						<Divider
-							my="sm"
-							color="gray.2"
-						/>
-						{group.positions.map((position) => (
-							<Box
-								key={position._id}
-								mb="xs"
-							>
+								<Text fs="md" fw="bold" c="gray.8">
+									Belege
+								</Text>
 								<Button
 									variant="subtle"
 									size="sm"
 									onPress={() => {
 										router.navigate(
-											`/budgets/${budgetId}/position/${position._id}/edit` as RelativePathString
+											`/budgets/${budgetId}/receipts/new` as RelativePathString
 										);
 									}}
-									style={{ width: '100%', justifyContent: 'space-between', paddingHorizontal: 0 }}
 								>
-									<Flex
-										direction="row"
-										justify="space-between"
-										style={{ width: '100%' }}
-									>
-										<Text
-											className="flex-1 mr-4"
-											numberOfLines={1}
-											ellipsizeMode="tail"
-											mr="sm"
-											flex={1}
-										>
-											{position.title}
-										</Text>
-										<Flex
-											direction="row"
-											gap="xl"
-										>
-											<Text>
-												{position.soll_amount.toFixed(
-													2
-												)}
-												€
-											</Text>
-											{budgetQuery.data.budget.ist_active && (
-												<Text className="text-gray-500">
-													{position.ist_amount?.toFixed(
-														2
-													) || "0.00"}
-													€
-												</Text>
-											)}
-										</Flex>
-									</Flex>
+									<IconPlus size={16} color={applyColor("gray.6")} />
 								</Button>
-							</Box>
-						))}
-					</Card>
-				))}
+							</Flex>
+						</Card>
+						<Card variant="outline" radius="xs" p="sm" color="gray.2">
+							<Flex direction="column" gap="sm">
+								<Text>
+									{(receiptsQuery.data || []).length} Beleg
+									{(receiptsQuery.data || []).length === 1 ? "" : "e"}
+								</Text>
+								<Button
+									variant="outline"
+									size="sm"
+									onPress={() => {
+										router.navigate(
+											`/budgets/${budgetId}/receipts` as RelativePathString
+										);
+									}}
+								>
+									Belege anzeigen
+								</Button>
+							</Flex>
+						</Card>
+					</>
+				)}
 			</Flex>
 		</ScrollView>
 	);

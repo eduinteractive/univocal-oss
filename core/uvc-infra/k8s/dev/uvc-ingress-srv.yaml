@@ -115,6 +115,52 @@ spec:
                 name: uvc-project-srv
                 port:
                   number: 3009
+          - path: /api/statistics/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-statistics-srv
+                port:
+                  number: 3011
+          - path: /.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-web-srv
+                port:
+                  number: 3000
+    # Group sites: only public APIs are exposed same-origin (see Readme.md section 1.7).
+    - host: "*.univocal.local.de"
+      http:
+        paths:
+          - path: /api/profile/public/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-profile-srv
+                port:
+                  number: 3003
+          - path: /api/profile/image/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-profile-srv
+                port:
+                  number: 3003
+          - path: /api/survey/public/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-survey-srv
+                port:
+                  number: 3007
+          - path: /api/event/public/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-event-srv
+                port:
+                  number: 3008
           - path: /.*
             pathType: ImplementationSpecific
             backend:

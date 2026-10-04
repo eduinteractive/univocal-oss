@@ -1,18 +1,16 @@
 "use client";
 
-import { Anchor, Box, Button, Flex, Image, SimpleGrid, Stack, Text, Title, useMantineTheme } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconBrandGithub, IconCloud, IconExternalLink, IconMailForward, IconServer2 } from "@tabler/icons-react";
+import { Anchor, Box, Flex, Image, Stack, Text, Title, useMantineTheme } from "@mantine/core";
+import { IconExternalLink } from "@tabler/icons-react";
 import "./page.css";
 import { UVC_ASSETS_URL } from "@eduinteractive/uvc-api";
 import unionPanelMask from "../assets/Union.png";
-import { SaasOfferModal } from "../components/SaasOfferModal";
-import { UVCAmbientBlobs, UVCCtaDotPattern, UVCNetworkCollaborationSvg } from "../components/UVCDecoratives";
+import { LandingPageView } from "../components/LandingStats";
+import { UVCAmbientBlobs, UVCNetworkCollaborationSvg } from "../components/UVCDecoratives";
+import UVCUsageCta from "../components/UVCUsageCta";
 import { COLORS } from "../constants/Colors";
 
 const TEXT = COLORS.TEXT;
-
-const UVC_GITHUB_URL = "https://github.com/eduinteractive/univocal-oss";
 
 const UNIVOCAL_ABOUT_URL = "https://univocal.de/ueber-uns/";
 
@@ -29,6 +27,7 @@ const UVC_HOME_TILES: UVCTile[] = [
 	{ label: "Umfragen", iconPath: "/icons/Umfragen.png" },
 	{ label: "Veranstaltungen", iconPath: "/icons/Veranstaltungen.png" },
 	{ label: "Finanzen", iconPath: "/icons/Finanzen.png" },
+	{ label: "Webpräsenz", iconPath: "/icons/Webpraesenz.png" },
 ];
 
 /** Same frame for every icon so dimensions match. `contain` scales differing PNG crops uniformly. */
@@ -50,7 +49,6 @@ const PANEL_MASK_STYLE = {
 } as const;
 
 const HomePage = () => {
-	const [saasOfferOpen, { open: openSaasOffer, close: closeSaasOffer }] = useDisclosure(false);
 	const theme = useMantineTheme();
 	const g = theme.spacing.md;
 	const tileWidth = {
@@ -60,13 +58,11 @@ const HomePage = () => {
 
 	return (
 		<>
-			<SaasOfferModal
-				opened={saasOfferOpen}
-				onClose={closeSaasOffer}
-			/>
+			<LandingPageView path="/" />
 			<Stack gap={0}>
 				<Box
 					component="section"
+					data-landing-section="hero"
 					mih="100%"
 					pt={50}
 					bg={COLORS.SECONDARY}
@@ -196,7 +192,7 @@ const HomePage = () => {
 						pos="relative"
 						style={{ zIndex: 1 }}
 					>
-						<Box data-feature="section-1" className="uvc-feature">
+						<Box data-feature="section-1" data-landing-section="plattform" className="uvc-feature">
 							<Title
 								order={2}
 								size="h3"
@@ -251,7 +247,7 @@ const HomePage = () => {
 						pos="relative"
 						style={{ zIndex: 1 }}
 					>
-						<Box data-feature="section-2" className="uvc-feature">
+						<Box data-feature="section-2" data-landing-section="open-source" className="uvc-feature">
 							<Title
 								order={2}
 								size="h3"
@@ -290,227 +286,7 @@ const HomePage = () => {
 					</Box>
 				</Box>
 
-				<Box
-					component="section"
-					bg={COLORS.SECONDARY}
-					py={{ base: "2.5rem", sm: "3.5rem" }}
-					px={{ base: "md", sm: "xl" }}
-					style={{
-						borderTop: "1px solid rgba(18, 8, 117, 0.08)",
-					}}
-				>
-					<Box
-						maw={960}
-						mx="auto"
-						pos="relative"
-					>
-						<UVCCtaDotPattern />
-						<Stack
-							gap="xl"
-							align="center"
-							pos="relative"
-							style={{ zIndex: 1 }}
-						>
-							<Stack
-								gap="xs"
-								align="center"
-								ta="center"
-								maw={640}
-							>
-								<Title
-									order={2}
-									size="h3"
-									c={COLORS.PRIMARY}
-									fw={800}
-									style={{ letterSpacing: "-0.02em" }}
-								>
-									Du willst univocal nutzen?
-								</Title>
-								<Text
-									size="md"
-									c={TEXT}
-									opacity={0.9}
-									lh={1.55}
-								>
-									Wähle zwischen eigenem Hosting mit dem
-									Open-Source-Code oder einem gehosteten
-									SaaS-Angebot für deine Hochschule.
-								</Text>
-							</Stack>
-
-							<SimpleGrid
-								cols={{ base: 1, sm: 2 }}
-								spacing="lg"
-								w="100%"
-							>
-								<Box
-									p={{ base: "lg", sm: "xl" }}
-									style={{
-										borderRadius: "1rem",
-										background: "#fff",
-										boxShadow: "0 8px 28px rgba(18, 8, 117, 0.06)",
-										border: "1px solid rgba(18, 8, 117, 0.08)",
-										height: "100%",
-									}}
-								>
-									<Stack
-										gap="md"
-										h="100%"
-										justify="space-between"
-										align="flex-start"
-									>
-										<Stack gap="sm">
-											<Flex
-												align="center"
-												gap="sm"
-											>
-												<IconServer2
-													size={28}
-													stroke={1.25}
-													color={
-														COLORS.PRIMARY
-													}
-												/>
-												<Title
-													order={3}
-													size="h4"
-													c={
-														COLORS.PRIMARY
-													}
-													fw={700}
-												>
-													Self Hosting
-												</Title>
-											</Flex>
-											<Text
-												size="sm"
-												c={TEXT}
-												lh={1.6}
-											>
-												univocal ist Open
-												Source. Du kannst es auf
-												eigener Infrastruktur
-												installieren und
-												betreiben. Code und
-												Releases liegen auf
-												GitHub.
-											</Text>
-										</Stack>
-										<Button
-											component="a"
-											href={UVC_GITHUB_URL}
-											target="_blank"
-											rel="noopener noreferrer"
-											size="md"
-											radius="xl"
-											fullWidth
-											leftSection={
-												<IconBrandGithub
-													size={20}
-													stroke={1.5}
-												/>
-											}
-											styles={{
-												root: {
-													backgroundColor:
-														COLORS.PRIMARY,
-												},
-											}}
-											c="white"
-										>
-											Repository auf GitHub
-										</Button>
-									</Stack>
-								</Box>
-
-								<Box
-									p={{ base: "lg", sm: "xl" }}
-									style={{
-										borderRadius: "1rem",
-										background: "linear-gradient(165deg, #ffffff 0%, rgba(246, 245, 252, 0.85) 100%)",
-										boxShadow: "0 8px 28px rgba(18, 8, 117, 0.06)",
-										border: "1px solid rgba(18, 8, 117, 0.08)",
-										height: "100%",
-									}}
-								>
-									<Stack
-										gap="md"
-										h="100%"
-										justify="space-between"
-										align="flex-start"
-									>
-										<Stack gap="sm">
-											<Flex
-												align="center"
-												gap="sm"
-											>
-												<IconCloud
-													size={28}
-													stroke={1.25}
-													color={
-														COLORS.PRIMARY
-													}
-												/>
-												<Title
-													order={3}
-													size="h4"
-													c={
-														COLORS.PRIMARY
-													}
-													fw={700}
-												>
-													SaaS
-												</Title>
-											</Flex>
-											<Text
-												size="sm"
-												c={TEXT}
-												lh={1.6}
-											>
-												Wir betreiben die
-												Plattform in der IONOS
-												Cloud. Die Infrastruktur
-												dort ist nach ISO/IEC
-												27001 zertifiziert. Wenn
-												ihr nicht selbst hosten
-												wollt, übernehmen wir
-												Betrieb und Support für
-												eure Hochschule. Fragt
-												unverbindlich an.
-											</Text>
-										</Stack>
-										<Button
-											type="button"
-											onClick={openSaasOffer}
-											size="md"
-											radius="xl"
-											fullWidth
-											variant="white"
-											leftSection={
-												<IconMailForward
-													size={20}
-													stroke={1.5}
-												/>
-											}
-											styles={{
-												root: {
-													color: COLORS.PRIMARY,
-													borderColor:
-														"rgba(18, 8, 117, 0.25)",
-													fontWeight: 600,
-													backgroundColor:
-														"rgba(255,255,255,0.95)",
-												},
-											}}
-										>
-											Angebot anfragen
-										</Button>
-									</Stack>
-								</Box>
-							</SimpleGrid>
-						</Stack>
-					</Box>
-				</Box>
+				<UVCUsageCta />
 			</Stack>
 		</>
 	);

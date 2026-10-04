@@ -97,7 +97,7 @@ const Calendar = () => {
     return (
         <SVHPageWrapper p="md">
             <Group gap="xs">
-                <Title order={3} c="blue">
+                <Title order={3} c="violet">
                     {t('TENANT_PAGES.CALENDAR.TITLE')}
                 </Title>
                 <SVHPrivacyDisclaimer />

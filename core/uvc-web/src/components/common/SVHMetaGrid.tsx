@@ -83,9 +83,8 @@ const SVHMetaGrid = (props: SVHMetaGridProps) => {
                     className={classes.card}
                     key={item._id}
                     onClick={() => {
-                        props.onOpen
-                            ? props.onOpen(item)
-                            : navigate(`${item._id}`);
+                        if (props.onOpen) props.onOpen(item);
+                        else navigate(`${item._id}`);
                     }}
                 >
                     {props.imageEnabled && (
@@ -182,9 +181,8 @@ const SVHMetaGrid = (props: SVHMetaGridProps) => {
                                         size="sm"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            props.onOpen
-                                                ? props.onOpen(item)
-                                                : navigate(`${item._id}`);
+                                            if (props.onOpen) props.onOpen(item);
+                                            else navigate(`${item._id}`);
                                         }}
                                     >
                                         <IconEye size={24} />

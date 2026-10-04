@@ -81,7 +81,7 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                         series={[
                             {
                                 name: 'value',
-                                color: 'blue',
+                                color: 'violet',
                                 label: t('SURVEYS.RESULTS.ANSWERS'),
                             },
                         ]}
@@ -130,7 +130,7 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                         series={[
                             {
                                 name: 'value',
-                                color: 'blue',
+                                color: 'violet',
                                 label: t('SURVEYS.RESULTS.ANSWERS'),
                             },
                         ]}
@@ -170,7 +170,7 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                         series={[
                             {
                                 name: 'value',
-                                color: 'blue',
+                                color: 'violet',
                                 label: t('SURVEYS.RESULTS.ANSWERS'),
                             },
                         ]}

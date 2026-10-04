@@ -2,7 +2,7 @@ import { sendPushNotification, UserPayload } from "@eduinteractive/uvc-common";
 import { Server as SocketIOServer } from "socket.io";
 import { Server as HTTPServer } from "http";
 import { Request } from "express";
-import * as cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import jwt from 'jsonwebtoken';
 import { Types } from "mongoose";
 import PrivateMessage from "./models/PrivateMessage";
@@ -48,7 +48,7 @@ export class SVHChatSocket {
         this.io.use((socket, next) => {
             let token = null;
             if (socket.handshake.headers.cookie) {
-                const parsedCookies = cookie.parse(socket.handshake.headers.cookie);
+                const parsedCookies = parseCookie(socket.handshake.headers.cookie);
                 token = parsedCookies.token;
             } else {
                 token = socket.handshake.auth?.token;

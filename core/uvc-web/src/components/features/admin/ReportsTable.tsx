@@ -85,7 +85,7 @@ const ReportsTable = (props: ReportsTableProps) => {
                             </Table.Td>
                             <Table.Td>
                                 <ActionIcon
-                                    color="blue"
+                                    color="violet"
                                     variant="subtle"
                                     size="md"
                                     onClick={() => props.onSelectReport(report._id)}

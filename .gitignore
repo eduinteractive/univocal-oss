@@ -7,3 +7,5 @@ node_modules/
 .registry.local
 .env.prod.local
 core/svh-infra/k8s/prod/local/
+.agents/
+skills-lock.json
