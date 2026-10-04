@@ -43,7 +43,7 @@
         "axios": "catalog:uvc-express-boilerplate",
         "express": "catalog:uvc-express-boilerplate",
         "express-validator": "catalog:uvc-express-boilerplate",
-        "ical-generator": "^7.2.0",
+        "ical-generator": "^11.1.2",
         "jsonwebtoken": "catalog:uvc-express-boilerplate",
         "migrate-mongo": "catalog:uvc-express-boilerplate",
         "mongodb": "catalog:uvc-express-boilerplate",

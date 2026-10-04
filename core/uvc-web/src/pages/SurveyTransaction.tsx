@@ -119,7 +119,7 @@ const SurveyTransaction = () => {
             }
         }
 
-        let identifier: string | undefined = undefined;
+        let identifier: string | undefined;
         if (
             surveyQuery.data?.survey.options.executionMode ===
             SurveyExecutionMode.TAN

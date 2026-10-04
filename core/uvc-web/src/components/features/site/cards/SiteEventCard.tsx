@@ -10,6 +10,7 @@ import SiteDateBlock from './SiteDateBlock';
 import { truncate } from '../siteText';
 import classes from '../site.module.css';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const formatEventDate = (event: PublicSiteEvent) => {
     const start = dayjs(event.startDate);
     const end = event.endDate ? dayjs(event.endDate) : undefined;

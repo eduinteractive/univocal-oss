@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy, type JSX } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import SVHSuspense from '../components/common/SVHSuspense';
 

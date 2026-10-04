@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:24-alpine as base
 
 WORKDIR /service
 
@@ -22,7 +22,7 @@ RUN mkdir -p /tmp/core-package-json && \
     done
 
 # Finales Base-Image
-FROM node:20-alpine as uvc-base
+FROM node:24-alpine as uvc-base
 
 WORKDIR /service
 

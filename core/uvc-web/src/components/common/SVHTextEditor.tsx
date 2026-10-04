@@ -1,11 +1,12 @@
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import Table from '@tiptap/extension-table';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
-import TableRow from '@tiptap/extension-table-row';
+import {
+    Table,
+    TableCell,
+    TableHeader,
+    TableRow,
+} from '@tiptap/extension-table';
 import { useEffect, useRef, useState } from 'react';
 import {
     IconColumnInsertRight,
@@ -33,9 +34,8 @@ const SVHTextEditor = (props: SVHTextEditorProps) => {
 
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({ link: false }),
             Link,
-            Underline,
             Table.configure({
                 resizable: true,
                 cellMinWidth: 50,
@@ -56,7 +56,7 @@ const SVHTextEditor = (props: SVHTextEditorProps) => {
 
     useEffect(() => {
         if (props.text !== editor?.getHTML()) {
-            editor?.commands.setContent(props.text);
+            editor?.commands.setContent(props.text, { emitUpdate: false });
         }
     }, [props.text, editor]);
 

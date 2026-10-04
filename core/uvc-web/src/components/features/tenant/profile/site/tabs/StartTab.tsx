@@ -8,7 +8,7 @@ import {
     IconPhoto,
     IconPhotoEdit,
 } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import SVHLoader from '../../../../../common/SVHLoader';
 import SectionManager from '../SectionManager';
@@ -43,7 +43,7 @@ const StartTab = ({ builder, steps, onOpenModal, onNavigate, onSetupAction }: St
     );
 
     return (
-        <Grid gutter={{ base: 'lg', lg: 32 }}>
+        <Grid gap={{ base: 'lg', lg: 32 }}>
             <Grid.Col span={{ base: 12, lg: 8 }}>
                 <Stack gap="md">
                     <Group justify="space-between">

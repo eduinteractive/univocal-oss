@@ -138,7 +138,7 @@ function SiteSection<T>({
         );
     } else {
         body = (
-            <Grid gutter="lg">
+            <Grid gap="lg">
                 <Grid.Col span={{ base: 12, md: 7 }}>{active && renderFeatured(active)}</Grid.Col>
                 <Grid.Col span={{ base: 12, md: 5 }}>
                     <Stack gap="sm" mah={560} style={{ overflowY: 'auto' }}>

@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy, type JSX } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import SVHAppShell from './SVHAppShell';
 import { AUTH_FORM_STATE } from '../constants/Enums';
@@ -114,10 +114,10 @@ const SVHRouter = (): JSX.Element => {
                     </SVHSuspense>
                 }
             />
-            <Route path="*" element={<RequireLogin />}>
-                <Route path="*" element={<RequireSocket />}>
-                    <Route path="*" element={<InitTenant />}>
-                        <Route path="*" element={<SVHAppShell />}>
+            <Route element={<RequireLogin />}>
+                <Route element={<RequireSocket />}>
+                    <Route element={<InitTenant />}>
+                        <Route element={<SVHAppShell />}>
                             <Route
                                 index
                                 element={
@@ -429,6 +429,7 @@ const SVHRouter = (): JSX.Element => {
                                     }
                                 />
                             </Route>
+                            <Route path="*" element={null} />
                         </Route>
                     </Route>
                 </Route>

@@ -8,7 +8,7 @@ import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { CALENDAR_MONTHS } from './CalendarRaster';
 import { useTranslation } from 'react-i18next';
 
-interface CalendarFilterObject extends SVHFilterObject {}
+type CalendarFilterObject = SVHFilterObject;
 
 interface CalendarFilterProps {
     calenderToken?: CalendarToken;

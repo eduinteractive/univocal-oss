@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # -------- Builder --------
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /service
 RUN npm i -g pnpm
 
@@ -34,7 +34,7 @@ RUN STAND_APP=core/uvc-landing/.next/standalone/core/uvc-landing \
  && cp -r core/uvc-landing/.next/static "$STAND_APP/.next/static"
 
 # -------- Runtime: full standalone tree (root node_modules + pnpm layout) --------
-FROM node:20-alpine AS runtime
+FROM node:24-alpine AS runtime
 ENV NODE_ENV=production
 ENV PORT=3010
 WORKDIR /app

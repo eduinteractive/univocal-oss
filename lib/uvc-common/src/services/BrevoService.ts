@@ -1,4 +1,6 @@
-import { SendSmtpEmail, TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
+import { Brevo, BrevoClient } from "@getbrevo/brevo";
+
+const getBrevoClient = () => new BrevoClient({ apiKey: process.env.BREVO_API_KEY! });
 
 interface sendBrevoTemplateMailRequest {
     to: {
@@ -8,18 +10,13 @@ interface sendBrevoTemplateMailRequest {
     params: Record<string, string>;
 }
 
-export const sendBrevoTemplateMail = async (req: sendBrevoTemplateMailRequest) => {
+export const sendBrevoTemplateMail = async (req: sendBrevoTemplateMailRequest): Promise<Brevo.SendTransacEmailResponse> => {
     try {
-        let mailNotification = new SendSmtpEmail();
-        mailNotification = {
+        const mail = await getBrevoClient().transactionalEmails.sendTransacEmail({
             to: req.to,
             templateId: req.templateId,
             params: req.params
-        }
-
-        let apiInstance = new TransactionalEmailsApi();
-        apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
-        const mail = await apiInstance.sendTransacEmail(mailNotification);
+        });
         return mail;
     } catch (err) {
         throw err;
@@ -36,10 +33,9 @@ interface sendBrevoMail {
     replyTo?: { email: string; name?: string };
 }
 
-export const sendBrevoMail = async (req: sendBrevoMail) => {
+export const sendBrevoMail = async (req: sendBrevoMail): Promise<Brevo.SendTransacEmailResponse> => {
     try {
-        let mailNotification = new SendSmtpEmail();
-        mailNotification = {
+        const mail = await getBrevoClient().transactionalEmails.sendTransacEmail({
             to: req.to,
             subject: req.subject,
             htmlContent: req.html,
@@ -47,10 +43,7 @@ export const sendBrevoMail = async (req: sendBrevoMail) => {
             ...(req.replyTo
                 ? { replyTo: { email: req.replyTo.email, name: req.replyTo.name } }
                 : {}),
-        }
-        let apiInstance = new TransactionalEmailsApi();
-        apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY!);
-        const mail = await apiInstance.sendTransacEmail(mailNotification);
+        });
         return mail;
     } catch (err) {
         throw err;

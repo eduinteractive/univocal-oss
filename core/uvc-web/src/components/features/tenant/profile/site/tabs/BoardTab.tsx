@@ -16,12 +16,12 @@ const BoardTab = ({ builder }: { builder: SiteBuilder }) => {
 
     const newsQuery = useQuery({
         queryKey: ['news', tenantId, 'board-picker'],
-        queryFn: () => SAPI.PROFILE.TENANT.getAllNews({ tenantId, params: null }),
+        queryFn: () => SAPI.PROFILE.TENANT.getAllNews({ tenantId: tenantId!, params: null }),
         enabled: !!tenantId,
     });
     const projectsQuery = useQuery({
         queryKey: ['projects', tenantId, 'board-picker'],
-        queryFn: () => SAPI.PROFILE.TENANT.getTenantProjects({ tenantId, params: null }),
+        queryFn: () => SAPI.PROFILE.TENANT.getTenantProjects({ tenantId: tenantId!, params: null }),
         enabled: !!tenantId,
     });
 
