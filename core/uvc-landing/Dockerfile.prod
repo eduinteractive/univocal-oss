@@ -13,7 +13,7 @@ RUN pnpm config set inject-workspace-packages true --location project
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY lib ./lib
 
-RUN pnpm install --filter ./lib/*
+RUN pnpm install --filter "./lib/*"
 RUN pnpm run build:libs
 
 COPY core/uvc-landing ./core/uvc-landing
