@@ -213,7 +213,7 @@ Weitere Informationen zur Erstellung von Kubernetes Secrets mit YAML-Dateien fin
 
 ### 1.7 Gruppenseiten (Subdomains)
 
-Gruppen können im Univocal Builder (`/sv/profile`) eine öffentliche Website erstellen und unter einer eigenen Subdomain veröffentlichen, z. B. `https://fachschaft04.univocal.de`. Unabhängig von der Subdomain ist jede veröffentlichte Seite auch unter `https://apps.univocal.de/g/<subdomain>` erreichbar.
+Gruppen können im Univocal Builder (`/sv/profile`) eine öffentliche Website erstellen und unter einer eigenen Subdomain veröffentlichen, z. B. `https://fachschaft.univocal.de`. Unabhängig von der Subdomain ist jede veröffentlichte Seite auch unter `https://apps.univocal.de/g/<subdomain>` erreichbar.
 
 **Funktionsweise**
 
@@ -232,10 +232,10 @@ Gruppen können im Univocal Builder (`/sv/profile`) eine öffentliche Website er
 `/etc/hosts` unterstützt keine Wildcards. Für jede lokal getestete Gruppe einen Eintrag ergänzen (IP wie bei `apps.univocal.local.de`):
 
 ```sh
-127.0.0.1 fachschaft04.univocal.local.de
+127.0.0.1 fachschaft.univocal.local.de
 ```
 
-Anschließend ist die Seite unter `http://fachschaft04.univocal.local.de` erreichbar (Subdomain vorher im Builder unter *Einstellungen* setzen und veröffentlichen). Ohne Hosts-Eintrag funktioniert immer der Pfad `http://apps.univocal.local.de/g/fachschaft04`.
+Anschließend ist die Seite unter `http://fachschaft.univocal.local.de` erreichbar (Subdomain vorher im Builder unter *Einstellungen* setzen und veröffentlichen). Ohne Hosts-Eintrag funktioniert immer der Pfad `http://apps.univocal.local.de/g/fachschaft`.
 
 Die Basis-Domain wird über `VITE_PROFILE_BASE_DOMAIN` in `core/uvc-web/.env.development` bzw. `.env.production` gesetzt.
 

@@ -1555,7 +1555,7 @@
                 },
                 "SUBDOMAIN": {
                     "TITLE": "Subdomain festlegen",
-                    "DESCRIPTION": "Eure eigene Adresse, z. B. fachschaft04.univocal.de."
+                    "DESCRIPTION": "Eure eigene Adresse, z. B. fachschaft.univocal.de."
                 },
                 "LEGAL": {
                     "TITLE": "Impressum und Datenschutzerklärung",

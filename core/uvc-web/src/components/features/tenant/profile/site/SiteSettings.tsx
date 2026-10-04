@@ -192,7 +192,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
                     <TextInput
                         flex={1}
                         label={t('SITE.SETTINGS.SUBDOMAIN_LABEL')}
-                        placeholder="fachschaft04"
+                        placeholder="fachschaft"
                         value={subdomain}
                         disabled={!canEdit || subdomainLocked}
                         onChange={(event) => setSubdomain(sanitizeInput(event.currentTarget.value))}
