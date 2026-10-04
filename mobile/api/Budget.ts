@@ -1,13 +1,4 @@
 import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from './APIHandler';
-import {
-    MOCK_BUDGET_RECEIPTS,
-    getMockBudgetFlags,
-    mockCreateBudgetReceipt,
-    mockDeleteBudgetReceipt,
-    mockGetBudgetReceipts,
-    mockUpdateBudgetReceipt,
-    setMockBudgetFlags,
-} from './BudgetReceiptMock';
 
 export interface Budget extends UVCMetadata {
     _id: string;
@@ -72,20 +63,7 @@ interface getBudgetRequest {
 
 export const getBudget = async (req: getBudgetRequest): Promise<{ budget: Budget, positions: BudgetPosition[] }> => {
     const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}`);
-    const data = response.data as { budget: Budget; positions: BudgetPosition[] };
-
-    if (MOCK_BUDGET_RECEIPTS) {
-        const flags = getMockBudgetFlags(req.budgetId);
-        if (flags) {
-            data.budget = {
-                ...data.budget,
-                ist_active: flags.ist_active ?? data.budget.ist_active,
-                receipt_active: flags.receipt_active ?? data.budget.receipt_active,
-            };
-        }
-    }
-
-    return data;
+    return response.data;
 }
 
 interface createBudgetRequest {
@@ -111,30 +89,6 @@ interface updateBudgetRequest {
 }
 
 export const updateBudget = async (req: updateBudgetRequest): Promise<Budget> => {
-    if (MOCK_BUDGET_RECEIPTS) {
-        const { receipt_active, ist_active, ...rest } = req.body;
-        const mockPatch: { receipt_active?: boolean; ist_active?: boolean } = {};
-        if (receipt_active !== undefined) mockPatch.receipt_active = receipt_active;
-        if (ist_active !== undefined) mockPatch.ist_active = ist_active;
-        if (Object.keys(mockPatch).length > 0) {
-            setMockBudgetFlags(req.budgetId, mockPatch);
-        }
-        // receipt_active is not on prod yet — omit it from the real request
-        const apiBody = { ...rest } as updateBudgetRequest["body"];
-        if (ist_active !== undefined) apiBody.ist_active = ist_active;
-        const response = await APIHandler.put(
-            `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}`,
-            apiBody
-        );
-        const budget = response.data as Budget;
-        const flags = getMockBudgetFlags(req.budgetId);
-        return {
-            ...budget,
-            ist_active: flags?.ist_active ?? budget.ist_active,
-            receipt_active: flags?.receipt_active ?? budget.receipt_active,
-        };
-    }
-
     const response = await APIHandler.put(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}`, req.body);
     return response.data;
 }
@@ -214,9 +168,6 @@ interface getBudgetReceiptsRequest {
 }
 
 export const getBudgetReceipts = async (req: getBudgetReceiptsRequest): Promise<BudgetReceipt[]> => {
-    if (MOCK_BUDGET_RECEIPTS) {
-        return mockGetBudgetReceipts(req.budgetId);
-    }
     const response = await APIHandler.get(`/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`);
     return response.data;
 }
@@ -234,10 +185,6 @@ interface createBudgetReceiptRequest {
 }
 
 export const createBudgetReceipt = async (req: createBudgetReceiptRequest): Promise<BudgetReceipt> => {
-    if (MOCK_BUDGET_RECEIPTS) {
-        return mockCreateBudgetReceipt(req.budgetId, req.body);
-    }
-
     const formData = new FormData();
     if (req.body.positionId) formData.append("positionId", req.body.positionId);
     formData.append("amount", String(req.body.amount));
@@ -277,10 +224,6 @@ interface updateBudgetReceiptRequest {
 }
 
 export const updateBudgetReceipt = async (req: updateBudgetReceiptRequest): Promise<BudgetReceipt> => {
-    if (MOCK_BUDGET_RECEIPTS) {
-        return mockUpdateBudgetReceipt(req.budgetId, req.receiptId, req.body);
-    }
-
     const formData = new FormData();
     formData.append("positionId", req.body.positionId);
     if (req.body.amount !== undefined) formData.append("amount", String(req.body.amount));
@@ -315,9 +258,6 @@ interface deleteBudgetReceiptRequest {
 }
 
 export const deleteBudgetReceipt = async (req: deleteBudgetReceiptRequest): Promise<void> => {
-    if (MOCK_BUDGET_RECEIPTS) {
-        return mockDeleteBudgetReceipt(req.budgetId, req.receiptId);
-    }
     await APIHandler.delete(
         `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`
     );

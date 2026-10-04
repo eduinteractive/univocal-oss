@@ -32,7 +32,6 @@ import {
 	getBudgetReceiptDownloadUrl,
 	getBudgetReceipts,
 } from "@/api/Budget";
-import { MOCK_BUDGET_RECEIPTS } from "@/api/BudgetReceiptMock";
 import UVCLoader from "@/components/common/UVCLoader";
 import { IconPlus, IconTrash } from "@/assets/icons/Icon";
 import { NotificationHandler } from "@/utils/NotificationHandler";
@@ -144,10 +143,6 @@ export default () => {
 		receiptId: string,
 		file: { title: string; link: string; mimetype: string }
 	) => {
-		if (MOCK_BUDGET_RECEIPTS && file.link.startsWith("file:")) {
-			Linking.openURL(file.link);
-			return;
-		}
 		const url = getBudgetReceiptDownloadUrl(
 			currentTenant!._id,
 			budgetId as string,
