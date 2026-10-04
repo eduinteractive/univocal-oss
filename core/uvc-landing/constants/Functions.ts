@@ -8,6 +8,8 @@ type UseCaseStep = {
 export type UseCase = {
 	title: string;
 	steps: UseCaseStep[];
+	/** Asset path shown while a step illustration is missing, e.g. "/icons/Webpraesenz.png" */
+	fallbackIcon?: string;
 };
 
 export const FACHSCHAFT_USE_CASES: UseCase[] = [
@@ -98,6 +100,32 @@ export const FACHSCHAFT_USE_CASES: UseCase[] = [
 				label: "Projektboard",
 				icon: "Gremienarbeit_4.png",
 				text: "Nach der Sitzung ist vor der Umsetzung: Im Projektboard haltet ihr direkt fest, welche Aufgaben aus den Beschlüssen resultieren und euer Protokoll landet im Wiki – wenn nicht sowieso schon in der Sitzung passiert. So stellt ihr sicher, dass die studentische Stimme auch zwischen den Terminen aktiv bleibt und nichts untergeht.",
+			},
+		],
+	},
+	{
+		title: "Sichtbar auf dem Campus",
+		fallbackIcon: "/icons/Webpraesenz.png",
+		steps: [
+			{
+				label: "Sichtbar werden",
+				icon: "Webpraesenz_1.png",
+				text: "Die Erstis wissen nicht, wer ihr seid und wann eure Sprechzeiten sind? Und die alte Website hat seit Jahren niemand mehr angefasst?",
+			},
+			{
+				label: "Gruppenprofil",
+				icon: "Webpraesenz_2.png",
+				text: "Im Gruppenprofil baut ihr eure Webpräsenz ganz ohne Programmierkenntnisse: Titelbild, Logo, Beschreibung und Kontaktdaten eintragen, Farben und Layout wählen und unter eurer eigenen Subdomain veröffentlichen.",
+			},
+			{
+				label: "Immer aktuell",
+				icon: "Webpraesenz_3.png",
+				text: "Events mit Anmeldung, Neuigkeiten vom Schwarzen Brett und Kurzumfragen pinnt ihr direkt auf eure Startseite. Was ihr ohnehin in Univocal pflegt, ist damit automatisch auch online aktuell. Satzung oder FAQ legt ihr als eigene Infoseiten an.",
+			},
+			{
+				label: "Unterstützung finden",
+				icon: "Webpraesenz_4.png",
+				text: "Helfer*innen fürs Sommerfest gesucht? Mit einer Supportanfrage melden sich Interessierte direkt auf eurer Seite. Den passenden QR-Code für Plakate und Flyer gibt es gleich dazu.",
 			},
 		],
 	},

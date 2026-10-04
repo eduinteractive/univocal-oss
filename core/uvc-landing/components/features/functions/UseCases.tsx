@@ -10,6 +10,7 @@ import { trackLandingInteraction } from "../../LandingStats";
 const UseCaseCard = (props: { useCase: UseCase }) => {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const stepCount = props.useCase.steps.length;
+	const fallbackSrc = props.useCase.fallbackIcon ? UVC_ASSETS_URL + props.useCase.fallbackIcon : undefined;
 
 	const toggle = (index: number) => {
 		if (openIndex !== index) trackLandingInteraction("use_case_open");
@@ -86,6 +87,7 @@ const UseCaseCard = (props: { useCase: UseCase }) => {
 											<Image
 												className="uvc-usecase-box__icon uvc-usecase-box__icon--sm"
 												src={`${UVC_ASSETS_URL}/functions/${step.icon}`}
+												fallbackSrc={fallbackSrc}
 												alt=""
 												w={40}
 												h={40}
@@ -109,6 +111,7 @@ const UseCaseCard = (props: { useCase: UseCase }) => {
 									<Image
 										className="uvc-usecase-box__icon uvc-usecase-box__icon--lg"
 										src={`${UVC_ASSETS_URL}/functions/${step.icon}`}
+										fallbackSrc={fallbackSrc}
 										alt=""
 										w={110}
 										h={110}

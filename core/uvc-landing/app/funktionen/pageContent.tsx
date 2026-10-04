@@ -29,6 +29,7 @@ const UVC_FEATURE_TILES: UVCTile[] = [
 	{ label: "Umfragen", iconPath: "/icons/Umfragen.png" },
 	{ label: "Events", iconPath: "/icons/Veranstaltungen.png" },
 	{ label: "Finanzen", iconPath: "/icons/Finanzen.png" },
+	{ label: "Webpräsenz", iconPath: "/icons/Webpraesenz.png" },
 ];
 
 /** Same frame for every icon so dimensions match. `contain` scales differing PNG crops uniformly. */
@@ -66,7 +67,7 @@ const FEATURE_CARDS: FeatureCard[] = [
 				im <B>Wiki</B> fest. Dank <B>Projektmanagement</B> und <B>Gruppenchat</B> behaltet ihr bei allen
 				Aufgaben den Überblick. Das Beste: Über die <B>mobile App</B> habt ihr alles direkt in der
 				Hosentasche, und neue Aktive lassen sich über die <B>Mitgliederverwaltung</B> blitzschnell
-				integrieren.
+				integrieren. Mit eurer eigenen <B>Webpräsenz</B> seid ihr außerdem für alle auf dem Campus sichtbar.
 			</>
 		),
 		useCases: FACHSCHAFT_USE_CASES,
@@ -109,7 +110,7 @@ const Funktionen = () => {
 	const tileWidth = {
 		base: `calc((100% - ${g}) / 2)`,
 		sm: `calc((100% - ${g} * 3) / 4)`,
-		lg: `calc((100% - ${g} * 6) / 7)`,
+		lg: `calc((100% - ${g} * 7) / 8)`,
 	} as const;
 
 	return (
