@@ -5,11 +5,9 @@ import { LandingIpHash } from "../models/LandingIpHash";
 
 const HASH_PEPPER = "uvc-landing-ip-v1";
 
+/** Address the trusted proxy appended. `trust proxy` is 1, so req.ip ignores a caller-supplied X-Forwarded-For prefix. */
 export const readClientAddress = (req: Request) => {
-	const forwarded = req.headers["x-forwarded-for"];
-	const raw = forwarded
-		? (Array.isArray(forwarded) ? forwarded[0] : forwarded.split(",")[0]).trim()
-		: req.socket.remoteAddress || "";
+	const raw = req.ip || req.socket?.remoteAddress || "";
 	return raw.replace(/^::ffff:/, "").slice(0, 64);
 };
 
