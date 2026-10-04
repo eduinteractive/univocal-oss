@@ -55,7 +55,7 @@ const GalleryModal = ({ builder, opened, onClose }: GalleryModalProps) => {
                         multiple
                     >
                         <Group justify="center" gap="md" mih={110} style={{ pointerEvents: 'none' }}>
-                            <IconPhotoPlus size={42} stroke={1.5} color="var(--mantine-color-navy-9)" />
+                            <IconPhotoPlus size={42} stroke={1.5} color="var(--mantine-color-violet-filled)" />
                             <div>
                                 <Text fw={600}>{t('SITE.GALLERY.DROP')}</Text>
                                 <Text size="sm" c="dimmed">

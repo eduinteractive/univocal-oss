@@ -80,7 +80,7 @@ const Tenants = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue">
+            <Title order={3} c="violet">
                 {t('DISCOVER_PAGES.TENANTS.TITLE')}
             </Title>
             <Text size="sm" mb="sm">

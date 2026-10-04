@@ -36,7 +36,7 @@ const StartTab = ({ builder, steps, onOpenModal, onNavigate, onSetupAction }: St
 
     const editButton = (label: string, icon: JSX.Element, modal: StartModal) => (
         <Tooltip label={label} withArrow>
-            <ActionIcon variant="filled" color="navy.9" radius="md" onClick={() => onOpenModal(modal)} aria-label={label}>
+            <ActionIcon variant="filled" color="violet" radius="md" onClick={() => onOpenModal(modal)} aria-label={label}>
                 {icon}
             </ActionIcon>
         </Tooltip>
@@ -102,7 +102,7 @@ const StartTab = ({ builder, steps, onOpenModal, onNavigate, onSetupAction }: St
                                         <Button
                                             size="xs"
                                             variant="light"
-                                            color="navy.9"
+                                            color="violet"
                                             radius="md"
                                             leftSection={<IconPhotoEdit size={14} />}
                                             onClick={() => onOpenModal('gallery')}

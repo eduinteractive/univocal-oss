@@ -47,7 +47,7 @@ const MemberCard = (props: MemberCardProps) => {
                                 justify="center"
                                 mt="sm"
                             >
-                                <Avatar color="blue" radius="xl" size="md">
+                                <Avatar color="violet" radius="xl" size="md">
                                     {getValidAvatarIdentifier(user.firstName, user.lastName)}
                                 </Avatar>
                                 <Flex direction="column" ml="sm">
@@ -77,7 +77,7 @@ const MemberCard = (props: MemberCardProps) => {
                     <NavLink
                         variant='outline'
                         w="max-content"
-                        c="blue"
+                        c="violet"
                         component={Link}
                         to="/sv/members"
                         label={t('DASHBOARD.SHOW_MORE')}

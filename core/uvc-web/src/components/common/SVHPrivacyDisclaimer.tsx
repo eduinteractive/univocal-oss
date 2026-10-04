@@ -12,7 +12,7 @@ const SVHPrivacyDisclaimer = () => {
         <>
             <ActionIcon
                 variant="subtle"
-                color="blue"
+                color="violet"
                 onClick={() => setPrivacyModalVisible(true)}
             >
                 <IconShieldLock />

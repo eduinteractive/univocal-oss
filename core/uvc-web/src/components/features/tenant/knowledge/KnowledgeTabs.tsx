@@ -14,7 +14,7 @@ const KnowledgeTabs = (props: KnowledgeTabsProps) => {
         <Card bg="none" radius={0}>
             <Card.Section p="md">
                 <Group gap="xs">
-                    <Title order={3} c="blue">
+                    <Title order={3} c="violet">
                         {t('KNOWLEDGE.TITLE')}
                     </Title>
                     <SVHPrivacyDisclaimer />

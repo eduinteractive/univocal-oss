@@ -21,7 +21,7 @@ const Chats = () => {
     return (
         <SVHPageWrapper p="md">
             <Group justify="space-between" align="center" mb="sm">
-                <Title order={3} c="blue">
+                <Title order={3} c="violet">
                     {t('PAGES.USER.CHATS.TITLE')}
                 </Title>
                 <Button size="sm"

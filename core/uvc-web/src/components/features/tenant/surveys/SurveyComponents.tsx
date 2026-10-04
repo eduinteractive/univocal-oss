@@ -109,7 +109,7 @@ const SurveyComponents = (props: SurveyComponentsProps) => {
                             (label, index) => (
                                 <Button
                                     key={index}
-                                    color="blue"
+                                    color="violet"
                                     variant="outline"
                                     size="sm"
                                     radius="sm"
@@ -153,7 +153,7 @@ const SurveyComponents = (props: SurveyComponentsProps) => {
                         ].map((label, index) => (
                             <Button
                                 key={label + index}
-                                color="blue"
+                                color="violet"
                                 variant="outline"
                                 size="sm"
                                 radius="sm"
@@ -187,7 +187,7 @@ const SurveyComponents = (props: SurveyComponentsProps) => {
             <Flex direction="row" gap="md" align="center">
                 {hasPermission && (
                     <Button
-                        color="blue"
+                        color="violet"
                         onClick={() => {
                             props.onAdd(null);
                         }}

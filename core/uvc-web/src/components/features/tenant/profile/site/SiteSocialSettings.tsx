@@ -26,7 +26,7 @@ const SiteSocialSettings = ({ site, canEdit, saving, onSave }: SiteSocialSetting
 
     return (
         <Card withBorder radius="sm" p="xl">
-            <Title order={3} c="blue" mb={4}>
+            <Title order={3} c="violet" mb={4}>
                 {t('SITE.SETTINGS.SOCIAL.TITLE')}
             </Title>
             <Text size="sm" c="dimmed" mb="md">

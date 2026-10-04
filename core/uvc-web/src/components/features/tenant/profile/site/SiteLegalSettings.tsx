@@ -98,13 +98,13 @@ const SiteLegalSettings = ({ site, canEdit, saving, onSave }: SiteLegalSettingsP
 
     return (
         <Card id="site-legal" withBorder radius="sm" p="xl">
-            <Title order={3} c="blue" mb={4}>
+            <Title order={3} c="violet" mb={4}>
                 {t('SITE.SETTINGS.LEGAL.TITLE')}
             </Title>
             <Text size="sm" c="dimmed" mb="md">
                 {t('SITE.SETTINGS.LEGAL.DESCRIPTION')}
             </Text>
-            <Alert color="blue" variant="light" icon={<IconInfoCircle />} mb="lg">
+            <Alert color="violet" variant="light" icon={<IconInfoCircle />} mb="lg">
                 {t('SITE.SETTINGS.LEGAL.TEMPLATE_NOTICE')}
             </Alert>
             <Stack gap="xl">

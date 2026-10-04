@@ -31,7 +31,7 @@ const MembersTable = (props: MembersTableProps) => {
         <Table.Tr key={user._id}>
             <Table.Td>
                 <Group gap="sm" align="center" wrap="nowrap">
-                    <Avatar color="blue" radius="xl">
+                    <Avatar color="violet" radius="xl">
                         {getValidAvatarIdentifier(
                             user.firstName,
                             user.lastName

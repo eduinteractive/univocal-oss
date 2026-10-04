@@ -194,7 +194,7 @@ const CalendarRaster = (props: CalendarRasterProps) => {
                                             mt={0}
                                             px={4}
                                             mb={2}
-                                            color={event.color || 'blue'}
+                                            color={event.color || 'violet'}
                                             justify="flex-start"
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -281,7 +281,7 @@ const CalendarRaster = (props: CalendarRasterProps) => {
                                                         mb={2}
                                                         color={
                                                             event.color ||
-                                                            'blue'
+                                                            'violet'
                                                         }
                                                         justify="flex-start"
                                                         onClick={(e) => {

@@ -11,7 +11,8 @@ import 'dayjs/locale/de';
 import '@eduinteractive/mantine-common/build/style.css';
 import App from './App.tsx';
 import './index.css';
-import { createTheme, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
+import { uvcTheme } from './theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Notifications } from '@mantine/notifications';
 import { TenantProvider } from './context/TenantContext.tsx';
@@ -23,40 +24,10 @@ configureApiForSiteHost();
 
 const svhQueryClient = new QueryClient();
 
-const svhTheme = createTheme({
-    defaultRadius: 'sm',
-    colors: {
-        navy: [
-            '#ecebfb',
-            '#d3d2f2',
-            '#a6a3e6',
-            '#7773da',
-            '#514cd0',
-            '#3a34c9',
-            '#2d27c6',
-            '#211daf',
-            '#1b199d',
-            '#15148a',
-        ],
-        lavender: [
-            '#f5f4ff',
-            '#eceaff',
-            '#dcd8ff',
-            '#c6c0fb',
-            '#ada5f5',
-            '#9b91f0',
-            '#9187ee',
-            '#7f74d4',
-            '#7166bd',
-            '#6157a7',
-        ],
-    },
-});
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={svhQueryClient}>
-            <MantineProvider theme={svhTheme} defaultColorScheme="light">
+            <MantineProvider theme={uvcTheme} defaultColorScheme="light">
                 <TenantProvider>
                     <AuthProvider>
                         <DatesProvider

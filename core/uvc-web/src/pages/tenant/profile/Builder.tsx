@@ -171,7 +171,7 @@ const Builder = () => {
             label: t('SITE.TABS.SETUP'),
             icon: <IconChecklist size={16} />,
             badge: progress.done < progress.total && (
-                <Badge size="xs" variant="light" color="navy.9">
+                <Badge size="xs" variant="light" color="violet">
                     {progress.done}/{progress.total}
                 </Badge>
             ),
@@ -268,7 +268,7 @@ const Builder = () => {
                 <Group justify="space-between" gap="md" align="flex-start">
                     <Box>
                         <Group gap="sm" mb={4}>
-                            <Title order={3} c="blue">
+                            <Title order={3} c="violet">
                                 {t('SITE.BUILDER.TITLE')}
                             </Title>
                             {site?.published ? (
@@ -282,7 +282,7 @@ const Builder = () => {
                             )}
                         </Group>
                         {siteUrl ? (
-                            <Anchor href={siteUrl} target="_blank" rel="noopener noreferrer" size="sm" c="navy.7">
+                            <Anchor href={siteUrl} target="_blank" rel="noopener noreferrer" size="sm" c="violet">
                                 <Group gap={4}>
                                     {site?.subdomain}.{PROFILE_BASE_DOMAIN}
                                     <IconExternalLink size={14} />
@@ -311,7 +311,7 @@ const Builder = () => {
                                 withArrow
                             >
                                 <Button
-                                    color={site?.published ? 'gray' : 'navy.9'}
+                                    color={site?.published ? 'gray' : 'violet'}
                                     variant={site?.published ? 'light' : 'filled'}
                                     radius="md"
                                     leftSection={site?.published ? <IconWorldOff size={16} /> : <IconRocket size={16} />}
@@ -325,7 +325,7 @@ const Builder = () => {
                     </Group>
                 </Group>
 
-                <Tabs value={activeTab} onChange={(value) => value && goTo(value)} color="navy.9">
+                <Tabs value={activeTab} onChange={(value) => value && goTo(value)} color="violet">
                     <ScrollArea type="never" offsetScrollbars={false}>
                         <Tabs.List style={{ flexWrap: 'nowrap' }}>
                             {tabs.map((tab) => (

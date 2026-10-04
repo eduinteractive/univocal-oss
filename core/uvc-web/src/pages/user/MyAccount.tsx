@@ -69,7 +69,7 @@ const MyAccount = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="sm">
+            <Title order={3} c="violet" mb="sm">
                 {t('PAGES.USER.MY_ACCOUNT.TITLE')}
             </Title>
             <Flex mt="lg" justify="space-between" gap="sm">

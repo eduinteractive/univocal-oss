@@ -22,7 +22,7 @@ const ProjectMeta = (props: ProjectMetaProps) => {
             <Flex direction="column">
                 <Group justify="space-between" align="center">
                     <Flex direction="column">
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {props.data?.title}
                         </Title>
                     </Flex>

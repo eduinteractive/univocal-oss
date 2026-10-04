@@ -84,7 +84,7 @@ const InfosTab = ({ builder }: { builder: SiteBuilder }) => {
             <Card withBorder radius="sm" p="lg">
                 <Group justify="space-between" mb="md" align="flex-start">
                     <Box>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {t('SITE.TABS.INFOS')}
                         </Title>
                         <Text size="sm" c="dimmed" mt={4}>

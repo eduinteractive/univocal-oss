@@ -30,7 +30,7 @@ const DomainTabs = (props: DomainTabsProps) => {
             <Card.Section p="md">
                 <Group justify="space-between">
                     <Flex direction="column" flex={0.4}>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {t("ADMIN.DOMAIN_ADMINISTRATION")}
                         </Title>
                         <Text size="sm">

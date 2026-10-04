@@ -166,7 +166,7 @@ const ReportModal = (props: ReportModalProps) => {
                             <Text size="sm" c="dimmed" mb={4}>
                                 {t('ADMIN.AUDIT_PORTAL.MODAL.CURRENT_ACTION')}
                             </Text>
-                            <Badge color="blue">
+                            <Badge color="violet">
                                 {t(
                                     `ADMIN.AUDIT_PORTAL.ACTION.${props.report.action}`
                                 )}

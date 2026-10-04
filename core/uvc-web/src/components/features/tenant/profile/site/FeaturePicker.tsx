@@ -65,7 +65,7 @@ const FeaturePicker = ({
             <Box
                 key={item.id}
                 p="sm"
-                bg={isFeatured ? 'lavender.0' : undefined}
+                bg={isFeatured ? 'violet.0' : undefined}
                 style={{
                     borderRadius: 6,
                     border: '1px solid var(--mantine-color-gray-2)',
@@ -101,7 +101,7 @@ const FeaturePicker = ({
                             >
                                 <ActionIcon
                                     variant={isFeatured ? 'filled' : 'light'}
-                                    color="blue"
+                                    color="violet"
                                     size="sm"
                                     radius="md"
                                     loading={builder.updateSiteMutation.isPending}
@@ -123,7 +123,7 @@ const FeaturePicker = ({
             <Card withBorder radius="sm" p="lg">
                 <Group justify="space-between" wrap="nowrap" align="flex-start">
                     <Box>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {t('SITE.BUILDER.SECTION_VISIBLE', { section: t(`SITE.SECTIONS.${type}`) })}
                         </Title>
                         {description && (
@@ -148,7 +148,7 @@ const FeaturePicker = ({
                     </Title>
                 </Group>
                 {featured.length === 0 ? (
-                    <Alert variant="light" color="lavender.7" icon={<IconInfoCircle />} p="sm">
+                    <Alert variant="light" color="violet" icon={<IconInfoCircle />} p="sm">
                         <Text size="sm">{fallbackHint ?? t('SITE.BUILDER.PINNED_EMPTY')}</Text>
                     </Alert>
                 ) : (

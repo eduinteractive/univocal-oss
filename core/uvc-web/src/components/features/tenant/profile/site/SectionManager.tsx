@@ -40,14 +40,14 @@ const SectionManager = ({ builder, onNavigate }: SectionManagerProps) => {
                         <Group justify="space-between" wrap="nowrap" gap="xs">
                             <Group gap="xs" wrap="nowrap" style={{ minWidth: 0 }}>
                                 {handle}
-                                <ThemeIcon size="md" variant="light" color="navy.9" radius="sm">
+                                <ThemeIcon size="md" variant="light" color="violet" radius="sm">
                                     {SECTION_ICONS[section.type]}
                                 </ThemeIcon>
                                 <Box style={{ minWidth: 0 }}>
                                     <Text size="sm" fw={600} truncate>
                                         {t(`SITE.SECTIONS.${section.type}`)}
                                     </Text>
-                                    <Badge size="xs" variant="light" radius="sm" color={section.featuredIds.length ? 'navy.9' : 'gray'}>
+                                    <Badge size="xs" variant="light" radius="sm" color={section.featuredIds.length ? 'violet' : 'gray'}>
                                         {t('SITE.BUILDER.PINNED_SHORT', { count: section.featuredIds.length })}
                                     </Badge>
                                 </Box>

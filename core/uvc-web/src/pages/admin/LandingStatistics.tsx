@@ -34,6 +34,7 @@ import {
     CountBars,
     Empty,
     KpiCard,
+    PageFlow,
     Panel,
     ShareRow,
     WeekHourHeatmap,
@@ -72,14 +73,14 @@ const VITAL_INFO: Record<string, { label: string; unit: 'ms' | 'score' }> = {
 };
 
 const DONUT_COLORS = [
-    'blue.6',
-    'indigo.6',
-    'teal.6',
-    'orange.6',
-    'grape.6',
+    'violet.6',
+    'pink.6',
+    'yellow.6',
+    'violet.3',
+    'pink.3',
     'gray.5',
 ];
-const FUNNEL_COLORS = ['blue.8', 'blue.6', 'blue.4', 'blue.3', 'teal.6'];
+const FUNNEL_COLORS = ['violet.6', 'violet.5', 'violet.4', 'violet.3', 'pink.6'];
 const TOOLTIP_PROPS = { wrapperStyle: { zIndex: 1000 } };
 
 const dayString = (date: Date) =>
@@ -229,17 +230,17 @@ const Overview = ({
                     series={[
                         {
                             name: 'uniqueVisitors',
-                            color: 'blue.6',
+                            color: 'violet.6',
                             label: 'Besucher',
                         },
                         {
                             name: 'pageViews',
-                            color: 'indigo.6',
+                            color: 'pink.6',
                             label: 'Seitenaufrufe',
                         },
                         {
                             name: 'ctaClicks',
-                            color: 'orange.6',
+                            color: 'yellow.6',
                             label: 'CTA-Klicks',
                         },
                         {
@@ -249,7 +250,7 @@ const Overview = ({
                         },
                         {
                             name: 'campaignViews',
-                            color: 'grape.6',
+                            color: 'violet.3',
                             label: 'Kampagnenaufrufe',
                         },
                     ]}
@@ -324,12 +325,12 @@ const Overview = ({
                         series={[
                             {
                                 name: 'newVisitors',
-                                color: 'blue.6',
+                                color: 'violet.6',
                                 label: 'Neu',
                             },
                             {
                                 name: 'returningVisitors',
-                                color: 'teal.6',
+                                color: 'pink.6',
                                 label: 'Wiederkehrend',
                             },
                         ]}
@@ -430,10 +431,10 @@ const PagesTab = ({ data }: { data: LandingSummary }) => {
                                                             w={44}
                                                             color={
                                                                 [
-                                                                    'blue.3',
-                                                                    'blue.5',
-                                                                    'blue.7',
-                                                                    'teal.6',
+                                                                    'violet.3',
+                                                                    'violet.4',
+                                                                    'violet.6',
+                                                                    'pink.6',
                                                                 ][index]
                                                             }
                                                         />
@@ -459,15 +460,12 @@ const PagesTab = ({ data }: { data: LandingSummary }) => {
             </Panel>
 
             <SimpleGrid cols={{ base: 1, lg: 2 }}>
-                <CountBars
+                <Panel
                     title="Seitenfluss"
-                    description="Von welcher Seite Besucher zu welcher nächsten Seite wechseln (Top 15)."
-                    rows={data.engagement.transitions.map((flow) => ({
-                        label: `${pathLabel(flow.from)} → ${pathLabel(flow.to)}`,
-                        value: flow.value,
-                    }))}
-                    limit={15}
-                />
+                    description="Von welcher Seite Besucher zur nächsten Seite wechseln."
+                >
+                    <PageFlow rows={data.engagement.transitions} />
+                </Panel>
                 <Panel
                     title="Seiten pro Besuch"
                     description="Verteilung der Anzahl verschiedener Seiten je Besucher und Tag."
@@ -479,7 +477,7 @@ const PagesTab = ({ data }: { data: LandingSummary }) => {
                         series={[
                             {
                                 name: 'value',
-                                color: 'blue.6',
+                                color: 'violet.6',
                                 label: 'Besucher',
                             },
                         ]}
@@ -500,7 +498,7 @@ const PagesTab = ({ data }: { data: LandingSummary }) => {
                         series={[
                             {
                                 name: 'value',
-                                color: 'indigo.6',
+                                color: 'pink.6',
                                 label: 'Aufrufe',
                             },
                         ]}
@@ -521,7 +519,7 @@ const PagesTab = ({ data }: { data: LandingSummary }) => {
                         series={[
                             {
                                 name: 'share',
-                                color: 'teal.6',
+                                color: 'violet.6',
                                 label: 'Anteil in %',
                             },
                         ]}
@@ -601,12 +599,12 @@ const VisitorsTab = ({ data }: { data: LandingSummary }) => {
                                 {
                                     name: 'Neu',
                                     value: totals.newVisitors,
-                                    color: 'blue.6',
+                                    color: 'violet.6',
                                 },
                                 {
                                     name: 'Wiederkehrend',
                                     value: totals.returningVisitors,
-                                    color: 'teal.6',
+                                    color: 'pink.6',
                                 },
                             ]}
                         />
@@ -883,7 +881,7 @@ const LandingStatistics = () => {
             <Stack gap="lg" pb="xl">
                 <Group justify="space-between" align="flex-end">
                     <Stack gap={4}>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             Landing-Statistiken
                         </Title>
                         <Text size="sm" c="dimmed">

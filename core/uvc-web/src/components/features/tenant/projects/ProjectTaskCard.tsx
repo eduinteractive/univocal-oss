@@ -78,7 +78,7 @@ const ProjectTaskCard = (props: ProjectTaskCardProps) => {
                                     tenantMembers.find(
                                         (m) => m._id === props.data.owner
                                     ) && (
-                                        <Avatar size={24} color="blue">
+                                        <Avatar size={24} color="violet">
                                             {getValidAvatarIdentifier(
                                                 tenantMembers.find(
                                                     (m) =>
@@ -133,7 +133,7 @@ const ProjectTaskCard = (props: ProjectTaskCardProps) => {
                                     tenantMembers.find(
                                         (m) => m._id === props.data.owner
                                     ) && (
-                                        <Avatar size={24} color="blue">
+                                        <Avatar size={24} color="violet">
                                             {getValidAvatarIdentifier(
                                                 tenantMembers.find(
                                                     (m) =>

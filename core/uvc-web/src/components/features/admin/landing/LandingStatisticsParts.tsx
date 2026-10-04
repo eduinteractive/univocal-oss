@@ -4,7 +4,6 @@ import type {
 } from '@eduinteractive/uvc-api';
 import {
     Badge,
-    Box,
     Card,
     Group,
     Progress,
@@ -14,6 +13,7 @@ import {
     Title,
     Tooltip,
 } from '@mantine/core';
+import { BarsList, MatrixChart, SankeyChart } from '@mantine/charts';
 import {
     IconArrowDownRight,
     IconArrowUpRight,
@@ -24,6 +24,7 @@ import {
     WEEKDAYS,
     formatNumber,
     formatPercent,
+    pathLabel,
 } from './LandingStatisticsFormat';
 
 const deltaPercent = (current: number, previous: number) => {
@@ -134,7 +135,7 @@ export const ShareRow = ({
     label,
     share,
     value,
-    color = 'blue.5',
+    color = 'violet.4',
     labelWidth = 220,
 }: {
     label: string;
@@ -170,26 +171,74 @@ export const CountBars = ({
     limit?: number;
 }) => {
     const visible = rows.slice(0, limit);
-    const max = Math.max(1, ...visible.map((row) => row.value));
     return (
         <Panel title={title} description={description}>
             {visible.length === 0 ? (
                 <Empty />
             ) : (
-                <Stack gap={6}>
-                    {visible.map((row) => (
-                        <ShareRow
-                            key={row.label}
-                            label={label(row.label)}
-                            share={(row.value / max) * 100}
-                            value={formatNumber(row.value)}
-                            color="blue.3"
-                            labelWidth={180}
-                        />
-                    ))}
-                </Stack>
+                <BarsList
+                    data={visible.map((row) => ({
+                        name: label(row.label),
+                        value: row.value,
+                        color: 'violet',
+                    }))}
+                    valueFormatter={(value) => formatNumber(value)}
+                    minBarSize={96}
+                    barHeight={28}
+                />
             )}
         </Panel>
+    );
+};
+
+export const PageFlow = ({
+    rows,
+    limit = 15,
+}: {
+    rows: { from: string; to: string; value: number }[];
+    limit?: number;
+}) => {
+    const flows = rows.filter((row) => row.value > 0).slice(0, limit);
+    if (flows.length === 0) return <Empty />;
+
+    const sources: string[] = [];
+    const targets: string[] = [];
+    const sourceIndex = new Map<string, number>();
+    const targetIndex = new Map<string, number>();
+    for (const flow of flows) {
+        if (!sourceIndex.has(flow.from)) {
+            sourceIndex.set(flow.from, sources.length);
+            sources.push(flow.from);
+        }
+        if (!targetIndex.has(flow.to)) {
+            targetIndex.set(flow.to, targets.length);
+            targets.push(flow.to);
+        }
+    }
+
+    return (
+        <SankeyChart
+            height={Math.max(280, (sources.length + targets.length) * 32)}
+            data={{
+                nodes: [
+                    ...sources.map((path) => ({
+                        name: pathLabel(path),
+                        color: 'violet.6',
+                    })),
+                    ...targets.map((path) => ({
+                        name: pathLabel(path),
+                        color: 'pink.6',
+                    })),
+                ],
+                links: flows.map((flow) => ({
+                    source: sourceIndex.get(flow.from) ?? 0,
+                    target:
+                        sources.length + (targetIndex.get(flow.to) ?? 0),
+                    value: flow.value,
+                })),
+            }}
+            valueFormatter={(value) => formatNumber(value)}
+        />
     );
 };
 
@@ -256,7 +305,9 @@ export const ConversionTable = ({
     );
 };
 
-const HEAT_COLORS = ['blue.0', 'blue.2', 'blue.4', 'blue.6', 'blue.8'];
+const HOURS = Array.from({ length: 24 }, (_, hour) =>
+    String(hour).padStart(2, '0')
+);
 
 export const WeekHourHeatmap = ({
     cells,
@@ -266,73 +317,36 @@ export const WeekHourHeatmap = ({
     const values = new Map(
         cells.map((cell) => [`${cell.weekday}|${cell.hour}`, cell.value])
     );
-    const max = Math.max(1, ...cells.map((cell) => cell.value));
-    const colorFor = (value: number) =>
-        value === 0
-            ? 'gray.1'
-            : HEAT_COLORS[
-                  Math.min(
-                      HEAT_COLORS.length - 1,
-                      Math.floor((value / max) * HEAT_COLORS.length)
-                  )
-              ];
-    const hours = Array.from({ length: 24 }, (_, hour) => hour);
+    const data = WEEKDAYS.flatMap((weekday, dayIndex) =>
+        HOURS.map((hour, hourIndex) => {
+            const value = values.get(`${dayIndex + 1}|${hourIndex}`) ?? 0;
+            return {
+                x: hour,
+                y: weekday,
+                value: value === 0 ? null : value,
+            };
+        })
+    );
 
     return (
-        <Box style={{ overflowX: 'auto' }}>
-            <Box
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: '32px repeat(24, minmax(22px, 1fr))',
-                    gap: 3,
-                    minWidth: 640,
-                }}
-            >
-                <span />
-                {hours.map((hour) => (
-                    <Text key={hour} size="xs" c="dimmed" ta="center">
-                        {String(hour).padStart(2, '0')}
-                    </Text>
-                ))}
-                {WEEKDAYS.map((weekday, dayIndex) => [
-                    <Text key={weekday} size="xs" c="dimmed">
-                        {weekday}
-                    </Text>,
-                    ...hours.map((hour) => {
-                        const value =
-                            values.get(`${dayIndex + 1}|${hour}`) ?? 0;
-                        return (
-                            <Tooltip
-                                key={`${weekday}-${hour}`}
-                                label={`${weekday}, ${String(hour).padStart(2, '0')}:00 Uhr: ${formatNumber(value)} Aufrufe`}
-                            >
-                                <Box
-                                    h={22}
-                                    bg={colorFor(value)}
-                                    style={{ borderRadius: 4 }}
-                                />
-                            </Tooltip>
-                        );
-                    }),
-                ])}
-            </Box>
-            <Group gap={4} mt="xs" justify="flex-end">
-                <Text size="xs" c="dimmed">
-                    Wenig
-                </Text>
-                {HEAT_COLORS.map((color) => (
-                    <Box
-                        key={color}
-                        w={14}
-                        h={14}
-                        bg={color}
-                        style={{ borderRadius: 3 }}
-                    />
-                ))}
-                <Text size="xs" c="dimmed">
-                    Viel
-                </Text>
-            </Group>
-        </Box>
+        <MatrixChart
+            data={data}
+            xLabels={HOURS}
+            yLabels={[...WEEKDAYS]}
+            withXLabels
+            withYLabels
+            withTooltip
+            withLegend
+            legendLabels={['Wenig', 'Viel']}
+            colors={['violet.1', 'violet.2', 'violet.4', 'violet.5', 'violet.6']}
+            emptyColor="gray.1"
+            cellSize={18}
+            cellRadius={4}
+            yLabelsWidth={28}
+            xLabelsHeight={28}
+            getTooltipLabel={(cell) =>
+                `${cell.y}, ${cell.x}:00 Uhr: ${formatNumber(cell.value ?? 0)} Aufrufe`
+            }
+        />
     );
 };

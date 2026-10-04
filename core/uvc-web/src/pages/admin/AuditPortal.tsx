@@ -64,7 +64,7 @@ const AuditPortal = () => {
     if (reportsQuery.isError) {
         return (
             <SVHPageWrapper p="md">
-                <Title order={3} c="blue" mb="sm">
+                <Title order={3} c="violet" mb="sm">
                     {t('ADMIN.AUDIT_PORTAL.TITLE')}
                 </Title>
                 <div>Error: {reportsQuery.error?.message}</div>
@@ -74,7 +74,7 @@ const AuditPortal = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="md">
+            <Title order={3} c="violet" mb="md">
                 {t('ADMIN.AUDIT_PORTAL.TITLE')}
             </Title>
             <ReportsTable

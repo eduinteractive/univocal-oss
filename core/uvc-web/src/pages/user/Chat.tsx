@@ -132,7 +132,7 @@ const Chat = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue" mb="sm">
+            <Title order={3} c="violet" mb="sm">
                 {recipientQuery?.data?.firstName +
                     ' ' +
                     recipientQuery?.data?.lastName}

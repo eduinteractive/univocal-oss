@@ -95,14 +95,14 @@ const CalendarFilter = (props: CalendarFilterProps) => {
             <Group justify="center" align="center" h="100%" gap={0}>
                 <ActionIcon
                     variant="subtle"
-                    color="blue"
+                    color="violet"
                     onClick={props.onPreviousMonth}
                 >
                     <IconArrowLeft size={24} />
                 </ActionIcon>
                 <ActionIcon
                     variant="subtle"
-                    color="blue"
+                    color="violet"
                     onClick={props.onNextMonth}
                     mr="xs"
                 >

@@ -115,7 +115,7 @@ const Budgets = () => {
     return (
         <SVHPageWrapper p={0}>
             <Box p="md">
-                <Title order={3} c="blue">
+                <Title order={3} c="violet">
                     {t('TENANT_PAGES.BUDGETS.TITLE')}
                 </Title>
                 <Text size="sm" mb="sm">

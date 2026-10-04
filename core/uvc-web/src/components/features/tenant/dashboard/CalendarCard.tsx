@@ -84,7 +84,7 @@ const CalendarCard = (props: CalendarCardProps) => {
                     <Flex direction="column" miw="50%">
                         <Title
                             order={5}
-                            c="blue"
+                            c="violet"
                             fw={600}
                             style={{
                                 borderBottom: '1px solid #e1e1e1',

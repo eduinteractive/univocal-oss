@@ -303,7 +303,7 @@ const ProjectTasks = (props: ProjectTasksProps) => {
                 {hasPermission && (
                     <Button
                         size="sm"
-                        color="blue"
+                        color="violet"
                         onClick={() => {
                             setEditTaskModalVisible(true);
                             setTaskModalColumnId(props.data.columns[0]._id);

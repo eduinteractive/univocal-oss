@@ -180,7 +180,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
             </EDIModal>
 
             <Card withBorder radius="sm" p="xl">
-                <Title order={3} c="blue" mb={4}>
+                <Title order={3} c="violet" mb={4}>
                     {t('SITE.SETTINGS.SUBDOMAIN_TITLE')}
                 </Title>
                 {!subdomainLocked && (
@@ -219,7 +219,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
                     </Group>
                 )}
                 {subdomainLocked ? (
-                    <Alert mt="md" color="blue" variant="light" icon={<IconInfoCircle />}>
+                    <Alert mt="md" color="violet" variant="light" icon={<IconInfoCircle />}>
                         <Group justify="space-between" align="center" gap="sm">
                             <Text size="sm">{t('SITE.SETTINGS.SUBDOMAIN_LOCKED')}</Text>
                             <Button
@@ -261,7 +261,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
             <Card withBorder radius="sm" p="xl">
                 <Group justify="space-between" align="flex-start" wrap="nowrap">
                     <Box>
-                        <Title order={3} c="blue" mb={4}>
+                        <Title order={3} c="violet" mb={4}>
                             {t('SITE.SETTINGS.PUBLISH_TITLE')}
                         </Title>
                         <Text size="sm" c="dimmed">
@@ -283,7 +283,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
                     />
                 </Group>
                 {!savedSubdomain && (
-                    <Alert mt="md" color="blue" variant="light" icon={<IconInfoCircle />}>
+                    <Alert mt="md" color="violet" variant="light" icon={<IconInfoCircle />}>
                         {t('SITE.SETTINGS.PUBLISH_NEEDS_SUBDOMAIN')}
                     </Alert>
                 )}
@@ -312,7 +312,7 @@ const SiteSettings = ({ site }: SiteSettingsProps) => {
             />
 
             <Card withBorder radius="sm" p="xl">
-                <Title order={3} c="blue" mb={4}>
+                <Title order={3} c="violet" mb={4}>
                     {t('SITE.SETTINGS.SEO_TITLE')}
                 </Title>
                 <Text size="sm" c="dimmed" mb="md">
@@ -372,7 +372,7 @@ const UrlRow = ({ label, url }: { label: string; url: string }) => {
                 <CopyButton value={url}>
                     {({ copied, copy }) => (
                         <Tooltip label={copied ? t('SITE.SETTINGS.COPIED') : t('SITE.SETTINGS.COPY')}>
-                            <ActionIcon variant="subtle" color={copied ? 'green' : 'blue'} onClick={copy}>
+                            <ActionIcon variant="subtle" color={copied ? 'green' : 'violet'} onClick={copy}>
                                 {copied ? <IconCheck size={18} /> : <IconCopy size={18} />}
                             </ActionIcon>
                         </Tooltip>

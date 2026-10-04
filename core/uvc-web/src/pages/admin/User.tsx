@@ -100,7 +100,7 @@ const AdminUser = () => {
             <Anchor component="button" type="button" onClick={() => navigate('/admin/users')} mb="md" size="sm">
                 {t('ADMIN_PAGES.USER.BACK')}
             </Anchor>
-            <Title order={3} c="blue" mb="md">
+            <Title order={3} c="violet" mb="md">
                 {t('ADMIN_PAGES.USER.TITLE')}
             </Title>
 

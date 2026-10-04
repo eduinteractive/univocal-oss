@@ -35,7 +35,7 @@ const BoardTab = ({ builder }: { builder: SiteBuilder }) => {
                 meta: item.publishDate ? dayjs(item.publishDate).format('DD.MM.YYYY') : undefined,
                 badge: {
                     label: t('SITE.PUBLIC.BOARD_NEWS'),
-                    color: item.status === PROFILE_OBJECT_STATUS.PUBLISHED ? 'navy.9' : 'gray',
+                    color: item.status === PROFILE_OBJECT_STATUS.PUBLISHED ? 'violet' : 'gray',
                 },
                 unavailableReason:
                     item.status !== PROFILE_OBJECT_STATUS.PUBLISHED

@@ -48,7 +48,7 @@ const EventMeta = (props: EventMetaProps) => {
                                     'DD.MM.YYYY HH:mm'
                                 )}`}
                         </Title>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {props.data?.title}
                         </Title>
                     </Flex>

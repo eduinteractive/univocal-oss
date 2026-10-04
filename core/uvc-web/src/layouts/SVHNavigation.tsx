@@ -372,14 +372,14 @@ const SVHNavigation = () => {
                         onClick={toggleMobile}
                         hiddenFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     <Burger
                         opened={desktopOpened}
                         onClick={toggleDesktop}
                         visibleFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     {(mobileOpened || desktopOpened) && (
                         <Box h={30} mb="sm" mt="sm" pl="sm">
@@ -464,7 +464,7 @@ const SVHNavigation = () => {
                                 }}
                                 color={
                                     currentTenant?._id === group._id
-                                        ? 'blue'
+                                        ? 'violet'
                                         : undefined
                                 }
                             >
@@ -564,7 +564,7 @@ const SVHNavigation = () => {
                             w="100%"
                             px="sm"
                         >
-                            <Avatar size={34} radius="xl" bg="blue">
+                            <Avatar size={34} radius="xl" bg="violet">
                                 <Text size="xs" ta="center" c="white" mt={3}>
                                     {getValidAvatarIdentifier(
                                         (authData?.contact as UserContact)

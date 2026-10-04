@@ -387,9 +387,9 @@ const AdminDashboard = () => {
 
         // Handle other services
         const otherServices = [
-            { key: 'calendar', name: t('ADMIN.STATISTICS.CALENDAR'), color: 'blue', dataKey: 'events' },
+            { key: 'calendar', name: t('ADMIN.STATISTICS.CALENDAR'), color: 'violet', dataKey: 'events' },
             { key: 'event', name: t('ADMIN.STATISTICS.EVENT'), color: 'orange', dataKey: 'events' },
-            { key: 'project', name: t('ADMIN.STATISTICS.PROJECT'), color: 'cyan', dataKey: 'projects' },
+            { key: 'project', name: t('ADMIN.STATISTICS.PROJECT'), color: 'yellow', dataKey: 'projects' },
             { key: 'survey', name: t('ADMIN.STATISTICS.SURVEY'), color: 'pink', dataKey: 'surveys' },
             { key: 'budget', name: t('ADMIN.STATISTICS.BUDGET'), color: 'red', dataKey: 'budgets' }
         ];
@@ -463,7 +463,7 @@ const AdminDashboard = () => {
     return (
         <SVHPageWrapper p="md">
             <Stack gap="lg" pb="xl">
-                <Title order={3} c="blue">
+                <Title order={3} c="violet">
                     {t('ADMIN.DASHBOARD_TITLE')}
                 </Title>
 
@@ -625,7 +625,7 @@ const AdminDashboard = () => {
                             series={[
                                 {
                                     name: 'count',
-                                    color: 'blue',
+                                    color: 'violet',
                                     label: t('ADMIN.STATISTICS.REGISTRATIONS_LABEL')
                                 }
                             ]}

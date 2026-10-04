@@ -48,7 +48,7 @@ const TenantsTable = (props: TenantsTableProps) => {
                             </Table.Td>
                             <Table.Td>
                                 <ActionIcon
-                                    c="blue.7"
+                                    c="violet"
                                     variant="subtle"
                                     mr="sm"
                                     onClick={() =>

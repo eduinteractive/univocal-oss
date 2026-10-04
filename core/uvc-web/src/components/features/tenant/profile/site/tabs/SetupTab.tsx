@@ -16,22 +16,22 @@ const SetupTab = ({ steps, onAction, compact }: SetupTabProps) => {
 
     if (compact) {
         return (
-            <Card withBorder radius="sm" p="lg" bg="lavender.0">
+            <Card withBorder radius="sm" p="lg" bg="violet.0">
                 <Group justify="space-between" mb={8}>
-                    <Title order={6} c="navy.9">
+                    <Title order={6} c="violet">
                         {t('SITE.SETUP.TITLE')}
                     </Title>
-                    <Text size="xs" fw={700} c="navy.9">
+                    <Text size="xs" fw={700} c="violet">
                         {progress.done}/{progress.total}
                     </Text>
                 </Group>
-                <Progress value={progress.percent} color="navy.9" size="sm" radius="sm" mb="md" />
+                <Progress value={progress.percent} color="violet" size="sm" radius="sm" mb="md" />
                 {nextStep ? (
                     <Group justify="space-between" wrap="nowrap" gap="xs">
                         <Text size="xs" c="dimmed">
                             {t('SITE.SETUP.NEXT')}: <b>{t(`SITE.SETUP.STEPS.${nextStep.key}.TITLE`)}</b>
                         </Text>
-                        <Button size="compact-xs" color="navy.9" onClick={() => onAction(nextStep.action, nextStep.tab)}>
+                        <Button size="compact-xs" color="violet" onClick={() => onAction(nextStep.action, nextStep.tab)}>
                             {t('SITE.SETUP.GO')}
                         </Button>
                     </Group>
@@ -51,15 +51,15 @@ const SetupTab = ({ steps, onAction, compact }: SetupTabProps) => {
                     <RingProgress
                         size={96}
                         thickness={9}
-                        sections={[{ value: progress.percent, color: 'navy.9' }]}
+                        sections={[{ value: progress.percent, color: 'violet' }]}
                         label={
-                            <Text ta="center" fw={800} c="navy.9">
+                            <Text ta="center" fw={800} c="violet">
                                 {progress.percent}%
                             </Text>
                         }
                     />
                     <div>
-                        <Title order={3} c="blue">
+                        <Title order={3} c="violet">
                             {progress.done === progress.total ? t('SITE.SETUP.ALL_DONE') : t('SITE.SETUP.TITLE')}
                         </Title>
                         <Text size="sm" c="dimmed" mt={4}>

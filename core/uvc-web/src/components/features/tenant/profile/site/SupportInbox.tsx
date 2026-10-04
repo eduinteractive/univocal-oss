@@ -108,7 +108,7 @@ const SupportInbox = ({ tenantId, requests, requestId, onRequestChange, canEdit,
             {responses.length === 0 ? (
                 <Card withBorder radius="md" p="xl">
                     <Stack align="center" gap="xs">
-                        <ThemeIcon size={48} radius="xl" variant="light" color="navy.9">
+                        <ThemeIcon size={48} radius="xl" variant="light" color="violet">
                             <IconInbox size={26} />
                         </ThemeIcon>
                         <Text c="dimmed" size="sm" ta="center">
@@ -128,7 +128,7 @@ const SupportInbox = ({ tenantId, requests, requestId, onRequestChange, canEdit,
                                     <Group gap="xs">
                                         <Badge
                                             variant="light"
-                                            color={isOffer ? 'green' : 'blue'}
+                                            color={isOffer ? 'green' : 'violet'}
                                             leftSection={
                                                 isOffer ? <IconUserPlus size={12} /> : <IconMessageQuestion size={12} />
                                             }

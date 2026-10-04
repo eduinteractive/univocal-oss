@@ -180,7 +180,7 @@ const SurveyTransaction = () => {
                             (label, index) => (
                                 <Button
                                     key={index}
-                                    color="blue"
+                                    color="violet"
                                     variant={
                                         (result[component._id] as number) ===
                                         index
@@ -321,7 +321,7 @@ const SurveyTransaction = () => {
                         ].map((label, index) => (
                             <Button
                                 key={label + index}
-                                color="blue"
+                                color="violet"
                                 variant={
                                     result[component._id] === index
                                         ? 'filled'

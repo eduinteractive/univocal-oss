@@ -24,21 +24,21 @@ const SVHHeader = () => {
                         onClick={toggleMobile}
                         hiddenFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     <Burger
                         opened={desktopOpened}
                         onClick={toggleDesktop}
                         visibleFrom="sm"
                         size="sm"
-                        color="blue"
+                        color="violet"
                     />
                     <Text
                         size="xl"
                         fw={900}
                         pl="md"
                         variant="gradient"
-                        gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+                        gradient={{ from: 'violet', to: 'pink', deg: 90 }}
                     >
                         {t('COMMON.APP_TITLE')}
                     </Text>

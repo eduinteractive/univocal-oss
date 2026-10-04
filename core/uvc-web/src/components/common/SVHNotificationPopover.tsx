@@ -25,7 +25,7 @@ const SVHNotificationPopover = (props: SVHNotificationPopoverProps) => {
                     mt={5}
                 >
                     <ActionIcon
-                        c="blue"
+                        c="violet"
                         variant="subtle"
                         onClick={props.onNotificationClick}
                     >

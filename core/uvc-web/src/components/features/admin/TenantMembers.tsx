@@ -62,7 +62,7 @@ const TenantMembers = (props: TenantMembersProps) => {
                             <Table.Td>
                                 <ActionIcon
                                     variant="subtle"
-                                    color="blue"
+                                    color="violet"
                                     onClick={() => {
                                         setCurrentUser(user);
                                         setModalVisible(true);
@@ -88,7 +88,7 @@ const TenantMembers = (props: TenantMembersProps) => {
             </Table>
             <Group justify="right" mt="md">
                 <Button
-                    color="blue"
+                    color="violet"
                     variant="outline"
                     onClick={() => {
                         setCurrentUser(null);

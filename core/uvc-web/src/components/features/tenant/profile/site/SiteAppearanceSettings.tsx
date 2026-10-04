@@ -101,7 +101,7 @@ const SiteAppearanceSettings = ({ site, tenantId, canEdit, saving, onSave }: Sit
 
     return (
         <Card withBorder radius="sm" p="xl">
-            <Title order={3} c="blue" mb={4}>
+            <Title order={3} c="violet" mb={4}>
                 {t('SITE.SETTINGS.APPEARANCE.TITLE')}
             </Title>
             <Text size="sm" c="dimmed" mb="md">

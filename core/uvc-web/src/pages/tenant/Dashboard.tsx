@@ -51,7 +51,7 @@ const Dashboard = () => {
 
     return (
         <SVHPageWrapper p="md">
-            <Title order={3} c="blue">
+            <Title order={3} c="violet">
                 {t('TENANT_PAGES.DASHBOARD.TITLE')}
             </Title>
             <Text size="sm" mb="sm">

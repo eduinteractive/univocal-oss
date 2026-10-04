@@ -24,14 +24,14 @@ interface PaletteTokens {
 
 export const SITE_PALETTE_TOKENS: Record<SitePalette, PaletteTokens> = {
     univocal: {
-        primary: '#15148a',
-        accent: '#9187ee',
-        soft: '#f5f4ff',
-        softBorder: '#eceaff',
-        onPrimaryMuted: '#dcd8ff',
+        primary: '#120875',
+        accent: '#f93a88',
+        soft: '#eeecff',
+        softBorder: '#d9d5fb',
+        onPrimaryMuted: '#d9d5fb',
         page: '#f8f9fa',
-        footer: '#15148a',
-        footerDivider: '#211daf',
+        footer: '#120875',
+        footerDivider: '#3a2cb8',
     },
     'campus-navy': {
         primary: '#0f2a4a',

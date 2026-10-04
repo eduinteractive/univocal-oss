@@ -78,7 +78,7 @@ const DomainNetworks = (props: DomainNetworksProps) => {
                                 </Table.Td>
                                 <Table.Td>
                                     <ActionIcon
-                                        c="blue.7"
+                                        c="violet"
                                         variant="subtle"
                                         mr="sm"
                                         onClick={() => {
@@ -89,7 +89,7 @@ const DomainNetworks = (props: DomainNetworksProps) => {
                                         <IconUserPlus />
                                     </ActionIcon>
                                     <ActionIcon
-                                        c="blue.7"
+                                        c="violet"
                                         variant="subtle"
                                         mr="sm"
                                         onClick={() => {
