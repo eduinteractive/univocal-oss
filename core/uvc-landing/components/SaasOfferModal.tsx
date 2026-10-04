@@ -12,6 +12,7 @@ import {
 import { IconMailForward } from "@tabler/icons-react";
 import { useState } from "react";
 import { COLORS } from "../constants/Colors";
+import { trackLandingCta } from "./LandingStats";
 
 const TEXT = "#2d1b4e";
 
@@ -113,6 +114,7 @@ export function SaasOfferModal(props: SaasOfferModalProps) {
 				return;
 			}
 			setSuccess(true);
+			trackLandingCta("saas_offer_submit");
 			resetForm();
 		} catch {
 			setSubmitError(

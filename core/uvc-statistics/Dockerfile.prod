@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.7
+# -------- Builder --------
+FROM node:24-alpine AS builder
+WORKDIR /service
+RUN npm i -g pnpm
+
+# NUR im Builder verwenden (kommt nicht ins Runtime-Image)
+ARG NPM_TOKEN
+RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+RUN pnpm config set inject-workspace-packages true --location project
+
+# Diese COPYs erwarten, dass der Build-Kontext das Repo-Root ist (Skaffold: context: .)
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY lib ./lib
+
+RUN pnpm install --filter ./lib/*
+RUN pnpm run build:libs
+
+COPY core/uvc-statistics/src ./core/uvc-statistics/src
+COPY core/uvc-statistics/migrations ./core/uvc-statistics/migrations
+COPY core/uvc-statistics/migrate-mongo-config.js ./core/uvc-statistics/migrate-mongo-config.js
+COPY core/uvc-statistics/tsconfig.prod.json ./core/uvc-statistics/tsconfig.prod.json
+COPY core/uvc-statistics/package.json ./core/uvc-statistics/package.json
+
+# Nur das Zielpaket + transitive Workspace-Deps installieren
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile --filter ./core/uvc-statistics...
+
+# Build nur für das Zielpaket
+RUN pnpm --filter ./core/uvc-statistics run build:prod
+
+# Deployment-Paket mit NUR Prod-Deps erzeugen
+RUN pnpm --filter ./core/uvc-statistics deploy --prod /opt/app
+
+# -------- Runtime --------
+FROM node:24-alpine AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Nur das minimal nötige Artefakt kopieren
+COPY --from=builder /opt/app ./
+COPY --from=builder /service/core/uvc-statistics/migrations ./migrations
+
+ENV npm_package_name=uvc-statistics
+
+EXPOSE 3011
+# Passe an dein start-Script an (empfohlen "start" statt "dev")
+CMD ["node", "build/src/service.js"]
+                
+    

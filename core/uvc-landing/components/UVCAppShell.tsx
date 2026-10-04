@@ -25,6 +25,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Link from "next/link";
 import { COLORS } from "../constants/Colors";
+import { LandingTracker, trackLandingCta, trackLandingInteraction } from "./LandingStats";
 
 const footerData = [
 	{
@@ -71,6 +72,7 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 
 	return (
 		<QueryClientProvider client={queryClient}>
+			<LandingTracker />
 			<AppShell
 				header={{ height: 60 }}
 				footer={{ height: "auto", offset: true }}
@@ -109,6 +111,7 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							<Button
 								component="a"
 								href="https://apps.univocal.de"
+								onClick={() => trackLandingCta("header_login")}
 								ml="lg"
                                 color={COLORS.PRIMARY}
                                 radius="xl"
@@ -119,13 +122,17 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 						<Group gap="sm" hiddenFrom="sm">
 							<Burger
 								opened={drawerOpened}
-								onClick={toggleDrawer}
+								onClick={() => {
+									if (!drawerOpened) trackLandingInteraction("mobile_menu");
+									toggleDrawer();
+								}}
 							/>
                             <ActionIcon
 								variant="filled"
 								color={COLORS.PRIMARY}
 								component="a"
 								href="https://apps.univocal.de"
+								onClick={() => trackLandingCta("header_login")}
                                 size="lg"
 							>
 								<IconLogin />

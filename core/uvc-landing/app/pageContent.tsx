@@ -7,6 +7,7 @@ import "./page.css";
 import { UVC_ASSETS_URL } from "@eduinteractive/uvc-api";
 import unionPanelMask from "../assets/Union.png";
 import { SaasOfferModal } from "../components/SaasOfferModal";
+import { LandingPageView, trackLandingCta } from "../components/LandingStats";
 import { UVCAmbientBlobs, UVCCtaDotPattern, UVCNetworkCollaborationSvg } from "../components/UVCDecoratives";
 import { COLORS } from "../constants/Colors";
 
@@ -60,6 +61,7 @@ const HomePage = () => {
 
 	return (
 		<>
+			<LandingPageView path="/" />
 			<SaasOfferModal
 				opened={saasOfferOpen}
 				onClose={closeSaasOffer}
@@ -67,6 +69,7 @@ const HomePage = () => {
 			<Stack gap={0}>
 				<Box
 					component="section"
+					data-landing-section="hero"
 					mih="100%"
 					pt={50}
 					bg={COLORS.SECONDARY}
@@ -196,7 +199,7 @@ const HomePage = () => {
 						pos="relative"
 						style={{ zIndex: 1 }}
 					>
-						<Box data-feature="section-1" className="uvc-feature">
+						<Box data-feature="section-1" data-landing-section="plattform" className="uvc-feature">
 							<Title
 								order={2}
 								size="h3"
@@ -251,7 +254,7 @@ const HomePage = () => {
 						pos="relative"
 						style={{ zIndex: 1 }}
 					>
-						<Box data-feature="section-2" className="uvc-feature">
+						<Box data-feature="section-2" data-landing-section="open-source" className="uvc-feature">
 							<Title
 								order={2}
 								size="h3"
@@ -292,6 +295,7 @@ const HomePage = () => {
 
 				<Box
 					component="section"
+					data-landing-section="nutzung"
 					bg={COLORS.SECONDARY}
 					py={{ base: "2.5rem", sm: "3.5rem" }}
 					px={{ base: "md", sm: "xl" }}
@@ -399,6 +403,7 @@ const HomePage = () => {
 										<Button
 											component="a"
 											href={UVC_GITHUB_URL}
+											onClick={() => trackLandingCta("homepage_github")}
 											target="_blank"
 											rel="noopener noreferrer"
 											size="md"
@@ -481,7 +486,10 @@ const HomePage = () => {
 										</Stack>
 										<Button
 											type="button"
-											onClick={openSaasOffer}
+											onClick={() => {
+												trackLandingCta("homepage_saas_offer");
+												openSaasOffer();
+											}}
 											size="md"
 											radius="xl"
 											fullWidth
