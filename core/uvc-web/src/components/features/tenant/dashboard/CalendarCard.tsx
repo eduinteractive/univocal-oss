@@ -53,7 +53,7 @@ const CalendarCard = (props: CalendarCardProps) => {
                     <Calendar
                         getDayProps={(date) => ({
                             selected: dayjs(date).isSame(selected, 'date'),
-                            onClick: () => handleSelect(date),
+                            onClick: () => handleSelect(dayjs(date).toDate()),
                         })}
                         styles={{
                             levelsGroup: {
@@ -75,7 +75,7 @@ const CalendarCard = (props: CalendarCardProps) => {
                             if (event) {
                                 return (
                                     <Indicator size={6} offset={-2}>
-                                        <div>{date.getDate()}</div>
+                                        <div>{dayjs(date).date()}</div>
                                     </Indicator>
                                 );
                             }

@@ -58,6 +58,7 @@ const storeVote = (surveyId: string, selection: number[]) => {
 };
 
 /** Returns the single answerable component if the survey qualifies as a Kurzfrage. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const getPollComponent = (entry: PublicSiteSurvey): PublicSiteSurveyComponent | undefined => {
     if (!POLL_MODES.includes(entry.survey.options.executionMode)) return undefined;
     const answerable = entry.components.filter((component) => component.type !== SurveyComponentType.TEXT);

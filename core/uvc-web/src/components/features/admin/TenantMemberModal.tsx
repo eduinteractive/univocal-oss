@@ -115,7 +115,6 @@ const TenantMemberModal = (props: TenantMemberModalProps) => {
                 }}
                 comboboxProps={{
                     position: 'bottom-start',
-                    positionDependencies: [value],
                 }}
             />
             <EDISelect

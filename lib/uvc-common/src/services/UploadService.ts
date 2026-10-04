@@ -1,22 +1,33 @@
 import { Request, Response, NextFunction } from "express"
-import S3 from "aws-sdk/clients/s3"
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3"
+import { Upload } from "@aws-sdk/lib-storage"
 import fs from "fs"
+import { Readable } from "stream";
 import { promisify } from "util";
 import { NotFoundError } from "../errors/NotFoundError";
 import { BadRequestError } from "../errors/BadRequestError";
 
 const unlinkFile = promisify(fs.unlink);
 
-let S3_SVH: S3
+let S3_SVH: S3Client
 
 if (process.env.S3_ENDPOINT_URL && process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY) {
-    S3_SVH = new S3({
+    S3_SVH = new S3Client({
         endpoint: process.env.S3_ENDPOINT_URL!,
-        accessKeyId: process.env.S3_ACCESS_KEY!,
-        secretAccessKey: process.env.S3_SECRET_KEY!,
-        s3ForcePathStyle: true,
+        region: process.env.S3_REGION || "us-east-1",
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY!,
+            secretAccessKey: process.env.S3_SECRET_KEY!,
+        },
+        forcePathStyle: true,
     })
 }
+
+const uploadToS3 = (params: PutObjectCommandInput) =>
+    new Upload({ client: S3_SVH, params }).done();
+
+const getS3Object = (Bucket: string, Key: string) =>
+    S3_SVH.send(new GetObjectCommand({ Bucket, Key }));
 
 export const uploadFile = async (key: string, file: Express.Multer.File, metadata?: string) => {
     try {
@@ -36,10 +47,10 @@ export const uploadFile = async (key: string, file: Express.Multer.File, metadat
             Body: fileContent,
         }
 
-        const uploadResponse = await S3_SVH.upload(uploadParams).promise();
+        const uploadResponse = await uploadToS3(uploadParams);
         await unlinkFile(file.path);
 
-        return uploadResponse.Location
+        return uploadResponse.Location!
     } catch (err) {
         console.debug(err);
         throw new BadRequestError("Es ist ein Fehler beim Hochladen der Datei aufgetreten.")
@@ -68,7 +79,7 @@ export const uploadFiles = async (keyPrefix: string, files: Express.Multer.File[
                 Metadata: parsedMetadata,  // Hinzufügen von Metadaten, falls nötig
             };
 
-            return S3_SVH.upload(uploadParams).promise()
+            return uploadToS3(uploadParams)
                 .then(uploadResponse => {
                     // Löschen der lokalen Datei nach dem Hochladen
                     return unlinkFile(filePath)
@@ -78,7 +89,7 @@ export const uploadFiles = async (keyPrefix: string, files: Express.Multer.File[
                                     fileName.indexOf('_') + 1, fileName.length
                                 ), 
                                 mimeType: mimeType, 
-                                url: uploadResponse.Location
+                                url: uploadResponse.Location!
                             }; // Rückgabe von Dateinamen, MIME-Typ und URL
                         });
                 });
@@ -99,21 +110,22 @@ export const downloadFile = async (req: Request, res: Response, next: NextFuncti
         Key: decodeURIComponent(key.split(process.env.S3_BUCKET_NAME + '/')[1]), // Dateiname im Bucket
     };
 
-    S3_SVH.headObject(downloadParams, (err, data) => {
-        if (err) {
-            return next(new NotFoundError("Es wurde keine Datei gefunden."))
-        }
+    let data;
+    try {
+        data = await getS3Object(downloadParams.Bucket, downloadParams.Key);
+    } catch (err) {
+        return next(new NotFoundError("Es wurde keine Datei gefunden."))
+    }
 
-        res.setHeader('Content-Type', data.ContentType!);
-        res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
+    res.setHeader('Content-Type', data.ContentType!);
+    res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
 
-        // Streamen der Datei zum Client
-        const stream = S3_SVH.getObject(downloadParams).createReadStream();
-        stream.on('error', (streamErr) => {
-            return next(streamErr);
-        });
-        stream.pipe(res);
+    // Streamen der Datei zum Client
+    const stream = data.Body as Readable;
+    stream.on('error', (streamErr) => {
+        return next(streamErr);
     });
+    stream.pipe(res);
 }
 
 export const streamImage = async (req: Request, res: Response, next: NextFunction) => {
@@ -123,22 +135,18 @@ export const streamImage = async (req: Request, res: Response, next: NextFunctio
         Key: decodeURIComponent(key.split(process.env.S3_BUCKET_NAME + '/')[1]), // Dateiname im Bucket
     };
 
-    S3_SVH.headObject(downloadParams, (err, data) => {
-        try {
-            if (err) {
-                throw new NotFoundError("Es wurde keine Datei gefunden.");
-            }
+    let data;
+    try {
+        data = await getS3Object(downloadParams.Bucket, downloadParams.Key);
+    } catch (err) {
+        return next(new NotFoundError("Es wurde keine Datei gefunden."));
+    }
 
-            res.setHeader('Content-Type', data.ContentType!);
-            res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
+    res.setHeader('Content-Type', data.ContentType!);
+    res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
 
-            // Streamen der Datei zum Client
-            const stream = S3_SVH.getObject(downloadParams).createReadStream();
-            stream.pipe(res);
-        } catch (err) {
-            return next(err);
-        }
-    });
+    // Streamen der Datei zum Client
+    (data.Body as Readable).pipe(res);
 }
 
 export const deleteFile = async (key: string) => {
@@ -148,7 +156,7 @@ export const deleteFile = async (key: string) => {
     };
 
     try {
-        await S3_SVH.deleteObject(deleteParams).promise();
+        await S3_SVH.send(new DeleteObjectCommand(deleteParams));
         return true;
     } catch (err) {
         throw new BadRequestError("Es ist ein Fehler beim Löschen der Datei aufgetreten.")

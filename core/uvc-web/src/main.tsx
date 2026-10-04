@@ -8,7 +8,6 @@ import '@mantine/tiptap/styles.css';
 import '@mantine/dropzone/styles.css';
 import '@mantine/charts/styles.css';
 import 'dayjs/locale/de';
-import 'cropperjs/dist/cropper.css';
 import '@eduinteractive/mantine-common/build/style.css';
 import App from './App.tsx';
 import './index.css';
@@ -25,6 +24,7 @@ configureApiForSiteHost();
 const svhQueryClient = new QueryClient();
 
 const svhTheme = createTheme({
+    defaultRadius: 'sm',
     colors: {
         navy: [
             '#ecebfb',
@@ -63,10 +63,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             settings={{
                                 locale: 'de',
                                 firstDayOfWeek: 1,
-                                timezone: 'Europe/Berlin',
                             }}
                         >
-                            <Notifications />
+                            <Notifications pauseResetOnHover="notification" />
                             <App />
                         </DatesProvider>
                     </AuthProvider>

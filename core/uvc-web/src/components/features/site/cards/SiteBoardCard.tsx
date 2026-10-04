@@ -89,7 +89,7 @@ const BoardRow = ({
                     />
                 </Group>
             </UnstyledButton>
-            <Collapse in={opened} transitionDuration={250}>
+            <Collapse expanded={opened} transitionDuration={250}>
                 <Box id={contentId} px="lg" pb="lg" pl={mobile ? 'lg' : { base: 'lg', sm: 88 }}>
                     <BoardContent item={item} />
                 </Box>

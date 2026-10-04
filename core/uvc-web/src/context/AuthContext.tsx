@@ -3,6 +3,7 @@ import { AuthData } from '@eduinteractive/uvc-api';
 import { APIHandler } from '@eduinteractive/uvc-api';
 import EventEmitter from 'eventemitter3';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const eventEmitter = new EventEmitter();
 
 APIHandler.interceptors.response.use(
@@ -22,6 +23,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (context === undefined) {

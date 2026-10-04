@@ -12,6 +12,7 @@ interface SiteContextType {
 
 const SiteContext = createContext<SiteContextType>({ basePath: '', preview: false });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSite = () => useContext(SiteContext);
 
 export const SiteProvider = ({

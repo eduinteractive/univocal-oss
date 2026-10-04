@@ -16,6 +16,7 @@ const ediColor: MantineColorsTuple = [
 ];
 
 export const theme = createTheme({
+    defaultRadius: 'sm',
     colors: {
         'edi-color': ediColor,
     },

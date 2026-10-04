@@ -212,7 +212,7 @@ const ProjectTasks = (props: ProjectTasksProps) => {
         if (newColIndex < 0) return;
 
         // Neue Spaltenstruktur bestimmen
-        let newColumns: IProjectTaskColumn[] = [];
+        let newColumns: IProjectTaskColumn[];
 
         // Falls wir in derselben Spalte sortieren
         if (oldColIndex === newColIndex) {
