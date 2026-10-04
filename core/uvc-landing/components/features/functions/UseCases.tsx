@@ -5,12 +5,14 @@ import { Box, Image, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { UVC_ASSETS_URL } from "@eduinteractive/uvc-api";
 import { COLORS } from "../../../constants/Colors";
 import type { UseCase } from "../../../constants/Functions";
+import { trackLandingInteraction } from "../../LandingStats";
 
 const UseCaseCard = (props: { useCase: UseCase }) => {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const stepCount = props.useCase.steps.length;
 
 	const toggle = (index: number) => {
+		if (openIndex !== index) trackLandingInteraction("use_case_open");
 		setOpenIndex((prev) => (prev === index ? null : index));
 	};
 

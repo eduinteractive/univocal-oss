@@ -79,6 +79,13 @@ profiles:
         sync:
           infer:
             - "core/uvc-project/**/*.ts"
+      - image: uvc/uvc-statistics
+        context: .
+        docker:
+          dockerfile: core/uvc-statistics/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-statistics/**/*.ts"
       - image: uvc/uvc-landing
         context: .
         docker:

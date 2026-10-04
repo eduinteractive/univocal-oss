@@ -17,6 +17,9 @@ const Tenants = lazy(() => import('../pages/admin/Tenants'));
 const Tenant = lazy(() => import('../pages/admin/Tenant'));
 const AdminDomains = lazy(() => import('../pages/admin/Domains'));
 const AdminDashboard = lazy(() => import('../pages/admin/Dashboard'));
+const AdminLandingStatistics = lazy(
+    () => import('../pages/admin/LandingStatistics')
+);
 const AdminReports = lazy(() => import('../pages/admin/AuditPortal'));
 const AdminUsers = lazy(() => import('../pages/admin/Users'));
 const AdminUser = lazy(() => import('../pages/admin/User'));
@@ -333,6 +336,14 @@ const SVHRouter = (): JSX.Element => {
                                     element={
                                         <SVHSuspense>
                                             <AdminDashboard />
+                                        </SVHSuspense>
+                                    }
+                                />
+                                <Route
+                                    path="landing"
+                                    element={
+                                        <SVHSuspense>
+                                            <AdminLandingStatistics />
                                         </SVHSuspense>
                                     }
                                 />

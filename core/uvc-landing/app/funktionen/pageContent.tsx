@@ -6,6 +6,7 @@ import "../page.css";
 import UVCHero from "../../components/UVCHero";
 import UseCaseList from "../../components/features/functions/UseCases";
 import SectionDivider from "../../components/features/functions/SectionDivider";
+import { LandingPageView } from "../../components/LandingStats";
 import { COLORS } from "../../constants/Colors";
 import {
 	ASTA_USE_CASES,
@@ -38,6 +39,7 @@ const ICON_FRAME = {
 } as const;
 
 type FeatureCard = {
+	section: string;
 	title: string;
 	body: React.ReactNode;
 	useCases: UseCase[];
@@ -54,6 +56,7 @@ const B = (props: { children: React.ReactNode }) => (
 
 const FEATURE_CARDS: FeatureCard[] = [
 	{
+		section: "fachschaften",
 		title: "Für Fachschaften: Euer Campus, eure Orga, eine App",
 		body: (
 			<>
@@ -69,6 +72,7 @@ const FEATURE_CARDS: FeatureCard[] = [
 		useCases: FACHSCHAFT_USE_CASES,
 	},
 	{
+		section: "asten",
 		title: "Für ASten: Professionelle Verwaltung für die Studierendenschaft",
 		body: (
 			<>
@@ -83,6 +87,7 @@ const FEATURE_CARDS: FeatureCard[] = [
 		useCases: ASTA_USE_CASES,
 	},
 	{
+		section: "gremien",
 		title: "Für Gremien und Ausschüsse: Strukturierte Arbeit, rechtssichere Ergebnisse",
 		body: (
 			<>
@@ -109,6 +114,7 @@ const Funktionen = () => {
 
 	return (
 		<>
+			<LandingPageView path="/funktionen" />
 			<UVCHero
 				title="Funktionen"
 				content="Univocal vereint alle Werkzeuge für die studentische Selbstverwaltung auf einer Plattform: Projektmanagement, Kalender, Gruppenchat, Wiki, Umfragen, Events und Finanzen – auf dem Desktop und in der mobilen App."
@@ -116,6 +122,7 @@ const Funktionen = () => {
 			/>
 
 			<Box
+				data-landing-section="werkzeuge"
 				bg={COLORS.SECONDARY}
 				px={{ base: "md", sm: "xl" }}
 				pb={{ base: "3rem", sm: "4rem" }}
@@ -201,7 +208,7 @@ const Funktionen = () => {
 					{FEATURE_CARDS.map((card, index) => (
 						<Fragment key={card.title}>
 							{index > 0 && <SectionDivider />}
-							<Stack gap="xl">
+							<Stack gap="xl" data-landing-section={card.section}>
 								<Box
 									bg={COLORS.SECONDARY}
 									p={{ base: "lg", sm: "xl" }}

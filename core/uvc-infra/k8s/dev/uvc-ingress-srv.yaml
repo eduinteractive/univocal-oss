@@ -115,6 +115,13 @@ spec:
                 name: uvc-project-srv
                 port:
                   number: 3009
+          - path: /api/statistics/.*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: uvc-statistics-srv
+                port:
+                  number: 3011
           - path: /.*
             pathType: ImplementationSpecific
             backend:

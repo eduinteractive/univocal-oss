@@ -25,6 +25,7 @@ import {
     IconMail,
     IconMessage,
     IconDashboard,
+    IconChartBar,
     IconUsers,
     IconUserSquareRounded,
     IconMessages,
@@ -139,6 +140,12 @@ const navigationLinks = Object.freeze([
                 link: '/admin/dashboard',
                 color: 'red',
                 icon: IconDashboard,
+            },
+            {
+                label: 'Landing-Statistiken',
+                link: '/admin/landing',
+                color: 'red',
+                icon: IconChartBar,
             },
             {
                 label: 'Meldungen',

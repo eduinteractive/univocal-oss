@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { IconQuestionMark } from "@tabler/icons-react";
 import { COLORS } from "../../constants/Colors";
+import { LandingPageView, trackLandingFaq } from "../../components/LandingStats";
 
 const faqData = [
 	{
@@ -103,6 +104,7 @@ const faqData = [
 const FAQ = () => {
 	return (
 		<Container size="lg">
+			<LandingPageView path="/faq" />
 			<Flex
 				direction="column"
 				gap="sm"
@@ -127,7 +129,7 @@ const FAQ = () => {
 				</Title>
 				<Divider my="sm" w="100%" />
 				{faqData.map((section, sectionIndex) => (
-					<Box key={section.title} w="100%">
+					<Box key={section.title} w="100%" data-landing-section={`faq-${sectionIndex + 1}`}>
 						<Title
 							order={4}
 							mt={sectionIndex === 0 ? "xs" : 50}
@@ -141,7 +143,7 @@ const FAQ = () => {
 									key={`${section.title}-${qaIndex}`}
 									value={`${section.title}-${qaIndex}`}
 								>
-									<Accordion.Control>{qa.question}</Accordion.Control>
+									<Accordion.Control onClick={() => trackLandingFaq(qa.question)}>{qa.question}</Accordion.Control>
 									<Accordion.Panel>{qa.answer}</Accordion.Panel>
 								</Accordion.Item>
 							))}

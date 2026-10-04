@@ -300,6 +300,7 @@ Die Anwendung besteht aus mehreren Microservices, die als separate Docker-Contai
 - **uvc-knowledge**: Wissensdatenbank und Wiki-Funktionalität
 - **uvc-profile**: Öffentliche Schüler*innenvertretungsprofile
 - **uvc-project**: Projektmanagement und Aufgabenverwaltung
+- **uvc-statistics**: Datensparsame Reichweitenmessung der Landingpage
 - **uvc-survey**: Umfragen und Abstimmungen
 - **uvc-tenant**: Gruppenverwaltung und -administration
 - **uvc-web**: Frontend-Webanwendung (React + Vite)

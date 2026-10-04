@@ -31,6 +31,19 @@ export default defineConfig(({ mode }) => {
                 }
             })
         ],
+        resolve: {
+            // The workspace hoist can only expose one @mantine/core. The landing
+            // app's React 19 copy wins at the repo root, while @mantine/charts
+            // and @mantine/dates still bundle the React 18 copy. One context
+            // has to win or MantineProvider is invisible to those components.
+            dedupe: [
+                'react',
+                'react-dom',
+                '@mantine/core',
+                '@mantine/hooks',
+                '@mantine/store',
+            ],
+        },
         server: {
             host: true,
             port: 3000,

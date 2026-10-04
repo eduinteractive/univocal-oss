@@ -11,6 +11,7 @@ resources:
   - uvc-tenant-depl.yaml
   - uvc-survey-depl.yaml
   - uvc-project-depl.yaml
+  - uvc-statistics-depl.yaml
   - uvc-profile-depl.yaml
   - uvc-knowledge-depl.yaml
   - uvc-event-depl.yaml
