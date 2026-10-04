@@ -265,7 +265,19 @@ const Builder = () => {
                     )}
                 </Modal>
 
-                <Group justify="space-between" gap="md" align="flex-start">
+                <Group
+                    justify="space-between"
+                    gap="md"
+                    align="flex-start"
+                    w={{
+                        base: 'calc(100% + (var(--mantine-spacing-md) * 2))',
+                        sm: 'calc(100% + (var(--mantine-spacing-xl) * 2))',
+                    }}
+                    mx={{ base: 'calc(var(--mantine-spacing-md) * -1)', sm: 'calc(var(--mantine-spacing-xl) * -1)' }}
+                    px={{ base: 'md', sm: 'xl' }}
+                    pb="md"
+                    style={{ borderBottom: '1px solid var(--mantine-color-gray-3)' }}
+                >
                     <Box>
                         <Group gap="sm" mb={4}>
                             <Title order={3} c="violet">
