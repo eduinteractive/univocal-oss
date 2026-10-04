@@ -8,8 +8,8 @@
 		"build/**/*"
 	],
 	"scripts": {
-		"clean": "del ./build/*",
-		"build": "npm run clean && tsc",
+		"clean": "rm -rf build",
+		"build": "pnpm clean && tsc",
 		"stage": "npm version patch",
 		"publish": "npm run build && npm publish"
 	},
@@ -34,8 +34,7 @@
 		"@types/cors": "^2.8.19",
 		"@types/express": "catalog:uvc-express-boilerplate-dev",
 		"@types/jsonwebtoken": "catalog:uvc-express-boilerplate-dev",
-		"@types/request": "^2.48.13",
-		"del-cli": "^7.0.0"
+		"@types/request": "^2.48.13"
 	},
 	"peerDependencies": {
 		"axios": "catalog:uvc-express-boilerplate",
