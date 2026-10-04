@@ -224,7 +224,7 @@ Gruppen können im Univocal Builder (`/sv/profile`) eine öffentliche Website er
 **Production**
 
 1. DNS: Einen Wildcard-Eintrag `*.univocal.de` auf denselben Load Balancer wie `apps.univocal.de` setzen.
-2. TLS: Wildcard-Zertifikate erfordern DNS-01. Dafür den IONOS-Webhook für cert-manager installieren ([cert-manager-webhook-ionos](https://github.com/fabmade/cert-manager-webhook-ionos)) und im Namespace `cert-manager` das Secret `ionos-dns-secret` mit den Schlüsseln `IONOS_PUBLIC_PREFIX` und `IONOS_SECRET` (IONOS-DNS-API-Key) anlegen. Wird ein anderer DNS-Anbieter genutzt, muss nur der Solver in `core/uvc-infra/k8s/prod/uvc-dns-issuer.yaml` angepasst werden.
+2. TLS: Wildcard-Zertifikate erfordern DNS-01. Dafür den IONOS-Cloud-DNS-Webhook für cert-manager installieren ([cert-manager-webhook-ionos-cloud](https://github.com/ionos-cloud/cert-manager-webhook-ionos-cloud)) und im Namespace `cert-manager` das Secret `cert-manager-webhook-ionos-cloud` mit dem Schlüssel `auth-token` (Token aus dem DCD Token Manager) anlegen. Die Zone `univocal.de` muss in IONOS Cloud DNS liegen. Wird ein anderer DNS-Anbieter genutzt, muss nur der Solver in `core/uvc-infra/k8s/prod/uvc-dns-issuer.yaml` angepasst werden.
 3. Deployment: `uvc-dns-issuer.yaml`, `uvc-sites-certificate.yaml` und `uvc-sites-ingress.yaml` sind in der prod-Kustomization enthalten und werden mit `./scripts/deploy.sh` ausgerollt. Status prüfen mit `kubectl describe certificate uvc-sites-wildcard-tls`.
 
 **Development**

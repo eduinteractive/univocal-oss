@@ -9,20 +9,16 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-dns
     solvers:
-      # Requires the IONOS DNS webhook (github.com/fabmade/cert-manager-webhook-ionos) and the
-      # `ionos-dns-secret` in the cert-manager namespace, see Readme.md section 1.7.
+      # Requires cert-manager-webhook-ionos-cloud and the secret
+      # `cert-manager-webhook-ionos-cloud` (key `auth-token`) in the cert-manager namespace.
+      # The zone univocal.de must exist in IONOS Cloud DNS. See Readme.md section 1.7.
       - selector:
           dnsZones:
             - univocal.de
         dns01:
           webhook:
-            groupName: acme.fabmade.de
-            solverName: ionos
+            groupName: acme.ionos.com
+            solverName: ionos-cloud
             config:
-              apiUrl: https://api.hosting.ionos.com/dns/v1
-              publicKeySecretRef:
-                name: ionos-dns-secret
-                key: IONOS_PUBLIC_PREFIX
-              secretKeySecretRef:
-                name: ionos-dns-secret
-                key: IONOS_SECRET
+              secretRef: cert-manager-webhook-ionos-cloud
+              authTokenSecretKey: auth-token
