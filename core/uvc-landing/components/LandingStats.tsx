@@ -4,7 +4,14 @@ import { SAPI, type LandingCta, type LandingEventBody, type LandingPath } from "
 import { useReportWebVitals } from "next/web-vitals";
 import { useEffect } from "react";
 
-const MARKETING_PATHS = new Set<string>(["/", "/funktionen", "/faq"]);
+const MARKETING_PATHS = new Set<string>([
+	"/",
+	"/funktionen",
+	"/faq",
+	"/forschung",
+	"/forschung/beitraege",
+	"/forschung/opendata",
+]);
 const MORIGIN_RE = /^[A-Za-z0-9]{1,32}$/;
 const UTM_RE = /^[A-Za-z0-9_.\-]{1,40}$/;
 const HOST_RE = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;

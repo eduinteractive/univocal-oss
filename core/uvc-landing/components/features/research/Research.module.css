@@ -1,0 +1,34 @@
+.cardLink {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+	transition:
+		border-color 180ms ease,
+		box-shadow 180ms ease,
+		transform 180ms ease;
+
+	&:hover {
+		border-color: rgba(18, 8, 117, 0.28) !important;
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid rgba(18, 8, 117, 0.45);
+		outline-offset: 2px;
+	}
+}
+
+.citation {
+	padding-left: 2em;
+	text-indent: -2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cardLink {
+		transition: none;
+	}
+
+	.cardLink:hover {
+		transform: none;
+	}
+}

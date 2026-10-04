@@ -1,21 +1,26 @@
 "use client";
 
 import type React from "react";
-import { IconBrandInstagram, IconBrandYoutube, IconLogin } from "@tabler/icons-react";
+import { IconChartDots3, IconChevronDown, IconFileText, IconLogin } from "@tabler/icons-react";
 import {
 	ActionIcon,
 	AppShell,
-	Box,
 	Burger,
 	Button,
+	Center,
+	Collapse,
 	Divider,
 	Drawer,
 	Flex,
 	Group,
+	HoverCard,
 	rem,
 	ScrollArea,
+	SimpleGrid,
 	Text,
+	ThemeIcon,
 	Title,
+	UnstyledButton,
 	useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -46,6 +51,21 @@ const footerData = [
 	},
 ];
 
+const researchLinks = [
+	{
+		icon: IconFileText,
+		title: "Forschungsbeiträge",
+		description: "Beiträge und Vorträge mit Zitation und Material zum Download",
+		link: "/forschung/beitraege",
+	},
+	{
+		icon: IconChartDots3,
+		title: "Open Data Hub",
+		description: "Offene Nutzungsstatistiken und Kennzahlen zu univocal",
+		link: "/forschung/opendata",
+	},
+];
+
 interface UVCAppShellProps {
 	children: React.ReactNode;
 }
@@ -56,6 +76,47 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 	const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
 	const theme = useMantineTheme();
 	const matchMedia = useMediaQuery(`(min-width: ${rem(theme.breakpoints.sm)})`);
+
+	const researchItems = researchLinks.map((item) => (
+		<Link
+			key={item.link}
+			href={item.link}
+			className={classes.subLink}
+			onClick={closeDrawer}
+		>
+			<Group
+				wrap="nowrap"
+				align="flex-start"
+			>
+				<ThemeIcon
+					size={34}
+					variant="light"
+					color={COLORS.PRIMARY}
+					radius="md"
+				>
+					<item.icon
+						size={20}
+						stroke={1.5}
+					/>
+				</ThemeIcon>
+				<div>
+					<Text
+						size="sm"
+						fw={600}
+						c={COLORS.PRIMARY}
+					>
+						{item.title}
+					</Text>
+					<Text
+						size="xs"
+						c="dimmed"
+					>
+						{item.description}
+					</Text>
+				</div>
+			</Group>
+		</Link>
+	));
 
 	const groups = footerData.map((group, index) => (
 		<Text<"a">
@@ -102,6 +163,70 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							>
 								Funktionen
 							</Link>
+							<HoverCard
+								width={600}
+								position="bottom"
+								radius="md"
+								shadow="md"
+								withinPortal
+							>
+								<HoverCard.Target>
+									<Link
+										href="/forschung"
+										className={classes.link}
+									>
+										<Center inline>
+											<span>Forschung</span>
+											<IconChevronDown
+												size={16}
+												stroke={1.5}
+												style={{ marginLeft: 4 }}
+											/>
+										</Center>
+									</Link>
+								</HoverCard.Target>
+								<HoverCard.Dropdown style={{ overflow: "hidden" }}>
+									<Group
+										justify="space-between"
+										px="md"
+									>
+										<Text
+											fw={600}
+											c={COLORS.PRIMARY}
+										>
+											Forschung
+										</Text>
+										<Link
+											href="/forschung"
+											style={{ fontSize: "var(--mantine-font-size-xs)", color: COLORS.PRIMARY }}
+										>
+											Zur Übersicht
+										</Link>
+									</Group>
+									<Divider my="sm" />
+									<SimpleGrid
+										cols={2}
+										spacing={0}
+									>
+										{researchItems}
+									</SimpleGrid>
+									<div className={classes.dropdownFooter}>
+										<Text
+											size="sm"
+											fw={600}
+											c={COLORS.PRIMARY}
+										>
+											Begleitforschung zu studentischer Partizipation
+										</Text>
+										<Text
+											size="xs"
+											c="dimmed"
+										>
+											Wir veröffentlichen Ergebnisse und offene Daten, sobald sie vorliegen.
+										</Text>
+									</div>
+								</HoverCard.Dropdown>
+							</HoverCard>
 							<a
 								href="/faq"
 								className={classes.link}
@@ -163,6 +288,40 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							>
 								Funktionen
 							</Link>
+							<UnstyledButton
+								className={classes.link}
+								onClick={toggleLinks}
+								aria-expanded={linksOpened}
+							>
+								<Center inline>
+									<span>Forschung</span>
+									<IconChevronDown
+										size={16}
+										stroke={1.5}
+										style={{
+											marginLeft: 4,
+											transform: linksOpened ? "rotate(180deg)" : undefined,
+											transition: "transform 200ms ease",
+										}}
+									/>
+								</Center>
+							</UnstyledButton>
+							<Collapse expanded={linksOpened}>
+								<Link
+									className={classes.subLink}
+									href="/forschung"
+									onClick={closeDrawer}
+								>
+									<Text
+										size="sm"
+										fw={600}
+										c={COLORS.PRIMARY}
+									>
+										Übersicht
+									</Text>
+								</Link>
+								{researchItems}
+							</Collapse>
 							<a
 								href="/faq"
 								className={classes.link}

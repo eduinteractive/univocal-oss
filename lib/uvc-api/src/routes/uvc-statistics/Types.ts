@@ -11,7 +11,13 @@ export type LandingEventType =
     | "vital"
     | "client_error";
 
-export type LandingPath = "/" | "/funktionen" | "/faq";
+export type LandingPath =
+    | "/"
+    | "/funktionen"
+    | "/faq"
+    | "/forschung"
+    | "/forschung/beitraege"
+    | "/forschung/opendata";
 
 export type LandingCta = "header_login" | "homepage_github" | "homepage_saas_offer" | "saas_offer_submit";
 

@@ -1,7 +1,14 @@
 import { BadRequestError } from "@eduinteractive/uvc-common";
 import { LandingStatDims } from "../models/LandingDailyStat";
 
-export const MARKETING_PATHS = ["/", "/funktionen", "/faq"] as const;
+export const MARKETING_PATHS = [
+	"/",
+	"/funktionen",
+	"/faq",
+	"/forschung",
+	"/forschung/beitraege",
+	"/forschung/opendata",
+] as const;
 
 export const LANDING_CTAS = [
 	"header_login",

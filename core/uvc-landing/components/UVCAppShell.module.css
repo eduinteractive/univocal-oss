@@ -27,7 +27,9 @@
 }
 
 .subLink {
+	display: block;
 	width: 100%;
+	text-decoration: none;
 	padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
 	border-radius: var(--mantine-radius-md);
 
