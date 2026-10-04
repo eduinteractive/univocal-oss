@@ -208,6 +208,32 @@ export const deleteEvent = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
+export const getNetworkTenantEvents = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { tenantId } = req.params as { tenantId: string };
+        const ids = String(req.query.ids ?? "")
+            .split(",")
+            .filter((id) => Types.ObjectId.isValid(id))
+            .map((id) => new Types.ObjectId(id));
+        if (ids.length === 0) {
+            res.status(200).json([]);
+            return;
+        }
+        const events = await SVEvent.find({ _id: { $in: ids }, tenantId: new Types.ObjectId(tenantId) });
+        res.status(200).json(events.map((event) => ({
+            _id: event._id,
+            title: event.title,
+            description: event.description,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            registrationEnabled: event.config.registration.enabled,
+            programEnabled: event.config.toc.enabled,
+        })));
+    } catch (err) {
+        next(err);
+    }
+}
+
 export const resetEventsACL = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { tenantId } = req.params as { tenantId: string };

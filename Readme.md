@@ -12,6 +12,7 @@ Eine digitale Plattform zur Stärkung demokratischer Mitbestimmung an Universit�
   - [1.3 Secrets](#13-secrets)
   - [1.4 Skaffold](#14-skaffold)
   - [1.5 Production Deployment](#15-production-deployment)
+  - [1.7 Gruppenseiten (Subdomains)](#17-gruppenseiten-subdomains)
 - [2. Projektbeschreibung](#2-projektbeschreibung)
 - [3. Projektstruktur](#3-projektstruktur)
   - [3.1 General (pnpm - Workspaces)](#31-general-pnpm---workspaces)
@@ -209,6 +210,34 @@ Weitere Informationen zur Erstellung von Kubernetes Secrets mit YAML-Dateien fin
 - Erstellen Sie für Ihre eigene Installation neue Secrets mit Ihren eigenen Werten
 - Die Secret-Dateien im Repository dienen nur als Struktur-Referenz
 - Lokale Secret-Dateien mit echten Werten sollten **nicht ins Repository committed** werden
+
+### 1.7 Gruppenseiten (Subdomains)
+
+Gruppen können im Univocal Builder (`/sv/profile`) eine öffentliche Website erstellen und unter einer eigenen Subdomain veröffentlichen, z. B. `https://fachschaft04.univocal.de`. Unabhängig von der Subdomain ist jede veröffentlichte Seite auch unter `https://apps.univocal.de/g/<subdomain>` erreichbar.
+
+**Funktionsweise**
+
+- `uvc-web` erkennt anhand des Hostnamens (`<subdomain>.<VITE_PROFILE_BASE_DOMAIN>`), dass eine Gruppenseite angefragt wird, und rendert nur die öffentliche Seite (`/`, `/p/<slug>`, `/support/<id>`).
+- Auf Gruppen-Hosts ruft das Frontend die APIs **same-origin** auf. Das Wildcard-Ingress (`uvc-sites-ingress.yaml`) leitet dafür nur die öffentlichen Pfade weiter: `/api/profile/public`, `/api/profile/image`, `/api/survey/public`, `/api/event/public`. Alle anderen Pfade landen bei `uvc-web`; authentifizierte APIs sind auf Gruppen-Hosts nicht erreichbar.
+- Exakte Hosts (`apps.univocal.de`, `univocal.de`, …) haben im Ingress Vorrang vor `*.univocal.de`. Reservierte Subdomains (z. B. `www`, `apps`, `api`, `monitoring`) können nicht vergeben werden.
+
+**Production**
+
+1. DNS: Einen Wildcard-Eintrag `*.univocal.de` auf denselben Load Balancer wie `apps.univocal.de` setzen.
+2. TLS: Wildcard-Zertifikate erfordern DNS-01. Dafür den IONOS-Webhook für cert-manager installieren ([cert-manager-webhook-ionos](https://github.com/fabmade/cert-manager-webhook-ionos)) und im Namespace `cert-manager` das Secret `ionos-dns-secret` mit den Schlüsseln `IONOS_PUBLIC_PREFIX` und `IONOS_SECRET` (IONOS-DNS-API-Key) anlegen. Wird ein anderer DNS-Anbieter genutzt, muss nur der Solver in `core/uvc-infra/k8s/prod/uvc-dns-issuer.yaml` angepasst werden.
+3. Deployment: `uvc-dns-issuer.yaml`, `uvc-sites-certificate.yaml` und `uvc-sites-ingress.yaml` sind in der prod-Kustomization enthalten und werden mit `./scripts/deploy.sh` ausgerollt. Status prüfen mit `kubectl describe certificate uvc-sites-wildcard-tls`.
+
+**Development**
+
+`/etc/hosts` unterstützt keine Wildcards. Für jede lokal getestete Gruppe einen Eintrag ergänzen (IP wie bei `apps.univocal.local.de`):
+
+```sh
+127.0.0.1 fachschaft04.univocal.local.de
+```
+
+Anschließend ist die Seite unter `http://fachschaft04.univocal.local.de` erreichbar (Subdomain vorher im Builder unter *Einstellungen* setzen und veröffentlichen). Ohne Hosts-Eintrag funktioniert immer der Pfad `http://apps.univocal.local.de/g/fachschaft04`.
+
+Die Basis-Domain wird über `VITE_PROFILE_BASE_DOMAIN` in `core/uvc-web/.env.development` bzw. `.env.production` gesetzt.
 
 ## 2. Projektbeschreibung
 

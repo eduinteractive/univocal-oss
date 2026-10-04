@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTenant } from '../../../context/TenantContext';
 import {
     News as INews,
@@ -24,6 +24,7 @@ const News = () => {
         null
     );
     const { t } = useTranslation();
+    const queryClient = useQueryClient();
 
     const newsQuery = useQuery({
         queryKey: ['news', currentTenant?._id, metadataFilter],
@@ -36,7 +37,7 @@ const News = () => {
     const createNewsMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.createNews,
         onSuccess: () => {
-            newsQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['news', currentTenant?._id] });
             NotificationHandler.showSuccess(t('TENANT_PAGES.PROFILE.NEWS.SUCCESS.CREATED'));
             setCurrentSelectedNews(null);
         },
@@ -46,7 +47,7 @@ const News = () => {
     const updateNewsMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.updateNews,
         onSuccess: () => {
-            newsQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['news', currentTenant?._id] });
             NotificationHandler.showSuccess(t('TENANT_PAGES.PROFILE.NEWS.SUCCESS.UPDATED'));
             setCurrentSelectedNews(null);
         },
@@ -56,7 +57,7 @@ const News = () => {
     const deleteNewsMutation = useMutation({
         mutationFn: SAPI.PROFILE.TENANT.deleteNews,
         onSuccess: () => {
-            newsQuery.refetch();
+            queryClient.invalidateQueries({ queryKey: ['news', currentTenant?._id] });
             NotificationHandler.showSuccess(t('TENANT_PAGES.PROFILE.NEWS.SUCCESS.DELETED'));
         },
         onError: NotificationHandler.showAxiosError,

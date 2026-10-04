@@ -82,8 +82,8 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
             contactEmail: body.contactEmail !== undefined ? body.contactEmail : profile.contactEmail,
             contactPhone: body.contactPhone !== undefined ? body.contactPhone : profile.contactPhone,
             contactWebsite: body.contactWebsite !== undefined ? body.contactWebsite : profile.contactWebsite,
-            publicPerson: body.publicPerson !== undefined ? body.publicPerson : profile.publicPerson, 
-            avatarImage: body.avatarImage,
+            publicPerson: body.publicPerson !== undefined ? body.publicPerson : profile.publicPerson,
+            ...(body.avatarImage ? { avatarImage: body.avatarImage } : {}),
         });
         if (req.file) {
             // Extract the file extension

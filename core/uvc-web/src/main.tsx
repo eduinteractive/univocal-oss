@@ -18,10 +18,40 @@ import { Notifications } from '@mantine/notifications';
 import { TenantProvider } from './context/TenantContext.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { DatesProvider } from '@mantine/dates';
+import { configureApiForSiteHost } from './utils/SiteHost';
+
+configureApiForSiteHost();
 
 const svhQueryClient = new QueryClient();
 
-const svhTheme = createTheme({});
+const svhTheme = createTheme({
+    colors: {
+        navy: [
+            '#ecebfb',
+            '#d3d2f2',
+            '#a6a3e6',
+            '#7773da',
+            '#514cd0',
+            '#3a34c9',
+            '#2d27c6',
+            '#211daf',
+            '#1b199d',
+            '#15148a',
+        ],
+        lavender: [
+            '#f5f4ff',
+            '#eceaff',
+            '#dcd8ff',
+            '#c6c0fb',
+            '#ada5f5',
+            '#9b91f0',
+            '#9187ee',
+            '#7f74d4',
+            '#7166bd',
+            '#6157a7',
+        ],
+    },
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

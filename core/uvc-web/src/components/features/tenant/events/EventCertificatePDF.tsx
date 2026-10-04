@@ -1,42 +1,37 @@
 import { Document, Page, Text, StyleSheet, View } from '@react-pdf/renderer';
 import { SVHEvent } from '@eduinteractive/uvc-api';
-import dayjs from 'dayjs';
 import { Groups } from '@eduinteractive/uvc-api';
-import { useTranslation } from 'react-i18next';
 
 interface EventCertificatePDFProps {
     event: SVHEvent;
     tenant: Groups;
+    /** Pre-translated labels (avoids useTranslation inside PDF renderer) */
+    labels: {
+        title: string;
+        description: string;
+        generatedAt: string;
+    };
 }
 
-const EventCertificatePDF = (props: EventCertificatePDFProps) => {
-    const { t } = useTranslation();
-    return (
-        <Document>
-            <Page size="A5" style={styles.page} orientation="landscape">
-                <View style={styles.header}>
-                    <Text style={styles.tenantTitle}>
-                        {props.tenant.tenant?.title}
-                    </Text>
-                    <View style={styles.headerLine} />
-                </View>
+const EventCertificatePDF = (props: EventCertificatePDFProps) => (
+    <Document>
+        <Page size="A5" style={styles.page} orientation="landscape">
+            <View style={styles.header}>
+                <Text style={styles.tenantTitle}>{props.tenant.tenant?.title}</Text>
+                <View style={styles.headerLine} />
+            </View>
 
-                <View style={styles.content}>
-                    <Text style={styles.title}>{t('EVENTS.CERTIFICATE.TITLE')}</Text>
-                    <Text style={styles.description}>
-                        {t('EVENTS.CERTIFICATE.DESCRIPTION', { title: props.event.title, date: dayjs(props.event.startDate).format('DD.MM.YYYY') })}
-                    </Text>
-                </View>
+            <View style={styles.content}>
+                <Text style={styles.title}>{props.labels.title}</Text>
+                <Text style={styles.description}>{props.labels.description}</Text>
+            </View>
 
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>
-                        {t('EVENTS.CERTIFICATE.GENERATED_AT', { date: dayjs(new Date()).format('DD.MM.YYYY') })}
-                    </Text>
-                </View>
-            </Page>
-        </Document>
-    );
-};
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>{props.labels.generatedAt}</Text>
+            </View>
+        </Page>
+    </Document>
+);
 
 const styles = StyleSheet.create({
     page: {
@@ -45,7 +40,6 @@ const styles = StyleSheet.create({
         padding: 24,
         height: '100%',
     },
-    // Header Styling
     header: {
         width: '100%',
         marginBottom: 20,
@@ -59,10 +53,9 @@ const styles = StyleSheet.create({
     headerLine: {
         marginTop: 8,
         borderBottomWidth: 2,
-        borderBottomColor: '#1A73E8', // Eine auffällige Farbe für den Header
+        borderBottomColor: '#1A73E8',
         width: '100%',
     },
-    // Content Styling
     content: {
         flex: 1,
         justifyContent: 'center',
@@ -73,16 +66,15 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#1A73E8', // Blau für den Titel der Bescheinigung
+        color: '#1A73E8',
     },
     description: {
         fontSize: 14,
         lineHeight: 1.5,
-        color: '#555', // Dezente Farbe für den Text
+        color: '#555',
         marginHorizontal: 40,
         textAlign: 'center',
     },
-    // Footer Styling
     footer: {
         marginTop: 20,
         alignItems: 'center',

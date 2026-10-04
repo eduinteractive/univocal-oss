@@ -70,11 +70,13 @@ export const getPublicProfile = async (req: Request, res: Response, next: NextFu
         const news = await News.find({ tenantId: new Types.ObjectId(tenantId), status: ProfileObjectStatus.PUBLISHED }).limit(3).sort({ publishDate: -1 });
         const projects = await Project.find({ tenantId: new Types.ObjectId(tenantId), status: ProfileObjectStatus.PUBLISHED }).limit(3).sort({ publishDate: -1 });
         const tenant = await NetworkAxios.get("http://uvc-tenant-srv:3002/api/tenant/public/tenant/" + tenantId);
+        const { site, ...profileData } = profile.toObject();
         res.status(200).json({
             profile: {
-                ...profile.toObject(),
+                ...profileData,
                 title: tenant.data.title,
-                type: tenant.data.type
+                type: tenant.data.type,
+                site: site?.published && site.subdomain ? { subdomain: site.subdomain, published: true } : undefined,
             },
             news,
             projects,

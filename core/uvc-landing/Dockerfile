@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-landing ./core/uvc-landing
-
-RUN pnpm install --filter ./core/uvc-landing --frozen-lockfile
 
 WORKDIR /service/core/uvc-landing
 

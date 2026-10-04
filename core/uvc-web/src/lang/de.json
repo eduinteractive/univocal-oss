@@ -1275,5 +1275,352 @@
         "IMPRINT": "Impressum",
         "TERMS_OF_USE": "Nutzungsbedingungen",
         "LOGOUT": "Abmelden"
+    },
+    "SITE": {
+        "SAVE": "Speichern",
+        "TABS": {
+            "START": "Startseite",
+            "BOARD": "Schwarzes Brett",
+            "EVENTS": "Events",
+            "SURVEYS": "Umfragen",
+            "SUPPORT": "Supportanfragen",
+            "INFOS": "Infoseiten",
+            "SETUP": "Einrichtungsagent",
+            "SETTINGS": "Einstellungen"
+        },
+        "SECTIONS": {
+            "BOARD": "Schwarzes Brett",
+            "EVENTS": "Events",
+            "SURVEYS": "Umfragen",
+            "SUPPORT": "Supportanfragen"
+        },
+        "BUILDER": {
+            "TITLE": "Univocal Builder",
+            "STATUS_LIVE": "Online",
+            "STATUS_DRAFT": "Nicht veröffentlicht",
+            "NO_SUBDOMAIN": "Noch keine Subdomain – jetzt einrichten",
+            "PREVIEW": "Vorschau",
+            "PUBLISH": "Veröffentlichen",
+            "UNPUBLISH": "Offline nehmen",
+            "PUBLISHED_SUCCESS": "Eure Seite ist jetzt öffentlich erreichbar.",
+            "UNPUBLISHED_SUCCESS": "Eure Seite ist jetzt offline.",
+            "CANVAS_HINT": "Live-Vorschau eurer Startseite – klicke auf die Stifte, um Inhalte zu bearbeiten.",
+            "DESKTOP": "Desktop",
+            "MOBILE": "Mobil",
+            "EDIT_DESCRIPTION": "Beschreibung bearbeiten",
+            "EDIT_CONTACTS": "Kontaktdaten bearbeiten",
+            "EDIT_BACKGROUND": "Titelbild ändern",
+            "SECTIONS_TITLE": "Abschnitte der Startseite",
+            "SECTIONS_HINT": "Reihenfolge per Drag & Drop ändern, Abschnitte ein- oder ausblenden.",
+            "CHOOSE": "Inhalte",
+            "SECTION_VISIBLE": "{{section}} auf der Startseite anzeigen",
+            "PINNED": "Auf der Startseite ({{count}}/{{max}})",
+            "PINNED_SHORT": "{{count}} angepinnt",
+            "PINNED_EMPTY": "Noch nichts angepinnt. Pinne Einträge aus der Liste unten, damit sie auf der Startseite erscheinen.",
+            "FALLBACK_LATEST": "Noch nichts angepinnt – es werden automatisch die neuesten 5 veröffentlichten Einträge angezeigt.",
+            "ALL_ITEMS": "Alle Einträge",
+            "SEARCH": "Suchen…",
+            "SEARCH_EMPTY": "Keine Treffer für diese Suche.",
+            "PIN": "Auf der Startseite anzeigen",
+            "UNPIN": "Von der Startseite entfernen",
+            "FEATURE_LIMIT": "Es können maximal {{max}} Einträge pro Abschnitt angepinnt werden.",
+            "OPEN": "Öffnen",
+            "OPEN_PUBLIC": "Öffentlich ansehen",
+            "EVENTS_DESCRIPTION": "Zeige ausgewählte Events mit Anmeldung und Programm.",
+            "EVENTS_EMPTY": "Ihr habt noch keine Events angelegt.",
+            "EVENT_PAST": "Vergangen",
+            "EVENT_UPCOMING": "Anstehend",
+            "MANAGE_EVENTS": "Events verwalten",
+            "BOARD_DESCRIPTION": "Neuigkeiten und Projekte eures Schwarzen Bretts auf der öffentlichen Startseite.",
+            "BOARD_EMPTY": "Noch keine Neuigkeiten oder Projekte vorhanden.",
+            "BOARD_NOT_PUBLISHED": "Noch nicht veröffentlicht – erscheint öffentlich nicht.",
+            "MANAGE_NEWS": "Neuigkeiten verwalten",
+            "MANAGE_PROJECTS": "Projekte verwalten",
+            "SURVEYS_DESCRIPTION": "Umfragen mit nur einer Auswahlfrage werden als Kurzfrage direkt auf der Seite abgestimmt.",
+            "SURVEYS_EMPTY": "Ihr habt noch keine Umfragen angelegt.",
+            "MANAGE_SURVEYS": "Umfragen verwalten",
+            "SURVEY_INACTIVE_HINT": "Inaktive Umfragen werden öffentlich nicht angezeigt.",
+            "SURVEY_RESTRICTED_HINT": "Benötigt TAN oder persönliche Kennung – Besucher*innen werden zur Umfrage weitergeleitet.",
+            "SURVEY_MODE": {
+                "DEFAULT": "Offen für alle",
+                "ANONYMOUS": "Anonym (einmal pro Gerät)",
+                "TAN": "Mit TAN",
+                "PERSONAL": "Persönlich"
+            }
+        },
+        "SETTINGS": {
+            "SUBDOMAIN_TITLE": "Eure Adresse",
+            "SUBDOMAIN_DESCRIPTION": "Wählt eine Subdomain, unter der eure Gruppenseite erreichbar ist. Nach dem Speichern kann sie nur noch der Univocal-Support ändern.",
+            "SUBDOMAIN_LOCKED": "Die Adresse ist festgelegt. Für eine Änderung wende dich an den Univocal-Support.",
+            "SUBDOMAIN_CONTACT_SUPPORT": "Support kontaktieren",
+            "SUBDOMAIN_CHANGE_REQUEST": "Wir möchten die Subdomain unserer Gruppenseite ändern. Aktuelle Adresse: {{subdomain}}",
+            "SUBDOMAIN_LABEL": "Subdomain",
+            "SUBDOMAIN_HINT": "Erlaubt sind Kleinbuchstaben, Zahlen und Bindestriche (mind. 3 Zeichen).",
+            "SUBDOMAIN_SAVED": "Die Subdomain wurde gespeichert.",
+            "AVAILABLE": "Verfügbar",
+            "UNAVAILABLE": {
+                "FORMAT": "Ungültiges Format",
+                "RESERVED": "Reserviert",
+                "TAKEN": "Bereits vergeben"
+            },
+            "URL": "Eure Seite",
+            "FALLBACK_URL": "Alternativer Link",
+            "COPY": "Link kopieren",
+            "COPIED": "Kopiert!",
+            "QR_BUTTON": "QR-Code",
+            "QR_TITLE": "QR-Code zu eurer Seite",
+            "REMOVE_SUBDOMAIN": "Subdomain entfernen",
+            "PUBLISH_TITLE": "Seite veröffentlichen",
+            "PUBLISH_DESCRIPTION": "Wenn aktiviert, ist eure Seite für alle ohne Anmeldung sichtbar.",
+            "PUBLISH_NEEDS_SUBDOMAIN": "Richtet zuerst eine Subdomain ein, um die Seite zu veröffentlichen.",
+            "SEO_TITLE": "Suchmaschinen & Teilen",
+            "SEO_DESCRIPTION": "Optional: So erscheint eure Seite in Suchergebnissen und beim Teilen in Messengern.",
+            "SEO_TITLE_LABEL": "Seitentitel",
+            "SEO_DESCRIPTION_LABEL": "Kurzbeschreibung",
+            "SAVED": "Die Einstellungen wurden gespeichert.",
+            "APPEARANCE": {
+                "TITLE": "Erscheinungsbild",
+                "DESCRIPTION": "Wählt Farben und Aufbau eurer Seite. Die Vorschau zeigt die Auswahl, bevor ihr speichert.",
+                "PALETTE_LABEL": "Farbpalette",
+                "LAYOUT_LABEL": "Layout",
+                "PREVIEW": "Vorschau",
+                "RESET": "Zurücksetzen",
+                "PALETTES": {
+                    "univocal": "Univocal",
+                    "campus-navy": "Campus-Blau",
+                    "forest": "Waldgrün",
+                    "rose": "Bordeaux",
+                    "amber": "Bernstein",
+                    "slate": "Schiefer"
+                },
+                "LAYOUTS": {
+                    "magazine": {
+                        "LABEL": "Magazin",
+                        "HINT": "Großes Titelbild mit Text darüber und klarer redaktioneller Aufbau."
+                    },
+                    "showcase": {
+                        "LABEL": "Bühne",
+                        "HINT": "Zweiteiliger Einstieg und Galerie im Fokus - wirkt wie eine Präsentation."
+                    },
+                    "compact": {
+                        "LABEL": "Kompakt",
+                        "HINT": "Kleineres Titelbild und engere Abstände, ideal für viele Inhalte."
+                    }
+                }
+            },
+            "SOCIAL": {
+                "TITLE": "Social Media",
+                "DESCRIPTION": "Optional: Diese Links erscheinen in der Fußzeile eurer Seite.",
+                "INSTAGRAM_LABEL": "Instagram",
+                "OTHER_LABEL": "Weiterer Link",
+                "OTHER_HINT": "Zum Beispiel Discord, Linktree oder Mastodon."
+            },
+            "LEGAL": {
+                "TITLE": "Rechtliches",
+                "DESCRIPTION": "Impressum und Datenschutzerklärung eurer Gruppe. Schreibt den Text selbst oder verlinkt eine Seite, die ihr schon habt.",
+                "TEMPLATE_NOTICE": "Der Mustertext ist ein unverbindliches Beispiel für Seiten, die mit Univocal betrieben werden. Er ist keine Rechtsberatung. Ob ihr ihn einsetzt und ob er für eure Gruppe passt, entscheidet ihr selbst. Ersetzt die Platzhalter in eckigen Klammern durch eure Angaben.",
+                "MODE_TEXT": "Eigenen Text schreiben",
+                "MODE_LINK": "Link angeben",
+                "TEXT_LABEL": "Text",
+                "URL_LABEL": "Link",
+                "INSERT_TEMPLATE": "Mustertext einfügen",
+                "REPLACE_TEMPLATE": "Mustertext ersetzen",
+                "imprint": {
+                    "TITLE": "Impressum",
+                    "TEXT_HINT": "Dieser Text erscheint auf einer eigenen Seite eurer Website."
+                },
+                "privacy": {
+                    "TITLE": "Datenschutzerklärung",
+                    "TEXT_HINT": "Dieser Text erscheint auf einer eigenen Seite eurer Website."
+                }
+            }
+        },
+        "GALLERY": {
+            "TITLE": "Bildergalerie",
+            "MANAGE": "Galerie bearbeiten ({{count}}/{{max}})",
+            "DROP": "Bilder hierher ziehen oder klicken",
+            "DROP_HINT": "Noch {{remaining}} von {{max}} Bildern möglich · max. 5 MB pro Bild",
+            "EMPTY": "Noch keine Bilder in der Galerie.",
+            "REORDER_HINT": "Ziehe Bilder am Griff, um die Reihenfolge zu ändern.",
+            "UPLOADED": "Die Bilder wurden hochgeladen.",
+            "LIMIT": "Die Galerie kann maximal {{max}} Bilder enthalten."
+        },
+        "LOGO": {
+            "TITLE": "Logo",
+            "HINT": "Quadratisches Logo für Kopfzeile und Startseite. Ohne Logo wird euer Profilbild verwendet.",
+            "REMOVE": "Logo entfernen",
+            "FILE_REQUIRED": "Bitte wähle zuerst ein Logo aus.",
+            "UPDATED": "Das Logo wurde aktualisiert."
+        },
+        "INFOS": {
+            "DESCRIPTION": "Eigene Unterseiten, zum Beispiel für Satzung, Sprechzeiten oder FAQ. Veröffentlichte Seiten erscheinen in der Navigation.",
+            "EMPTY": "Noch keine Infoseiten vorhanden.",
+            "CREATE": "Neue Infoseite",
+            "ADD": "+ Infoseite hinzufügen",
+            "EDIT": "Infoseite bearbeiten",
+            "TITLE": "Titel",
+            "TITLE_PLACEHOLDER": "z. B. Sprechzeiten",
+            "TITLE_REQUIRED": "Bitte gib einen Titel ein.",
+            "SLUG": "Adresse",
+            "SLUG_DESCRIPTION": "Wird automatisch aus dem Titel erzeugt.",
+            "DRAFT_HINT": "Entwürfe sind öffentlich nicht sichtbar.",
+            "NO_PUBLISH_PERMISSION": "Du hast keine Berechtigung zum Veröffentlichen.",
+            "CREATED": "Die Infoseite wurde erstellt.",
+            "UPDATED": "Die Infoseite wurde aktualisiert.",
+            "DELETED": "Die Infoseite wurde gelöscht."
+        },
+        "SUPPORT": {
+            "SECTION_DESCRIPTION": "Bittet Außenstehende um Unterstützung – sie können sich direkt auf eurer Seite melden.",
+            "REQUESTS": "Anfragen",
+            "EMPTY": "Noch keine Supportanfragen vorhanden.",
+            "CREATE": "Neue Supportanfrage",
+            "ADD": "+ Supportanfrage hinzufügen",
+            "EDIT": "Supportanfrage bearbeiten",
+            "TITLE": "Titel",
+            "TITLE_PLACEHOLDER": "z. B. Helfer*innen für das Sommerfest gesucht",
+            "TITLE_REQUIRED": "Bitte gib einen Titel ein.",
+            "DESCRIPTION": "Beschreibung",
+            "DESCRIPTION_HINT": "Wobei braucht ihr Hilfe? Wann, wo und wie viele Personen?",
+            "META": "{{date}} · {{count}} Rückmeldungen",
+            "NOT_PUBLIC_HINT": "Nur veröffentlichte Anfragen erscheinen auf der Startseite.",
+            "CLOSE": "Anfrage schließen",
+            "REOPEN": "Anfrage wieder öffnen",
+            "DELETE_DESCRIPTION": "Die Anfrage und alle Rückmeldungen werden unwiderruflich gelöscht.",
+            "CREATED": "Die Supportanfrage wurde erstellt.",
+            "UPDATED": "Die Supportanfrage wurde aktualisiert.",
+            "DELETED": "Die Supportanfrage wurde gelöscht.",
+            "STATUS": {
+                "DRAFT": "Entwurf",
+                "PUBLISHED": "Veröffentlicht",
+                "CLOSED": "Geschlossen"
+            },
+            "INBOX": {
+                "TITLE": "Posteingang",
+                "ALL_REQUESTS": "Alle Anfragen",
+                "OPEN": "Offen",
+                "DONE": "Erledigt",
+                "EMPTY": "Keine Rückmeldungen in dieser Ansicht.",
+                "OFFER": "Hilfsangebot",
+                "QUESTION": "Rückfrage",
+                "FOR": "Zu: {{title}}",
+                "ANONYMOUS": "Ohne Namen",
+                "REPLY": "Per E-Mail antworten",
+                "MARK_DONE": "Als erledigt markieren",
+                "REOPEN": "Wieder öffnen",
+                "DELETED": "Die Rückmeldung wurde gelöscht."
+            }
+        },
+        "BOARD": {
+            "HINT": "Hier legt ihr Neuigkeiten und Projekte an. Angeheftete Einträge erscheinen auf eurer öffentlichen Startseite."
+        },
+        "SETUP": {
+            "TITLE": "Einrichtungsagent",
+            "DESCRIPTION": "Schritt für Schritt zur fertigen Gruppenseite.",
+            "NEXT": "Nächster Schritt",
+            "GO": "Los",
+            "OPTIONAL": "Optional",
+            "ALL_DONE": "Alles erledigt – eure Seite ist startklar!",
+            "STEPS": {
+                "LOGO": {
+                    "TITLE": "Logo hochladen",
+                    "DESCRIPTION": "Damit man eure Gruppe sofort erkennt."
+                },
+                "DESCRIPTION": {
+                    "TITLE": "Beschreibung schreiben",
+                    "DESCRIPTION": "Wer seid ihr und wofür setzt ihr euch ein?"
+                },
+                "GALLERY": {
+                    "TITLE": "Bilder zur Galerie hinzufügen",
+                    "DESCRIPTION": "Zeigt Eindrücke von euren Aktionen."
+                },
+                "CONTACTS": {
+                    "TITLE": "Kontaktdaten ergänzen",
+                    "DESCRIPTION": "E-Mail oder Telefon, damit man euch erreicht."
+                },
+                "EVENT": {
+                    "TITLE": "Mindestens ein Event anpinnen",
+                    "DESCRIPTION": "Ladet zu euren nächsten Veranstaltungen ein."
+                },
+                "SURVEY": {
+                    "TITLE": "Eine Umfrage oder Kurzfrage anpinnen",
+                    "DESCRIPTION": "Holt euch Meinungen direkt auf der Seite ein."
+                },
+                "INFO": {
+                    "TITLE": "Eine Infoseite veröffentlichen",
+                    "DESCRIPTION": "Zum Beispiel Sprechzeiten oder eure Satzung."
+                },
+                "SUPPORT": {
+                    "TITLE": "Eine Supportanfrage veröffentlichen",
+                    "DESCRIPTION": "Bittet Außenstehende um Unterstützung."
+                },
+                "SUBDOMAIN": {
+                    "TITLE": "Subdomain festlegen",
+                    "DESCRIPTION": "Eure eigene Adresse, z. B. fachschaft04.univocal.de."
+                },
+                "LEGAL": {
+                    "TITLE": "Impressum und Datenschutzerklärung",
+                    "DESCRIPTION": "Schreibt einen eigenen Text oder verlinkt eine bestehende Seite."
+                },
+                "PUBLISH": {
+                    "TITLE": "Seite veröffentlichen",
+                    "DESCRIPTION": "Schaltet eure Seite für alle sichtbar."
+                }
+            }
+        },
+        "PUBLIC": {
+            "HOME": "Startseite",
+            "SKIP_TO_CONTENT": "Zum Inhalt springen",
+            "MENU": "Menü",
+            "ON_THIS_PAGE": "Auf dieser Seite",
+            "JUMP_NAV": "Bereiche dieser Seite",
+            "CONTACT_TITLE": "Fragen?",
+            "CONTACT_HINT": "Sprecht uns an, wir helfen gern weiter.",
+            "FOOTER_PAGES": "Seiten",
+            "FOOTER_SOCIAL": "Folgt uns",
+            "PRIVACY": "Datenschutzerklärung",
+            "IMPRINT": "Impressum",
+            "PLATFORM_PRIVACY": "Datenschutzerklärung von Univocal",
+            "PLATFORM_IMPRINT": "Impressum von Univocal",
+            "BOARD_SHOW_MORE": "Weitere Beiträge anzeigen ({{count}})",
+            "EVENT_PAST": "Vergangen",
+            "POWERED_BY": "Erstellt mit",
+            "SECTION_EMPTY": "Noch keine Inhalte - wird öffentlich ausgeblendet.",
+            "BOARD_NEWS": "Neuigkeit",
+            "BOARD_PROJECT": "Projekt",
+            "READ_MORE": "Weiterlesen",
+            "BACK_HOME": "Zurück zur Startseite",
+            "UPDATED_AT": "Aktualisiert am {{date}}",
+            "NOT_FOUND_TITLE": "Diese Seite gibt es nicht",
+            "NOT_FOUND_DESCRIPTION": "Die Seite ist nicht (mehr) veröffentlicht oder die Adresse ist falsch.",
+            "PAGE_NOT_FOUND": "Infoseite nicht gefunden",
+            "SUPPORT_NOT_FOUND": "Supportanfrage nicht gefunden",
+            "EVENT_REGISTER": "Anmelden",
+            "EVENT_PROGRAM": "Programm",
+            "POLL_LABEL": "Kurzfrage",
+            "SURVEY_LABEL": "Umfrage",
+            "POLL_MULTIPLE": "Bis zu {{max}} Antworten möglich",
+            "POLL_SUBMIT": "Abstimmen",
+            "POLL_SHOW_RESULTS": "Ergebnisse ansehen",
+            "POLL_VOTES": "Stimmen: {{count}}",
+            "POLL_THANKS": "Danke für deine Stimme!",
+            "POLL_ALREADY_VOTED": "Du hast bei dieser Kurzfrage bereits abgestimmt.",
+            "SURVEY_QUESTIONS": "{{count}} Fragen",
+            "SURVEY_START": "Zur Umfrage",
+            "SUPPORT_SINCE": "Seit {{date}}",
+            "SUPPORT_CLOSED": "Diese Anfrage ist abgeschlossen",
+            "SUPPORT_OFFER": "Jetzt eintragen",
+            "SUPPORT_QUESTION": "Nachfrage stellen",
+            "SUPPORT_FORM": {
+                "NAME": "Name (optional)",
+                "EMAIL": "E-Mail",
+                "EMAIL_INVALID": "Bitte gib eine gültige E-Mail-Adresse ein.",
+                "MESSAGE_OFFER": "Wie möchtest du helfen?",
+                "MESSAGE_QUESTION": "Deine Frage",
+                "MESSAGE_REQUIRED": "Bitte schreib eine kurze Nachricht.",
+                "PRIVACY": "Deine Angaben werden nur an die Gruppe übermittelt, damit sie dir antworten kann.",
+                "SENT_TITLE": "Danke für deine Nachricht!",
+                "SENT_DESCRIPTION": "Die Gruppe hat deine Rückmeldung erhalten und meldet sich per E-Mail bei dir."
+            }
+        }
     }
 }

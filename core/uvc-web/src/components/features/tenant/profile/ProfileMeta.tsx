@@ -212,20 +212,6 @@ const ProfileMeta = (props: ProfileMetaProps) => {
                                         </Text>
                                     </Flex>
                                 )}
-                                {profile?.publicPerson && (
-                                    <Flex
-                                        direction="column"
-                                        align="start"
-                                        style={{ marginRight: '20px' }}
-                                    >
-                                        <Title order={6} c="dimmed">
-                                            {t('PROFILE.META.PRESS_SPOKESPERSON')}
-                                        </Title>
-                                        <Text size="xs" fw="bold" mb="xs">
-                                            {profile.publicPerson}
-                                        </Text>
-                                    </Flex>
-                                )}
                             </Flex>
                         </Flex>
                     </Group>

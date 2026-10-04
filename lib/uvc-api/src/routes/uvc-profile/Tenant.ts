@@ -1,5 +1,254 @@
 import { APIHandler, getSVHFilterParams, SVHFilterObject } from "../base";
-import { News, Profile, PROFILE_OBJECT_STATUS, TenantProject } from "./Types";
+import {
+    News,
+    Profile,
+    PROFILE_OBJECT_STATUS,
+    ProfilePage,
+    ProfileSite,
+    ProfileSiteAppearance,
+    ProfileSiteLegal,
+    ProfileSiteSection,
+    ProfileSiteSocialLinks,
+    ProfileSupportRequest,
+    ProfileSupportResponse,
+    PublicSite,
+    SubdomainCheck,
+    SUPPORT_REQUEST_STATUS,
+    SUPPORT_RESPONSE_STATUS,
+    TenantProject,
+} from "./Types";
+
+/**
+ * Site Routes
+ */
+
+export const getSite = async (tenantId?: string) => {
+    if (!tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/site`);
+    return response.data as ProfileSite;
+}
+
+export const getSitePreview = async (tenantId?: string) => {
+    if (!tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/site/preview`);
+    return response.data as PublicSite;
+}
+
+interface updateSiteRequest {
+    tenantId?: string;
+    body: {
+        published?: boolean;
+        seoTitle?: string;
+        seoDescription?: string;
+        galleryImages?: string[];
+        logoImage?: string;
+        sections?: ProfileSiteSection[];
+        appearance?: ProfileSiteAppearance;
+        socialLinks?: ProfileSiteSocialLinks;
+        legal?: ProfileSiteLegal;
+    };
+}
+
+export const updateSite = async (req: updateSiteRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/site`, req.body);
+    return response.data as ProfileSite;
+}
+
+interface checkSubdomainRequest {
+    tenantId?: string;
+    subdomain: string;
+}
+
+export const checkSubdomain = async (req: checkSubdomainRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/site/subdomain/check`, { params: { subdomain: req.subdomain } });
+    return response.data as SubdomainCheck;
+}
+
+interface updateSubdomainRequest {
+    tenantId?: string;
+    subdomain: string | null;
+}
+
+export const updateSubdomain = async (req: updateSubdomainRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/site/subdomain`, { subdomain: req.subdomain });
+    return response.data as ProfileSite;
+}
+
+interface updateSiteLogoRequest {
+    tenantId?: string;
+    logoImage: File;
+}
+
+export const updateSiteLogo = async (req: updateSiteLogoRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const formData = new FormData();
+    formData.append('logoImage', req.logoImage);
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/site/logo`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data as ProfileSite;
+}
+
+interface addSiteGalleryImagesRequest {
+    tenantId?: string;
+    images: File[];
+}
+
+export const addSiteGalleryImages = async (req: addSiteGalleryImagesRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const formData = new FormData();
+    req.images.forEach((image) => formData.append('images', image));
+    const response = await APIHandler.post(`/profile/tenant/${req.tenantId}/site/gallery`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data as ProfileSite;
+}
+
+/**
+ * Info Page Routes
+ */
+
+export const getPages = async (tenantId?: string) => {
+    if (!tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/pages`);
+    return response.data as ProfilePage[];
+}
+
+interface createPageRequest {
+    tenantId?: string;
+    body: {
+        title: string;
+        slug?: string;
+        content?: string;
+        status?: PROFILE_OBJECT_STATUS;
+    };
+}
+
+export const createPage = async (req: createPageRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.post(`/profile/tenant/${req.tenantId}/pages`, req.body);
+    return response.data as ProfilePage;
+}
+
+interface updatePageRequest {
+    tenantId?: string;
+    pageId: string;
+    body: {
+        title?: string;
+        slug?: string;
+        content?: string;
+        status?: PROFILE_OBJECT_STATUS;
+    };
+}
+
+export const updatePage = async (req: updatePageRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/pages/${req.pageId}`, req.body);
+    return response.data as ProfilePage;
+}
+
+interface deletePageRequest {
+    tenantId?: string;
+    pageId: string;
+}
+
+export const deletePage = async (req: deletePageRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.delete(`/profile/tenant/${req.tenantId}/pages/${req.pageId}`);
+    return response.data;
+}
+
+/**
+ * Support Request Routes
+ */
+
+export const getSupportRequests = async (tenantId?: string) => {
+    if (!tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/support-requests`);
+    return response.data as ProfileSupportRequest[];
+}
+
+interface createSupportRequestRequest {
+    tenantId?: string;
+    body: {
+        title: string;
+        description?: string;
+        status?: SUPPORT_REQUEST_STATUS;
+    };
+}
+
+export const createSupportRequest = async (req: createSupportRequestRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.post(`/profile/tenant/${req.tenantId}/support-requests`, req.body);
+    return response.data as ProfileSupportRequest;
+}
+
+interface updateSupportRequestRequest {
+    tenantId?: string;
+    requestId: string;
+    body: {
+        title?: string;
+        description?: string;
+        status?: SUPPORT_REQUEST_STATUS;
+    };
+}
+
+export const updateSupportRequest = async (req: updateSupportRequestRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/support-requests/${req.requestId}`, req.body);
+    return response.data as ProfileSupportRequest;
+}
+
+interface deleteSupportRequestRequest {
+    tenantId?: string;
+    requestId: string;
+}
+
+export const deleteSupportRequest = async (req: deleteSupportRequestRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.delete(`/profile/tenant/${req.tenantId}/support-requests/${req.requestId}`);
+    return response.data;
+}
+
+interface getSupportResponsesRequest {
+    tenantId?: string;
+    requestId?: string;
+    status?: SUPPORT_RESPONSE_STATUS;
+}
+
+export const getSupportResponses = async (req: getSupportResponsesRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.get(`/profile/tenant/${req.tenantId}/support-responses`, {
+        params: { requestId: req.requestId, status: req.status }
+    });
+    return response.data as ProfileSupportResponse[];
+}
+
+interface updateSupportResponseRequest {
+    tenantId?: string;
+    responseId: string;
+    status: SUPPORT_RESPONSE_STATUS;
+}
+
+export const updateSupportResponse = async (req: updateSupportResponseRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.put(`/profile/tenant/${req.tenantId}/support-responses/${req.responseId}`, { status: req.status });
+    return response.data as ProfileSupportResponse;
+}
+
+interface deleteSupportResponseRequest {
+    tenantId?: string;
+    responseId: string;
+}
+
+export const deleteSupportResponse = async (req: deleteSupportResponseRequest) => {
+    if (!req.tenantId) throw new Error('No Tenant id provided');
+    const response = await APIHandler.delete(`/profile/tenant/${req.tenantId}/support-responses/${req.responseId}`);
+    return response.data;
+}
 
 export const getProfile = async (tenantId?: string) => {
     if (!tenantId) throw new Error('No Tenant id provided');
@@ -33,7 +282,7 @@ export const updateProfile = async (req: updateProfileRequest) => {
     if (req.body.contactPhone !== undefined) formData.append('contactPhone', req.body.contactPhone);
     if (req.body.contactWebsite !== undefined) formData.append('contactWebsite', req.body.contactWebsite);
     if (req.body.publicPerson !== undefined) formData.append('publicPerson', req.body.publicPerson);
-    formData.append('avatarImage', req.body.avatarImage || '');
+    if (req.body.avatarImage) formData.append('avatarImage', req.body.avatarImage);
     const response = await APIHandler.put(`/profile/tenant/${req.tenantId}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'

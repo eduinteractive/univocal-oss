@@ -22,10 +22,8 @@ const AdminUsers = lazy(() => import('../pages/admin/Users'));
 const AdminUser = lazy(() => import('../pages/admin/User'));
 const Settings = lazy(() => import('../pages/tenant/Settings'));
 const Members = lazy(() => import('../pages/tenant/Members'));
-const Profile = lazy(() => import('../pages/tenant/Profile'));
+const ProfileBuilder = lazy(() => import('../pages/tenant/profile/Builder'));
 const Calendar = lazy(() => import('../pages/tenant/Calendar'));
-const News = lazy(() => import('../pages/tenant/profile/News'));
-const TenantProjects = lazy(() => import('../pages/tenant/profile/Projects'));
 const Dashboard = lazy(() => import('../pages/tenant/Dashboard'));
 const Chat = lazy(() => import('../pages/user/Chat'));
 const GroupChat = lazy(() => import('../pages/tenant/GroupChat'));
@@ -53,6 +51,7 @@ const EventProgram = lazy(() => import('../pages/EventProgram'));
 const Projects = lazy(() => import('../pages/tenant/projects/Projects'));
 const Project = lazy(() => import('../pages/tenant/projects/Project'));
 const OpenTenants = lazy(() => import('../pages/discover/Tenants'));
+const PublicSite = lazy(() => import('../pages/site/PublicSite'));
 
 const SVHRouter = (): JSX.Element => {
     return (
@@ -104,6 +103,14 @@ const SVHRouter = (): JSX.Element => {
                 element={
                     <SVHSuspense>
                         <Verify />
+                    </SVHSuspense>
+                }
+            />
+            <Route
+                path="/g/:subdomain/*"
+                element={
+                    <SVHSuspense>
+                        <PublicSite />
                     </SVHSuspense>
                 }
             />
@@ -167,23 +174,15 @@ const SVHRouter = (): JSX.Element => {
                                         index
                                         element={
                                             <SVHSuspense>
-                                                <Profile />
+                                                <ProfileBuilder />
                                             </SVHSuspense>
                                         }
                                     />
                                     <Route
-                                        path="news"
+                                        path=":tab"
                                         element={
                                             <SVHSuspense>
-                                                <News />
-                                            </SVHSuspense>
-                                        }
-                                    />
-                                    <Route
-                                        path="projects"
-                                        element={
-                                            <SVHSuspense>
-                                                <TenantProjects />
+                                                <ProfileBuilder />
                                             </SVHSuspense>
                                         }
                                     />

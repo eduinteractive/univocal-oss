@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE_HASH_FILE=".temp/.uvc-base.hash"
-CURRENT_HASH=$(find lib/ pnpm-lock.yaml pnpm-workspace.yaml package.json -type f -exec sha256sum {} + | sha256sum)
+CURRENT_HASH=$(find lib/ pnpm-lock.yaml pnpm-workspace.yaml package.json docker/Dockerfile.base -type f -exec sha256sum {} + | sha256sum)
 
 if [[ -f $BASE_HASH_FILE && $(cat $BASE_HASH_FILE) == $CURRENT_HASH ]]; then
   echo "✅ uvc-base ist aktuell, kein Rebuild nötig."

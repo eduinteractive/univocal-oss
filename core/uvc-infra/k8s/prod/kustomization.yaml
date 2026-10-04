@@ -5,6 +5,8 @@ resources:
   - shibboleth-configmap.yaml
   - uvc-certificate.yaml
   - uvc-ssl-issuer.yaml
+  - uvc-dns-issuer.yaml
+  - uvc-sites-certificate.yaml
   - uvc-auth-depl.yaml
   - uvc-tenant-depl.yaml
   - uvc-survey-depl.yaml
@@ -15,6 +17,7 @@ resources:
   - uvc-chat-depl.yaml
   - uvc-calendar-depl.yaml
   - uvc-ingress-srv.yaml
+  - uvc-sites-ingress.yaml
   - uvc-shibboleth-depl.yaml
   - uvc-web-depl.yaml
   - uvc-landing-depl.yaml

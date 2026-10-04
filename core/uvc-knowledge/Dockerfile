@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-knowledge ./core/uvc-knowledge
-
-RUN pnpm install --filter ./core/uvc-knowledge --frozen-lockfile --include-workspace-root
 
 WORKDIR /service/core/uvc-knowledge
 

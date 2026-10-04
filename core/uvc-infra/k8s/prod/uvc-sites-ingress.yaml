@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uvc-sites-ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # No cert-manager annotation: the wildcard certificate is issued via DNS-01 (uvc-sites-certificate.yaml).
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+    nginx.ingress.kubernetes.io/upgrade-insecure-requests: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "*.univocal.de"
+      secretName: uvc-sites-wildcard-tls
+  rules:
+    # Exact hosts (apps.univocal.de, univocal.de, monitoring…) take precedence over this wildcard.
+    # Only public, unauthenticated APIs are exposed same-origin on group sites.
+    - host: "*.univocal.de"
+      http:
+        paths:
+          - path: /api/profile/public
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-profile-srv
+                port:
+                  number: 3003
+          - path: /api/profile/image
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-profile-srv
+                port:
+                  number: 3003
+          - path: /api/survey/public
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-survey-srv
+                port:
+                  number: 3007
+          - path: /api/event/public
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-event-srv
+                port:
+                  number: 3008
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uvc-web-srv
+                port:
+                  number: 3000

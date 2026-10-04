@@ -4,13 +4,9 @@
 
 FROM uvc-base as base
 
-RUN npm install -g pnpm
-
 WORKDIR /service
 
 COPY ./core/uvc-calendar ./core/uvc-calendar
-
-RUN pnpm install --filter ./core/uvc-calendar --frozen-lockfile --include-workspace-root
 
 WORKDIR /service/core/uvc-calendar
 

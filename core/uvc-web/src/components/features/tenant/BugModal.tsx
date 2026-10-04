@@ -11,6 +11,8 @@ interface BugModalProps {
     visible: boolean;
     onClose: () => void;
     tenantId?: string;
+    initialType?: IssueType;
+    initialDescription?: string;
 }
 
 const BugModal = (props: BugModalProps) => {
@@ -31,8 +33,13 @@ const BugModal = (props: BugModalProps) => {
         if (!props.visible) {
             setType('BUG_REPORT');
             setDescription('');
+            return;
         }
-    }, [props.visible]);
+        if (props.initialDescription) {
+            setType(props.initialType ?? 'OTHER');
+            setDescription(props.initialDescription);
+        }
+    }, [props.visible, props.initialDescription, props.initialType]);
 
     const handleSubmit = () => {
         if (!type) {
