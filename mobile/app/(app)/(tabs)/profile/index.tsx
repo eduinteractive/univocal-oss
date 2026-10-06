@@ -1,137 +1,56 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProfile } from "@/api/Profile";
-import { deleteTenantProject, getTenantProjects } from "@/api/TenantProject";
-import { deleteNews, getAllNews } from "@/api/News";
+import { useQuery } from "@tanstack/react-query";
+import { getProfilePages, getSitePreview } from "@/api/Profile";
 import { useTenant } from "@/context/TenantContext";
 import UVCLoader from "@/components/common/UVCLoader";
-import { useLayoutEffect, useMemo } from "react";
-import { applyColor, applySizeProp, Button, Tabs } from "@eduinteractive/balladui";
-import ProfileGeneral from "@/components/features/profile/ProfileGeneral";
-import ProfileProjects from "@/components/features/profile/ProfileProjects";
-import ProfileNews from "@/components/features/profile/ProfileNews";
-import { useNavigation } from "expo-router";
-import { router } from "expo-router";
-import { NotificationHandler } from "@/utils/NotificationHandler";
-import { IconEdit } from "@/assets/icons/Icon";
+import SiteProfileViewer from "@/components/features/profile/SiteProfileViewer";
+import { Flex, Text } from "@eduinteractive/balladui";
 
 const ProfileScreen = () => {
-	const queryClient = useQueryClient();
-	const navigation = useNavigation();
 	const { currentTenant } = useTenant();
+	const tenantId = currentTenant?.tenant?._id;
 
-	const profileQuery = useQuery({
-		queryKey: ["profile", currentTenant?.tenant!._id],
-		queryFn: () => getProfile(currentTenant!.tenant!._id),
+	const siteQuery = useQuery({
+		queryKey: ["site-preview", tenantId],
+		queryFn: () => getSitePreview(tenantId),
+		enabled: !!tenantId,
 	});
 
-	const newsQuery = useQuery({
-		queryKey: ["news", currentTenant?.tenant!._id],
-		queryFn: () =>
-			getAllNews({
-				tenantId: currentTenant!.tenant!._id,
-				params: null,
-			}),
+	const pagesQuery = useQuery({
+		queryKey: ["site-pages", tenantId],
+		queryFn: () => getProfilePages(tenantId),
+		enabled: !!tenantId,
 	});
 
-	const projectsQuery = useQuery({
-		queryKey: ["projects", currentTenant?.tenant!._id],
-		queryFn: () =>
-			getTenantProjects({
-				tenantId: currentTenant!.tenant!._id,
-				params: null,
-			}),
-	});
-
-	const deleteProjectMutation = useMutation({
-		mutationFn: deleteTenantProject,
-		onSuccess: () => {
-			NotificationHandler.showSuccess("Projekt erfolgreich gelöscht");
-			queryClient.invalidateQueries({ queryKey: ["profile", currentTenant?.tenant!._id] });
-		},
-		onError: () => {
-			NotificationHandler.showError("Fehler beim Löschen des Projekts");
-		},
-	});
-
-	const deleteNewsMutation = useMutation({
-		mutationFn: deleteNews,
-		onSuccess: () => {
-			NotificationHandler.showSuccess("Neuigkeit erfolgreich gelöscht");
-			queryClient.invalidateQueries({ queryKey: ["profile", currentTenant?.tenant!._id] });
-		},
-		onError: () => {
-			NotificationHandler.showError("Fehler beim Löschen der Neuigkeit");
-		},
-	});
-
-    const handleOpenProject = (projectId: string) => {
-		router.push(`/profile/project/${projectId}`);
-	};
-
-	const handleDeleteProject = (projectId: string) => {
-		if (!currentTenant?.tenant?._id) return;
-
-		deleteProjectMutation.mutate({
-			tenantId: currentTenant.tenant._id,
-			projectId: projectId,
-		});
-	};
-
-	const handleOpenNews = (newsId: string) => {
-		router.push(`/profile/news/${newsId}`);
-	};
-
-	const handleDeleteNews = (newsId: string) => {
-		if (!currentTenant?.tenant?._id) return;
-
-		deleteNewsMutation.mutate({
-			tenantId: currentTenant.tenant._id,
-			newsId: newsId,
-		});
-	};
-
-    const tabs = useMemo(
-		() => [
-			{
-				value: "profile",
-				label: "Unser Profil",
-				component: <ProfileGeneral data={profileQuery.data} />,
-			},
-			{
-				value: "projects",
-				label: "Projekte",
-				component: (
-					<ProfileProjects
-						data={{ projects: projectsQuery.data || [] }}
-						onOpenProject={handleOpenProject}
-						onDeleteProject={handleDeleteProject}
-					/>
-				),
-			},
-			{
-				value: "news",
-				label: "Neuigkeiten",
-				component: (
-					<ProfileNews
-						data={{ news: newsQuery.data || [] }}
-						onOpenNews={handleOpenNews}
-						onDeleteNews={handleDeleteNews}
-					/>
-				),
-			},
-		],
-		[profileQuery.data, projectsQuery.data, newsQuery.data, handleOpenProject, handleDeleteProject, handleOpenNews, handleDeleteNews]
-	);
-
-	if (profileQuery.isLoading) {
+	if (!tenantId || siteQuery.isLoading || pagesQuery.isLoading) {
 		return <UVCLoader />;
 	}
 
+	if (siteQuery.isError || !siteQuery.data) {
+		return (
+			<Flex
+				flex={1}
+				align="center"
+				justify="center"
+				p="md"
+			>
+				<Text fs="sm">Das Gruppenprofil konnte nicht geladen werden.</Text>
+			</Flex>
+		);
+	}
+
+	const pages = (pagesQuery.data ?? [])
+		.filter((page) => page.status === "PUBLISHED")
+		.map((page) => ({
+			_id: page._id,
+			title: page.title,
+			slug: page.slug,
+			content: page.content,
+		}));
+
 	return (
-		<Tabs
-			styles={{ tabContainer: { backgroundColor: "white", paddingTop: applySizeProp("sm") } }}
-			tabs={tabs}
-			initialValue={"profile"}
+		<SiteProfileViewer
+			site={siteQuery.data}
+			pages={pages}
 		/>
 	);
 };

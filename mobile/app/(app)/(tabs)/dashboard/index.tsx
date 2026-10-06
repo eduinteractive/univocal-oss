@@ -18,7 +18,7 @@ import { useTenant } from "@/context/TenantContext";
 import { registerForPushNotificationsAsync, sendPushNotification } from "@/utils/PushNotifications";
 import { Box, Button, Card, Flex, Text } from "@eduinteractive/balladui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Route, useRouter } from "expo-router";
+import { RelativePathString, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import * as Notifications from "expo-notifications";
@@ -56,7 +56,7 @@ export const TENANT_NAVIGATION_ITEMS = [
 		color: FEATURE_COLORS.SURVEYS,
 	},
 	{
-		title: "SV-Profil",
+		title: "Gruppenprofil",
 		route: "/profile",
 		icon: IconUserSquareRounded,
 		color: FEATURE_COLORS.SVPROFILE,
@@ -122,7 +122,7 @@ const StartScreen = () => {
 		return (
 			<TouchableOpacity
 				key={item.title}
-				onPress={() => router.push(item.route as Route)}
+				onPress={() => router.push(item.route as RelativePathString)}
 				style={{
 					marginBottom: 10,
 					marginRight: 20,

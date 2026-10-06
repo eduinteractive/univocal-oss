@@ -117,7 +117,7 @@ const TabsLayout = () => {
 			<Tabs.Screen
 				name="profile"
 				options={{
-					title: "SV-Profil",
+					title: "Gruppenprofil",
 					href: null,
 				}}
 			/>

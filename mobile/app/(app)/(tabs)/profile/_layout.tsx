@@ -9,11 +9,11 @@ export default () => {
 		>
 			<Stack.Screen
 				name="index"
-				options={{ title: "SV-Profil", header: () => <HeaderFeature title="SV-Profil" /> }}
+				options={{ title: "Gruppenprofil", header: () => <HeaderFeature title="Gruppenprofil" /> }}
 			/>
 			<Stack.Screen
 				name="edit"
-				options={{ title: "SV-Profil bearbeiten" }}
+				options={{ title: "Gruppenprofil bearbeiten" }}
 			/>
 			<Stack.Screen
 				name="news/new"

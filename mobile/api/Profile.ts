@@ -2,6 +2,8 @@ import APIHandler from "./APIHandler";
 import { News } from "./News";
 import { TenantProject } from "./TenantProject";
 
+export type ProfileSectionType = "BOARD" | "EVENTS" | "SURVEYS" | "SUPPORT";
+
 export interface Profile {
     tenantId?: string;
     description?: string;
@@ -13,6 +15,94 @@ export interface Profile {
     avatarImage?: string;
     backgroundImage?: string;
 }
+
+export interface PublicSiteBoardItem {
+    _id: string;
+    kind: "NEWS" | "PROJECT";
+    title: string;
+    content: string;
+    image?: string;
+    publishDate?: string;
+    updatedAt: string;
+}
+
+export interface PublicSiteEvent {
+    _id: string;
+    title: string;
+    description?: string;
+    startDate: string;
+    endDate?: string;
+}
+
+export interface PublicSiteSurvey {
+    survey: { _id: string; title: string; description?: string };
+    responses: number;
+}
+
+export interface PublicSiteSupportRequest {
+    _id: string;
+    title: string;
+    description: string;
+    publishDate?: string;
+}
+
+export interface PublicSitePage {
+    _id: string;
+    title: string;
+    slug: string;
+    content: string;
+}
+
+export interface PublicSite {
+    tenant: { _id: string; title: string; description?: string };
+    profile: Pick<
+        Profile,
+        | "description"
+        | "contactPerson"
+        | "contactEmail"
+        | "contactPhone"
+        | "contactWebsite"
+        | "avatarImage"
+        | "backgroundImage"
+    >;
+    site: {
+        subdomain?: string;
+        published: boolean;
+        logoImage?: string;
+        galleryImages: string[];
+        sections: { type: ProfileSectionType; enabled: boolean }[];
+        appearance?: { palette?: string; layout?: string };
+        socialLinks?: { instagram?: string; other?: string };
+    };
+    pagesNav: { _id: string; title: string; slug: string }[];
+    featured: {
+        board: PublicSiteBoardItem[];
+        events: PublicSiteEvent[];
+        surveys: PublicSiteSurvey[];
+        supportRequests: PublicSiteSupportRequest[];
+        pages: PublicSitePage[];
+    };
+}
+
+export const getSitePreview = async (tenantId?: string) => {
+    if (!tenantId) throw new Error("No Tenant id provided");
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/site/preview`);
+    return response.data as PublicSite;
+};
+
+export interface ProfilePage {
+    _id: string;
+    title: string;
+    slug: string;
+    content: string;
+    status: "DRAFT" | "EXAMINATION" | "PUBLISHED";
+}
+
+export const getProfilePages = async (tenantId?: string) => {
+    if (!tenantId) throw new Error("No Tenant id provided");
+    const response = await APIHandler.get(`/profile/tenant/${tenantId}/pages`);
+    return response.data as ProfilePage[];
+};
 
 export const getProfile = async (tenantId?: string) => {
     if (!tenantId) throw new Error('No Tenant id provided');

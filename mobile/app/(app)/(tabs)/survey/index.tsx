@@ -60,7 +60,7 @@ export default () => {
 						fw="bold"
 						c="white"
 					>
-						Neues Wiki
+						Neue Umfrage
 					</Text>
 				</Flex>
 			</FAB>
