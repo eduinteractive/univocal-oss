@@ -10,3 +10,10 @@ export const createRegistrationChain = () => {
         body("customFields").optional().isObject().withMessage("Custom fields must be an object").bail(),
     ]
 }
+
+export const deleteRegistrationChain = () => {
+    return [
+        check("eventId").isMongoId().withMessage("Event ID must be a valid Mongo ID"),
+        check("registrationId").isMongoId().withMessage("Registration ID must be a valid Mongo ID"),
+    ]
+}

@@ -17,6 +17,7 @@ interface EventCustomFieldsProps {
             value: string;
         }[];
     };
+    hideTitle?: boolean;
     onUpdate: (data: EventCustomFieldSubmitData[]) => void;
 }
 
@@ -59,9 +60,11 @@ const EventCustomFields = (props: EventCustomFieldsProps) => {
                     setCustomFieldModalVisible(false);
                 }}
             />
-            <Title order={6} c="dimmed" mb="xs">
-                {t('EVENTS.CUSTOM_FIELDS.TITLE')}
-            </Title>
+            {!props.hideTitle && (
+                <Title order={6} c="dimmed" mb="xs">
+                    {t('EVENTS.CUSTOM_FIELDS.TITLE')}
+                </Title>
+            )}
             <Paper withBorder p="xs" style={{ borderRadius: 0 }}>
                 <Group justify="space-between" wrap="nowrap">
                     <Text size="sm">{t('EVENTS.CUSTOM_FIELDS.DEFAULT_NAME')}</Text>

@@ -45,6 +45,7 @@ export const uploadFile = async (key: string, file: Express.Multer.File, metadat
             Bucket: process.env.S3_BUCKET_NAME!,
             Key: key,
             Body: fileContent,
+            ContentType: file.mimetype,
         }
 
         const uploadResponse = await uploadToS3(uploadParams);
@@ -76,6 +77,7 @@ export const uploadFiles = async (keyPrefix: string, files: Express.Multer.File[
                 Bucket: process.env.S3_BUCKET_NAME!,
                 Key: `${keyPrefix}/${fileName}`,  // Eindeutiger Schlüssel für jede Datei
                 Body: fileContent,
+                ContentType: mimeType,
                 Metadata: parsedMetadata,  // Hinzufügen von Metadaten, falls nötig
             };
 
@@ -117,8 +119,10 @@ export const downloadFile = async (req: Request, res: Response, next: NextFuncti
         return next(new NotFoundError("Es wurde keine Datei gefunden."))
     }
 
-    res.setHeader('Content-Type', data.ContentType!);
-    res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
+    const filename = key.split('/').pop()?.substring(6) || 'download';
+    const contentType = objectContentType(data.ContentType, filename);
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `${contentType.startsWith('image/') ? 'inline' : 'attachment'}; filename="${filename}"`);
 
     // Streamen der Datei zum Client
     const stream = data.Body as Readable;
@@ -142,12 +146,30 @@ export const streamImage = async (req: Request, res: Response, next: NextFunctio
         return next(new NotFoundError("Es wurde keine Datei gefunden."));
     }
 
-    res.setHeader('Content-Type', data.ContentType!);
-    res.setHeader('Content-Disposition', `attachment; filename="${key.split('/').pop()?.substring(6)}"`);
+    const filename = key.split('/').pop()?.substring(6) || 'download';
+    const contentType = objectContentType(data.ContentType, filename);
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `${contentType.startsWith('image/') ? 'inline' : 'attachment'}; filename="${filename}"`);
 
     // Streamen der Datei zum Client
     (data.Body as Readable).pipe(res);
 }
+
+const EXTENSION_TYPES: Record<string, string> = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    webp: 'image/webp',
+    svg: 'image/svg+xml',
+    pdf: 'application/pdf',
+};
+
+const objectContentType = (stored: string | undefined, filename: string) => {
+    if (stored && stored !== 'application/octet-stream') return stored;
+    const extension = filename.split('.').pop()?.toLowerCase();
+    return (extension && EXTENSION_TYPES[extension]) || stored || 'application/octet-stream';
+};
 
 export const deleteFile = async (key: string) => {
     const deleteParams = {

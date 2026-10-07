@@ -1,9 +1,26 @@
 import { SVHMetadata } from "../base";
+import { SiteLayoutPreset } from "../uvc-profile/Types";
+
+export const EVENT_ACCENTS = ["univocal", "campus-navy", "forest", "rose", "amber", "slate", "violet", "blue", "teal", "cyan", "grape", "orange", "pink"] as const;
+export type EventAccent = (typeof EVENT_ACCENTS)[number];
+
+export interface SVHEventSession {
+    id: string;
+    title: string;
+    start: Date;
+    end?: Date;
+    place?: string;
+    description?: string;
+}
 
 export interface SVHEvent extends SVHMetadata {
     _id: string;
     startDate: Date;
     endDate?: Date;
+    place?: {
+        name: string;
+        address: string;
+    };
     config: {
         toc: {
             enabled: boolean;
@@ -13,9 +30,11 @@ export interface SVHEvent extends SVHMetadata {
                 link: string;
                 mimetype: string;
             }[]
+            sessions?: SVHEventSession[];
         }
         registration: {
             enabled: boolean;
+            capacity?: number | null;
             fields: {
                 key: string;
                 value: string;
@@ -28,7 +47,27 @@ export interface SVHEvent extends SVHMetadata {
                 value: string;
             }[]
         }
+        public?: {
+            coverKey: string;
+            accent: EventAccent;
+            layout?: SiteLayoutPreset;
+            published?: boolean;
+        }
     }
+}
+
+export interface SVHPublicEvent {
+    tenantId?: string;
+    title: string;
+    description: string;
+    startDate: Date;
+    endDate?: Date;
+    place?: {
+        name: string;
+        address: string;
+    };
+    spotsRemaining: number | null;
+    config: SVHEvent["config"];
 }
 
 export interface SVHEventAttendee {

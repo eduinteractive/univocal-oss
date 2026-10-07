@@ -7,6 +7,7 @@ const SurveyTransaction = lazy(() => import('../pages/SurveyTransaction'));
 const SurveyPublicResults = lazy(() => import('../pages/SurveyPublicResults'));
 const EventRegistration = lazy(() => import('../pages/EventRegistration'));
 const EventProgram = lazy(() => import('../pages/EventProgram'));
+const PublicEvent = lazy(() => import('../pages/PublicEvent'));
 
 interface SiteHostRouterProps {
     subdomain: string;
@@ -28,6 +29,14 @@ const SiteHostRouter = ({ subdomain }: SiteHostRouterProps): JSX.Element => (
             element={
                 <SVHSuspense>
                     <SurveyTransaction />
+                </SVHSuspense>
+            }
+        />
+        <Route
+            path="/event/:eventId"
+            element={
+                <SVHSuspense>
+                    <PublicEvent />
                 </SVHSuspense>
             }
         />

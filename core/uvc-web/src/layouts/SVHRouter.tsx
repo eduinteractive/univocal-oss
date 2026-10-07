@@ -52,6 +52,7 @@ const Event = lazy(() => import('../pages/tenant/events/Event'));
 const EventRegistration = lazy(() => import('../pages/EventRegistration'));
 const EventAccreditation = lazy(() => import('../pages/EventAccreditation'));
 const EventProgram = lazy(() => import('../pages/EventProgram'));
+const PublicEvent = lazy(() => import('../pages/PublicEvent'));
 const Projects = lazy(() => import('../pages/tenant/projects/Projects'));
 const Project = lazy(() => import('../pages/tenant/projects/Project'));
 const OpenTenants = lazy(() => import('../pages/discover/Tenants'));
@@ -73,6 +74,14 @@ const SVHRouter = (): JSX.Element => {
                 element={
                     <SVHSuspense>
                         <SurveyTransaction />
+                    </SVHSuspense>
+                }
+            />
+            <Route
+                path="/event/:eventId"
+                element={
+                    <SVHSuspense>
+                        <PublicEvent />
                     </SVHSuspense>
                 }
             />
@@ -226,6 +235,14 @@ const SVHRouter = (): JSX.Element => {
                                     />
                                     <Route
                                         path=":eventId"
+                                        element={
+                                            <SVHSuspense>
+                                                <Event />
+                                            </SVHSuspense>
+                                        }
+                                    />
+                                    <Route
+                                        path=":eventId/:tab"
                                         element={
                                             <SVHSuspense>
                                                 <Event />

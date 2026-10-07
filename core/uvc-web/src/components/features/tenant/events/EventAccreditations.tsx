@@ -1,24 +1,17 @@
-import {
-    Anchor,
-    Box,
-    Button,
-    Divider,
-    Flex,
-    Group,
-    Switch,
-    Text,
-    Title,
-} from '@mantine/core';
-import { SVHEvent, SVHEventAttendee } from '@eduinteractive/uvc-api';
-import { NotificationHandler } from '@eduinteractive/mantine-common';
+import { ActionIcon, Card, Group, Menu, Stack, Text, Title } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { useMemo } from 'react';
-import QRCode from 'react-qr-code';
+import { IconDotsVertical, IconExternalLink, IconLink, IconQrcode } from '@tabler/icons-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import { useTranslation } from 'react-i18next';
+import { SAPI, SVHEvent, SVHEventAttendee } from '@eduinteractive/uvc-api';
+import { NotificationHandler } from '@eduinteractive/mantine-common';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import SVHQRPDF from '../../../common/SVHQRPDF';
 import EventCustomFields from './EventCustomFields';
 import EventCustomTable from './EventCustomTable';
-import SVHQRPDF from '../../../common/SVHQRPDF';
-import { useTranslation } from 'react-i18next';
+import { useTenant } from '../../../../context/TenantContext';
+import { useAuth } from '../../../../context/AuthContext';
+import { checkPermission } from '../../../../utils/Permission';
 
 interface EventAccreditationsSubmitData {
     config: {
@@ -41,119 +34,87 @@ interface EventAccreditationsProps {
 const EventAccreditations = (props: EventAccreditationsProps) => {
     const { t } = useTranslation();
     const clipboard = useClipboard();
-
-    const checkInLink = useMemo(
-        () =>
-            `${import.meta.env.VITE_KUBERNETES_HOST}/event-checkin/${props.event
-                ?._id}`,
-        [props.event]
-    );
-
-    const checkInQRCode = useMemo(
-        () => <QRCode id="eventQR" value={checkInLink} size={100} />,
-        [checkInLink]
-    );
-
+    const { currentTenant } = useTenant();
+    const checkInUrl = `${import.meta.env.VITE_KUBERNETES_HOST}/event-checkin/${props.event._id}`;
+    const { authData } = useAuth();
+    const queryClient = useQueryClient();
+    const canDelete =
+        !!currentTenant &&
+        (checkPermission(currentTenant, 'event:edit') ||
+            props.event.authorId === authData?._id);
+    const deleteMutation = useMutation({
+        mutationFn: (attendeeId: string) =>
+            SAPI.EVENT.TENANT.deleteEventAttendee({
+                tenantId: currentTenant!._id,
+                eventId: props.event._id,
+                attendeeId,
+            }),
+        onSuccess: () => {
+            NotificationHandler.showSuccess(t('EVENTS.TABLE.DELETED'));
+            queryClient.invalidateQueries({
+                queryKey: ['event', props.event._id],
+            });
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
     return (
-        <Flex direction="column" gap="xs">
-            <Group align="center" gap="xl" justify="center">
-                <Flex justify="center" w={150}>
-                    <Switch
-                        onLabel={t('COMMON.ACTIVE')}
-                        offLabel={t('COMMON.INACTIVE')}
-                        size="lg"
-                        checked={props.event.config.accreditation.enabled}
-                        onChange={(e) => {
-                            props.onUpdate({
-                                config: {
-                                    accreditation: {
-                                        enabled: e.currentTarget.checked,
-                                    },
-                                },
-                            });
-                        }}
-                    />
-                </Flex>
-                <Box style={{ flex: 1 }}>
-                    <Text>{t('EVENTS.ACCREDITATION_ENABLE_TITLE')}</Text>
-                    <Text size="xs" c="dimmed">
-                        {t('EVENTS.ACCREDITATION_ENABLE_DESCRIPTION')}
-                    </Text>
-                </Box>
-                {props.event.config.accreditation.enabled && (
-                    <Group
-                        align="flex-start"
-                        gap="sm"
-                        p="md"
-                        bg="gray.0"
-                        style={{
-                            border: 'calc(0.125rem*var(--mantine-scale)) solid var(--mantine-color-gray-3)',
-                        }}
-                        mt="md"
-                        w={400}
-                    >
-                        <Flex direction="column" gap="sm" w="100%">
-                            <Flex direction="column">
-                                <Title order={6} c="dimmed">
-                                    {t('EVENTS.ACCREDITATION_INFO')}
-                                </Title>
-                                <Flex gap="xl" mt="md" justify="space-between">
-                                    <Flex direction="column" gap="sm">
-                                        <Button
-                                            variant="default"
-                                            onClick={() => {
-                                                clipboard.copy(checkInLink);
-                                                NotificationHandler.showInfo(
-                                                    t('COMMON.COPY_LINK_SUCCESS')
-                                                );
-                                            }}
-                                        >
-                                            {t('COMMON.COPY_LINK')}
-                                        </Button>
-                                        <PDFDownloadLink
-                                            document={
-                                                <SVHQRPDF
-                                                    title={props.event.title}
-                                                    link={checkInLink}
-                                                    generationNotice={t('COMMON.GENERATION_NOTICE')}
-                                                />
-                                            }
-                                            fileName="QR-Code.pdf"
-                                        >
-                                            <Button variant="default">
-                                                {t('EVENTS.PROGRAM_PDF')}
-                                            </Button>
-                                        </PDFDownloadLink>
-                                    </Flex>
-                                    <Flex
-                                        direction="column"
-                                        gap="sm"
-                                        align="center"
-                                    >
-                                        {checkInQRCode}
-                                        <Anchor
-                                            fw={600}
-                                            target="_blank"
-                                            ta="center"
-                                            size="xs"
-                                            href={checkInLink}
-                                        >
-                                            {t('EVENTS.ACCREDITATION_LINK')}
-                                        </Anchor>
-                                    </Flex>
-                                </Flex>
-                            </Flex>
-                        </Flex>
-                    </Group>
-                )}
-            </Group>
-            <Divider my="md" />
-            {props.event.config.accreditation.enabled && (
-                <>
+        <Stack gap="xl">
+            <Card withBorder radius="sm" p="xl">
+                <Group justify="space-between" align="flex-start" wrap="nowrap" mb="md">
+                    <Title order={3} c="violet">
+                        {t('EVENTS.SETTINGS')}
+                    </Title>
+                    <Menu position="bottom-end">
+                        <Menu.Target>
+                            <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                aria-label={t('COMMON.ACTIONS')}
+                            >
+                                <IconDotsVertical size={18} />
+                            </ActionIcon>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item
+                                leftSection={<IconExternalLink size={16} />}
+                                onClick={() => window.open(checkInUrl, '_blank', 'noopener,noreferrer')}
+                            >
+                                {t('EVENTS.CHECKIN_OPEN')}
+                            </Menu.Item>
+                            <Menu.Item
+                                leftSection={<IconLink size={16} />}
+                                onClick={() => {
+                                    clipboard.copy(checkInUrl);
+                                    NotificationHandler.showInfo(t('COMMON.COPY_LINK_SUCCESS'));
+                                }}
+                            >
+                                {t('EVENTS.COPY_PUBLIC_LINK')}
+                            </Menu.Item>
+                            <PDFDownloadLink
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                document={
+                                    <SVHQRPDF
+                                        title={props.event.title}
+                                        link={checkInUrl}
+                                        generationNotice={t('COMMON.GENERATION_NOTICE')}
+                                    />
+                                }
+                                fileName="Check-In-QR.pdf"
+                            >
+                                <Menu.Item component="div" leftSection={<IconQrcode size={16} />} closeMenuOnClick={false}>
+                                    {t('EVENTS.PRINT_QR')}
+                                </Menu.Item>
+                            </PDFDownloadLink>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Group>
+                <Stack gap={8}>
+                    <Text size="sm" fw={600}>{t('EVENTS.CUSTOM_FIELDS.TITLE')}</Text>
+                    <Text size="sm" c="dimmed">{t('EVENTS.FIELDS_HINT')}</Text>
                     <EventCustomFields
+                        hideTitle
                         data={{
-                            fields:
-                                props.event.config.accreditation.fields || [],
+                            fields: props.event.config.accreditation.fields || [],
                         }}
                         onUpdate={(fields) => {
                             props.onUpdate({
@@ -165,14 +126,26 @@ const EventAccreditations = (props: EventAccreditationsProps) => {
                             });
                         }}
                     />
-                    <Divider my="md" />
-                    <EventCustomTable
-                        fields={props.event.config.accreditation.fields || []}
-                        data={props.attendees}
-                    />
-                </>
-            )}
-        </Flex>
+                </Stack>
+            </Card>
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb={4}>
+                    {t('EVENTS.CHECKINS_LIST')}
+                </Title>
+                <Text size="sm" c="dimmed" mb="md">
+                    {t('EVENTS.CHECKINS_LIST_HINT')}
+                </Text>
+                <EventCustomTable
+                    fields={props.event.config.accreditation.fields || []}
+                    data={props.attendees}
+                    onDelete={
+                        canDelete
+                            ? (attendeeId) => deleteMutation.mutate(attendeeId)
+                            : undefined
+                    }
+                />
+            </Card>
+        </Stack>
     );
 };
 

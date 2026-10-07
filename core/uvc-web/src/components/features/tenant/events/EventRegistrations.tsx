@@ -1,29 +1,28 @@
 import {
-    Anchor,
-    Box,
     Button,
-    Divider,
-    Flex,
+    Card,
     Group,
-    Switch,
+    NumberInput,
+    Stack,
     Text,
     Title,
 } from '@mantine/core';
-import { SVHEvent, SVHEventRegistration } from '@eduinteractive/uvc-api';
+import { SAPI, SVHEvent, SVHEventRegistration } from '@eduinteractive/uvc-api';
 import { NotificationHandler } from '@eduinteractive/mantine-common';
-import { useClipboard } from '@mantine/hooks';
-import { useMemo } from 'react';
-import QRCode from 'react-qr-code';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import EventCustomFields from './EventCustomFields';
 import EventCustomTable from './EventCustomTable';
-import SVHQRPDF from '../../../common/SVHQRPDF';
 import { useTranslation } from 'react-i18next';
+import { useTenant } from '../../../../context/TenantContext';
+import { useAuth } from '../../../../context/AuthContext';
+import { checkPermission } from '../../../../utils/Permission';
 
 interface EventRegistrationsSubmitData {
     config: {
         registration: {
             enabled?: boolean;
+            capacity?: number | null;
             fields?: {
                 key: string;
                 value: string;
@@ -40,139 +39,123 @@ interface EventRegistrationsProps {
 
 const EventRegistrations = (props: EventRegistrationsProps) => {
     const { t } = useTranslation();
-    const clipboard = useClipboard();
-
-    const checkInLink = useMemo(
-        () =>
-            `${import.meta.env.VITE_KUBERNETES_HOST}/event-registration/${props
-                .event?._id}`,
-        [props.event]
+    const { currentTenant } = useTenant();
+    const { authData } = useAuth();
+    const queryClient = useQueryClient();
+    const canDelete =
+        !!currentTenant &&
+        (checkPermission(currentTenant, 'event:edit') ||
+            props.event.authorId === authData?._id);
+    const deleteMutation = useMutation({
+        mutationFn: (registrationId: string) =>
+            SAPI.EVENT.TENANT.deleteEventRegistration({
+                tenantId: currentTenant!._id,
+                eventId: props.event._id,
+                registrationId,
+            }),
+        onSuccess: () => {
+            NotificationHandler.showSuccess(t('EVENTS.TABLE.DELETED'));
+            queryClient.invalidateQueries({
+                queryKey: ['event', props.event._id],
+            });
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
+    const [capacity, setCapacity] = useState<number | string>(
+        props.event.config.registration.capacity ?? ''
     );
 
-    const checkInQRCode = useMemo(
-        () => <QRCode id="eventQR" value={checkInLink} size={100} />,
-        [checkInLink]
-    );
+    useEffect(() => {
+        setCapacity(props.event.config.registration.capacity ?? '');
+    }, [props.event.config.registration.capacity]);
+
+    const savedCapacity = props.event.config.registration.capacity ?? '';
+    const capacityDirty = String(capacity) !== String(savedCapacity);
+
+    const saveCapacity = () => {
+        const next = capacity === '' ? null : Number(capacity);
+        if (next !== null && (!Number.isInteger(next) || next < 1)) return;
+        props.onUpdate({
+            config: {
+                registration: {
+                    capacity: next,
+                },
+            },
+        });
+    };
 
     return (
-        <Flex direction="column" gap="xs">
-            <Group align="center" gap="xl" justify="center">
-                <Flex justify="center" w={150}>
-                    <Switch
-                        onLabel={t('COMMON.ACTIVE')}
-                        offLabel={t('COMMON.INACTIVE')}
-                        size="lg"
-                        checked={props.event.config.registration.enabled}
-                        onChange={(e) => {
-                            props.onUpdate({
-                                config: {
-                                    registration: {
-                                        enabled: e.currentTarget.checked,
+        <Stack gap="xl">
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb="md">
+                    {t('EVENTS.SETTINGS')}
+                </Title>
+                <Stack gap="lg">
+                    <Stack gap={8}>
+                        <Text size="sm" fw={600}>{t('EVENTS.CAPACITY_LABEL')}</Text>
+                        <Text size="sm" c="dimmed">{t('EVENTS.CAPACITY_HINT')}</Text>
+                        <NumberInput
+                            min={1}
+                            allowDecimal={false}
+                            value={capacity}
+                            onChange={setCapacity}
+                        />
+                        <Text size="sm" c="dimmed">
+                            {props.event.config.registration.capacity
+                                ? t('EVENTS.CAPACITY_COUNT', {
+                                    count: props.registrations.length,
+                                    capacity: props.event.config.registration.capacity,
+                                })
+                                : t('EVENTS.REGISTRATION_COUNT', {
+                                    count: props.registrations.length,
+                                })}
+                        </Text>
+                        <Group justify="flex-end">
+                            <Button disabled={!capacityDirty} onClick={saveCapacity}>
+                                {t('SITE.SAVE')}
+                            </Button>
+                        </Group>
+                    </Stack>
+                    <Stack gap={8}>
+                        <Text size="sm" fw={600}>{t('EVENTS.CUSTOM_FIELDS.TITLE')}</Text>
+                        <Text size="sm" c="dimmed">{t('EVENTS.FIELDS_HINT')}</Text>
+                        <EventCustomFields
+                            hideTitle
+                            data={{
+                                fields: props.event.config.registration.fields || [],
+                            }}
+                            onUpdate={(fields) => {
+                                props.onUpdate({
+                                    config: {
+                                        registration: {
+                                            fields,
+                                        },
                                     },
-                                },
-                            });
-                        }}
-                    />
-                </Flex>
-                <Box style={{ flex: 1 }}>
-                    <Text>{t('EVENTS.REGISTRATION_ENABLE_TITLE')}</Text>
-                    <Text size="xs" c="dimmed">
-                        {t('EVENTS.REGISTRATION_ENABLE_DESCRIPTION')}
-                    </Text>
-                </Box>
-                {props.event.config.registration.enabled && (
-                    <Group
-                        align="flex-start"
-                        gap="sm"
-                        p="md"
-                        bg="gray.0"
-                        style={{
-                            border: 'calc(0.125rem*var(--mantine-scale)) solid var(--mantine-color-gray-3)',
-                        }}
-                        mt="md"
-                        w={400}
-                    >
-                        <Flex direction="column" gap="sm" w="100%">
-                            <Flex direction="column">
-                                <Title order={6} c="dimmed">
-                                    {t('EVENTS.REGISTRATION_INFO')}
-                                </Title>
-                                <Flex gap="xl" mt="md" justify="space-between">
-                                    <Flex direction="column" gap="sm">
-                                        <Button
-                                            variant="default"
-                                            onClick={() => {
-                                                clipboard.copy(checkInLink);
-                                                NotificationHandler.showInfo(
-                                                    t('COMMON.COPY_LINK_SUCCESS')
-                                                );
-                                            }}
-                                        >
-                                            {t('COMMON.COPY_LINK')}
-                                        </Button>
-                                        <PDFDownloadLink
-                                            document={
-                                                <SVHQRPDF
-                                                    title={props.event.title}
-                                                    link={checkInLink}
-                                                    generationNotice={t('COMMON.GENERATION_NOTICE')}
-                                                />
-                                            }
-                                            fileName="QR-Code.pdf"
-                                        >
-                                            <Button variant="default">
-                                                {t('EVENTS.PROGRAM_PDF')}
-                                            </Button>
-                                        </PDFDownloadLink>
-                                    </Flex>
-                                    <Flex
-                                        direction="column"
-                                        gap="sm"
-                                        align="center"
-                                    >
-                                        {checkInQRCode}
-                                        <Anchor
-                                            fw={600}
-                                            target="_blank"
-                                            ta="center"
-                                            size="xs"
-                                            href={checkInLink}
-                                        >
-                                            {t('EVENTS.REGISTRATION_LINK')}
-                                        </Anchor>
-                                    </Flex>
-                                </Flex>
-                            </Flex>
-                        </Flex>
-                    </Group>
-                )}
-            </Group>
-            <Divider my="md" />
-            {props.event.config.registration.enabled && (
-                <>
-                    <EventCustomFields
-                        data={{
-                            fields:
-                                props.event.config.registration.fields || [],
-                        }}
-                        onUpdate={(fields) => {
-                            props.onUpdate({
-                                config: {
-                                    registration: {
-                                        fields,
-                                    },
-                                },
-                            });
-                        }}
-                    />
-                    <Divider my="md" />
-                    <EventCustomTable
-                        fields={props.event.config.registration.fields || []}
-                        data={props.registrations}
-                    />
-                </>
-            )}
-        </Flex>
+                                });
+                            }}
+                        />
+                    </Stack>
+                </Stack>
+            </Card>
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb={4}>
+                    {t('EVENTS.REGISTRATIONS_LIST')}
+                </Title>
+                <Text size="sm" c="dimmed" mb="md">
+                    {t('EVENTS.REGISTRATIONS_LIST_HINT')}
+                </Text>
+                <EventCustomTable
+                    fields={props.event.config.registration.fields || []}
+                    data={props.registrations}
+                    onDelete={
+                        canDelete
+                            ? (registrationId) =>
+                                  deleteMutation.mutate(registrationId)
+                            : undefined
+                    }
+                />
+            </Card>
+        </Stack>
     );
 };
 

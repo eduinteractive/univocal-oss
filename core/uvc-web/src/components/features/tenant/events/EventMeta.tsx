@@ -1,174 +1,181 @@
-import { ActionIcon, Button, Flex, Group, Text, Title } from '@mantine/core';
-import html2canvas from 'html2canvas';
+import { Button, Card, Group, Stack, Text, Textarea, Title } from '@mantine/core';
+import { EDITextInput, NotificationHandler } from '@eduinteractive/mantine-common';
 import { SVHEvent } from '@eduinteractive/uvc-api';
-import dayjs from 'dayjs';
-import { IconEdit } from '@tabler/icons-react';
-import { useRef } from 'react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import EventCertificatePDF from './EventCertificatePDF';
+import { useEffect, useState } from 'react';
+import SVHDateTimePicker from '../../../common/SVHDateTimePicker';
+import SVHViewAccessEdit from '../../../common/SVHViewAccessEdit';
 import { useTenant } from '../../../../context/TenantContext';
 import { useTranslation } from 'react-i18next';
 
+interface EventMetaSubmit {
+    title?: string;
+    description?: string;
+    viewAccess?: number;
+    startDate?: Date;
+    endDate?: Date;
+    place?: {
+        name: string;
+        address: string;
+    };
+}
+
 interface EventMetaProps {
-    data?: SVHEvent;
-    onEdit: () => void;
+    data: SVHEvent;
+    onUpdate: (data: EventMetaSubmit) => void;
 }
 
 const EventMeta = (props: EventMetaProps) => {
     const { currentTenant } = useTenant();
     const { t } = useTranslation();
-    const captureRef = useRef<HTMLDivElement>(null);
+    const [title, setTitle] = useState(props.data.title);
+    const [description, setDescription] = useState(props.data.description || '');
+    const [viewAccess, setViewAccess] = useState(props.data.viewAccess ?? currentTenant?.permissionLevel ?? 0);
+    const [name, setName] = useState(props.data.place?.name ?? '');
+    const [address, setAddress] = useState(props.data.place?.address ?? '');
+    const [startDate, setStartDate] = useState<Date | null>(new Date(props.data.startDate));
+    const [endDate, setEndDate] = useState<Date | null>(props.data.endDate ? new Date(props.data.endDate) : null);
 
-    const handleSharePicGeneration = () => {
-        if (captureRef.current) {
-            html2canvas(captureRef.current, {
-                width: 1080,
-                height: 1080,
-                scale: 1, // Optional: Verdoppelt die Auflösung des Bildes
-            }).then((canvas) => {
-                const link = document.createElement('a');
-                link.download = 'event-sharepic-instagram.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+    useEffect(() => {
+        setTitle(props.data.title);
+        setDescription(props.data.description || '');
+        setViewAccess(props.data.viewAccess ?? currentTenant?.permissionLevel ?? 0);
+        setName(props.data.place?.name ?? '');
+        setAddress(props.data.place?.address ?? '');
+        setStartDate(new Date(props.data.startDate));
+        setEndDate(props.data.endDate ? new Date(props.data.endDate) : null);
+    }, [props.data, currentTenant?.permissionLevel]);
+
+    const savedViewAccess = props.data.viewAccess ?? currentTenant?.permissionLevel ?? 0;
+    const generalDirty = title !== props.data.title
+        || description !== (props.data.description || '')
+        || viewAccess !== savedViewAccess;
+    const sameTime = (value: Date | null, saved?: Date) => {
+        if (!value && !saved) return true;
+        if (!value || !saved) return false;
+        return value.getTime() === new Date(saved).getTime();
+    };
+    const placeDirty = name !== (props.data.place?.name ?? '')
+        || address !== (props.data.place?.address ?? '')
+        || !sameTime(startDate, props.data.startDate)
+        || !sameTime(endDate, props.data.endDate);
+
+    const saveGeneral = () => {
+        if (!title.trim()) {
+            NotificationHandler.showError(t('COMMON.ATTRIBUTES.TITLE_ERROR'));
+            return;
         }
+        props.onUpdate({
+            title: title.trim(),
+            description,
+            viewAccess,
+        });
+    };
+
+    const savePlaceAndTime = () => {
+        if (!startDate) {
+            NotificationHandler.showError(t('COMMON.ATTRIBUTES.FILL_REQUIRED_FIELDS'));
+            return;
+        }
+        if (endDate && endDate < startDate) {
+            NotificationHandler.showError(t('CALENDAR.ATTRIBUTES.ENDDATE_BEFORE_STARTDATE'));
+            return;
+        }
+        props.onUpdate({
+            startDate,
+            endDate: endDate || undefined,
+            place: { name, address },
+        });
     };
 
     return (
-        <>
-            <Flex direction="column">
-                <Group justify="space-between" align="center">
-                    <Flex direction="column">
-                        <Title order={6} c="dimmed">
-                            {dayjs(props.data?.startDate).format(
-                                'DD.MM.YYYY HH:mm'
-                            )}
-                            {props.data?.endDate &&
-                                ` - ${dayjs(props.data?.endDate).format(
-                                    'DD.MM.YYYY HH:mm'
-                                )}`}
-                        </Title>
-                        <Title order={3} c="violet">
-                            {props.data?.title}
-                        </Title>
-                    </Flex>
-                    <ActionIcon variant="subtle">
-                        <IconEdit size={24} onClick={props.onEdit} />
-                    </ActionIcon>
-                </Group>
-                <Text size="sm" mb="sm">
-                    {props.data?.description}
+        <Stack gap="xl">
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb={4}>
+                    {t('EVENTS.GENERAL_SETTINGS')}
+                </Title>
+                <Text size="sm" c="dimmed" mb="md">
+                    {t('EVENTS.GENERAL_SETTINGS_HINT')}
                 </Text>
-            </Flex>
-            <div
-                ref={captureRef}
-                style={{
-                    position: 'absolute',
-                    top: '-9999px', // Platzierung außerhalb des sichtbaren Bereichs
-                    left: '-9999px',
-                    width: '1080px',
-                    height: '1080px',
-                    backgroundColor: '#228be6',
-                    //backgroundImage: 'url("https://dummyimage.com/1080?blur=3")', // Hintergrundbild kann dynamisch oder statisch sein
-                    backgroundSize: 'cover',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    padding: '40px',
-                    boxSizing: 'border-box',
-                }}
-            >
-                {/* Großer Titel */}
-                <div
-                    style={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)', // Halbtransparentes Overlay
-                        padding: '30px',
-                        borderRadius: '15px',
-                        maxWidth: '800px',
-                        marginBottom: '20px',
-                    }}
-                >
-                    <h1
-                        style={{
-                            color: '#1A73E8', // Auffällige Farbe für den Titel
-                            fontSize: '4rem', // Sehr große Schrift
-                            fontWeight: 'bold',
-                            marginBottom: '20px',
-                        }}
-                    >
-                        {props.data?.title}
-                    </h1>
-                    {/* Event Beschreibung */}
-                    <p
-                        style={{
-                            color: '#333',
-                            fontSize: '1.5rem',
-                            marginBottom: '20px',
-                        }}
-                    >
-                        {props.data?.description}
-                    </p>
-
-                    {/* Event Datum */}
-                    <p
-                        style={{
-                            color: '#555',
-                            fontSize: '1.2rem',
-                        }}
-                    >
-                        {dayjs(props.data?.startDate).format(
-                            'DD.MM.YYYY HH:mm'
-                        )}
-                        {props.data?.endDate &&
-                            ` - ${dayjs(props.data?.endDate).format(
-                                'DD.MM.YYYY HH:mm'
-                            )}`}
-                    </p>
-                </div>
-            </div>
-            <Flex direction="row" gap="sm" mt="xs">
-                <Button
-                    onClick={handleSharePicGeneration}
-                    variant="default"
-                    size="sm"
-                >
-                    {t('EVENTS.META.GENERATE_SHAREPIC')}
-                </Button>
-                <PDFDownloadLink
-                    document={
-                        <EventCertificatePDF
-                            event={props.data as SVHEvent}
-                            tenant={currentTenant!}
-                            labels={{
-                                title: t('EVENTS.CERTIFICATE.TITLE'),
-                                description: t('EVENTS.CERTIFICATE.DESCRIPTION', {
-                                    title: props.data?.title,
-                                    date: dayjs(props.data?.startDate).format('DD.MM.YYYY'),
-                                }),
-                                generatedAt: t('EVENTS.CERTIFICATE.GENERATED_AT', {
-                                    date: dayjs(new Date()).format('DD.MM.YYYY'),
-                                }),
-                            }}
+                <Stack gap="sm">
+                    <EDITextInput
+                        label={t('COMMON.ATTRIBUTES.TITLE')}
+                        placeholder={t('COMMON.ATTRIBUTES.TITLE_PLACEHOLDER')}
+                        value={title}
+                        onChange={(event) => setTitle(event.currentTarget.value)}
+                        required
+                    />
+                    <Textarea
+                        label={t('COMMON.ATTRIBUTES.DESCRIPTION')}
+                        placeholder={t('COMMON.ATTRIBUTES.DESCRIPTION_PLACEHOLDER')}
+                        value={description}
+                        onChange={(event) => setDescription(event.currentTarget.value)}
+                        autosize
+                        minRows={3}
+                    />
+                    <SVHViewAccessEdit
+                        initial={props.data.viewAccess ?? null}
+                        value={viewAccess}
+                        onChange={setViewAccess}
+                    />
+                    <Group justify="flex-end" gap="xs">
+                        <Button disabled={!generalDirty} onClick={saveGeneral}>
+                            {t('SITE.SAVE')}
+                        </Button>
+                    </Group>
+                </Stack>
+            </Card>
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb={4}>
+                    {t('EVENTS.PLACE_AND_TIME')}
+                </Title>
+                <Text size="sm" c="dimmed" mb="md">
+                    {t('EVENTS.PLACE_AND_TIME_HINT')}
+                </Text>
+                <Stack gap="sm">
+                    <Group align="flex-end" grow>
+                        <SVHDateTimePicker
+                            valueFormat="DD MMM YYYY HH:mm"
+                            label={t('CALENDAR.ATTRIBUTES.STARTDATE')}
+                            placeholder={t('CALENDAR.ATTRIBUTES.STARTDATE_PLACEHOLDER')}
+                            value={startDate}
+                            onChange={setStartDate}
+                            clearable
+                            mt={0}
+                            mb={0}
+                            required
                         />
-                    }
-                    fileName={t('EVENTS.CERTIFICATE.DOWNLOAD_FILENAME')}
-                >
-                    <Button variant="default">{t('EVENTS.META.GENERATE_CERTIFICATE')}</Button>
-                </PDFDownloadLink>
-            </Flex>
-            <Flex align="end" justify="end" direction="column" mt="sm">
-                <Text size="sm" c="dimmed">
-                    {t('EVENTS.META.CREATED_AT')}: 
-                    {dayjs(props.data?.createdAt).format('DD.MM.YYYY HH:mm')}
-                </Text>
-                <Text size="sm" c="dimmed">
-                    {t('EVENTS.META.UPDATED_AT')}: 
-                    {dayjs(props.data?.updatedAt).format('DD.MM.YYYY HH:mm')}
-                </Text>
-            </Flex>
-        </>
+                        <SVHDateTimePicker
+                            valueFormat="DD MMM YYYY HH:mm"
+                            label={t('CALENDAR.ATTRIBUTES.ENDDATE')}
+                            placeholder={t('CALENDAR.ATTRIBUTES.ENDDATE_PLACEHOLDER')}
+                            value={endDate}
+                            onChange={setEndDate}
+                            clearable
+                            mt={0}
+                            mb={0}
+                            disabled={!startDate}
+                        />
+                    </Group>
+                    <EDITextInput
+                        label={t('EVENTS.PLACE_NAME')}
+                        placeholder={t('EVENTS.PLACE_NAME_PLACEHOLDER')}
+                        value={name}
+                        onChange={(event) => setName(event.currentTarget.value)}
+                    />
+                    <EDITextInput
+                        label={t('EVENTS.PLACE_ADDRESS')}
+                        placeholder={t('EVENTS.PLACE_ADDRESS_PLACEHOLDER')}
+                        value={address}
+                        onChange={(event) => setAddress(event.currentTarget.value)}
+                    />
+                    <Group justify="flex-end" gap="xs">
+                        <Button disabled={!placeDirty} onClick={savePlaceAndTime}>
+                            {t('SITE.SAVE')}
+                        </Button>
+                    </Group>
+                </Stack>
+            </Card>
+        </Stack>
     );
 };
 

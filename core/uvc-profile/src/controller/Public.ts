@@ -76,7 +76,9 @@ export const getPublicProfile = async (req: Request, res: Response, next: NextFu
                 ...profileData,
                 title: tenant.data.title,
                 type: tenant.data.type,
-                site: site?.published && site.subdomain ? { subdomain: site.subdomain, published: true } : undefined,
+                site: site?.published && site.subdomain
+                    ? { subdomain: site.subdomain, published: true as const, legal: site.legal }
+                    : undefined,
             },
             news,
             projects,
