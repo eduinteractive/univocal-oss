@@ -1,0 +1,163 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uvc-etherpad-settings
+data:
+  write-settings.js: |
+    const fs = require("fs");
+    const user = encodeURIComponent(process.env.MONGODB_USER || "");
+    const password = encodeURIComponent(process.env.MONGODB_PASSWORD || "");
+    const host = process.env.MONGODB_URI || "";
+    const publicUrl = (process.env.ETHERPAD_PUBLIC_URL || "").replace(/\/$/, "");
+    if (!user || !password || !host || !publicUrl) {
+      console.error("Missing Etherpad settings");
+      process.exit(1);
+    }
+    const settings = {
+      title: "Univocal",
+      ip: "0.0.0.0",
+      port: 9001,
+      showRecentPads: false,
+      trustProxy: true,
+      publicURL: publicUrl,
+      requireSession: true,
+      editOnly: true,
+      authenticationMethod: "apikey",
+      showSettingsInAdminPage: false,
+      exposeVersion: false,
+      defaultPadText: "",
+      skinName: "colibris",
+      skinVariants: "super-light-toolbar super-light-editor light-background full-width-editor",
+      padOptions: {
+        showChat: false,
+        showLineNumbers: true,
+        lang: "de"
+      },
+      toolbar: {
+        left: [
+          ["bold", "italic", "underline", "strikethrough"],
+          ["orderedlist", "unorderedlist", "indent", "outdent"],
+          ["undo", "redo"],
+          ["clearauthorship"]
+        ],
+        right: [
+          ["importexport", "timeslider"],
+          ["showusers"]
+        ],
+        timeslider: [
+          ["timeslider_export", "timeslider_returnToPad"]
+        ]
+      },
+      dbType: "mongodb",
+      dbSettings: {
+        url: `mongodb+srv://${user}:${password}@${host}/uvc-etherpad?tls=true&retryWrites=true&w=majority`,
+        database: "uvc-etherpad",
+        collection: "store"
+      },
+      cookie: {
+        // prefix "ep_" must match sessionCookieName in the knowledge service
+        prefix: "ep_",
+        sameSite: "Lax"
+      },
+      updates: { tier: "off" },
+      privacy: { updateCheck: false, pluginCatalog: false },
+      minify: true,
+      loglevel: "INFO"
+    };
+    fs.writeFileSync("/settings/settings.json", JSON.stringify(settings, null, 2));
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uvc-etherpad
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uvc-etherpad
+  template:
+    metadata:
+      labels:
+        app: uvc-etherpad
+    spec:
+      initContainers:
+        - name: settings
+          image: etherpad/etherpad:3.2.0
+          command: ["node", "/scripts/write-settings.js"]
+          env:
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+            - name: ETHERPAD_PUBLIC_URL
+              value: http://apps.univocal.local.de/etherpad
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: settings
+              mountPath: /settings
+      containers:
+        - name: uvc-etherpad
+          image: etherpad/etherpad:3.2.0
+          env:
+            - name: NODE_ENV
+              value: production
+          ports:
+            - containerPort: 9001
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9001
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: settings
+              mountPath: /opt/etherpad-lite/settings.json
+              subPath: settings.json
+            - name: apikey
+              mountPath: /opt/etherpad-lite/APIKEY.txt
+              subPath: APIKEY.txt
+      volumes:
+        - name: scripts
+          configMap:
+            name: uvc-etherpad-settings
+        - name: settings
+          emptyDir: {}
+        - name: apikey
+          secret:
+            secretName: etherpad-api-key
+            items:
+              - key: apikey
+                path: APIKEY.txt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-etherpad-srv
+spec:
+  selector:
+    app: uvc-etherpad
+  ports:
+    - name: uvc-etherpad
+      protocol: TCP
+      port: 9001
+      targetPort: 9001

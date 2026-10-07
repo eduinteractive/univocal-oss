@@ -68,3 +68,11 @@ export const deleteWikiSectionChain = () => {
         check("sectionId").isMongoId().withMessage("Section ID must be a valid Mongo ID")
     ]
 }
+
+export const setWikiSectionTypeChain = () => {
+    return [
+        check("wikiId").isMongoId().withMessage("Wiki ID must be a valid Mongo ID"),
+        check("sectionId").isMongoId().withMessage("Section ID must be a valid Mongo ID"),
+        body("type").isIn(["editor", "etherpad"]).withMessage("Type must be editor or etherpad"),
+    ]
+}

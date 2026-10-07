@@ -1,9 +1,13 @@
 import { Document, Model, Schema, Types, model } from "mongoose";
 
+export type WikiSectionType = "editor" | "etherpad";
+
 interface WikiSectionAttrs {
     wikiId: Types.ObjectId;
     title: string;
     content?: string;
+    type?: WikiSectionType;
+    etherpadPadId?: string;
     materials:
     {
         title: string,
@@ -20,6 +24,8 @@ export interface WikiSectionDoc extends Document {
     _id: Types.ObjectId;
     title: string;
     content?: string;
+    type?: WikiSectionType;
+    etherpadPadId?: string;
     wikiId: Types.ObjectId;
     materials:
     {
@@ -32,6 +38,8 @@ export interface WikiSectionDoc extends Document {
 const WikiSectionSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, default: '' },
+    type: { type: String, enum: ["editor", "etherpad"] },
+    etherpadPadId: { type: String },
     wikiId: { type: Types.ObjectId, ref: 'Wiki' },
     materials: {
         type: [

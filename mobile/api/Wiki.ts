@@ -11,10 +11,13 @@ export interface Wiki extends UVCMetadata {
     tableOfContents: WikiToc[];
 }
 
+export type WikiSectionType = "editor" | "etherpad";
+
 export interface WikiSection {
     _id: string;
     title: string;
     content?: string;
+    type?: WikiSectionType;
     materials: {
         title: string,
         link: string,

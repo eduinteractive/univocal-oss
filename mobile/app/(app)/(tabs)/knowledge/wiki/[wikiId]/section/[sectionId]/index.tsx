@@ -59,6 +59,9 @@ export default () => {
 		]);
 	};
 
+	const sectionType = wikiSectionQuery.data?.type;
+	const canEditContent = sectionType === "editor";
+
 	useLayoutEffect(() => {
 		if (wikiSectionQuery.data) {
 			navigation.setOptions({
@@ -66,11 +69,15 @@ export default () => {
 				headerRight: () => (
 					<HeaderMenu
 						options={[
-							{
-								label: "Inhalt Bearbeiten",
-								value: "edit",
-								icon: <IconEdit size={20} />,
-							},
+							...(canEditContent
+								? [
+										{
+											label: "Inhalt Bearbeiten",
+											value: "edit",
+											icon: <IconEdit size={20} />,
+										},
+									]
+								: []),
                             {
                                 label: "Materialien bearbeiten",
                                 value: "materials",
@@ -97,7 +104,7 @@ export default () => {
 				),
 			});
 		}
-	}, [wikiSectionQuery.data, navigation]);
+	}, [wikiSectionQuery.data, navigation, canEditContent]);
 
 	if (wikiSectionQuery.isLoading || !wikiSectionQuery.data) {
 		return <UVCLoader />;
@@ -124,7 +131,13 @@ export default () => {
 			>
 				{wiki.title}
 			</Text>
-			<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+			{!wiki.type ? (
+				<Text fs="sm">
+					Die Schreibweise für dieses Kapitel wird in der Web-App gewählt.
+				</Text>
+			) : (
+				<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+			)}
 			{wiki.materials.length > 0 && (
 				<>
 					<Divider my="sm" />

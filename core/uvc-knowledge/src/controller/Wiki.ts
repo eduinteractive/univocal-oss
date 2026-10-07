@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import Wiki, { ToCAttrs, WikiDoc } from "../models/Wiki";
 import { Types } from "mongoose";
-import { createSVHMetadata, createSVHMetadataAttrs, deleteFile, hasReadPermission, NotFoundError, readSVH, readSVHQuery, updateSVHMetadata, uploadFiles } from "@eduinteractive/uvc-common";
-import WikiSection, { WikiSectionDoc } from "../models/WikiSection";
+import { APIError, createSVHMetadata, createSVHMetadataAttrs, deleteFile, hasReadPermission, NotFoundError, readSVH, readSVHQuery, updateSVHMetadata, uploadFiles } from "@eduinteractive/uvc-common";
+import WikiSection, { WikiSectionDoc, WikiSectionType } from "../models/WikiSection";
+import * as Etherpad from "../services/Etherpad";
 
 // CRUD Operations for Wikis
 
@@ -96,6 +97,9 @@ export const deleteWiki = async (req: Request, res: Response, next: NextFunction
         const wiki = await Wiki.findById(wikiId) as WikiDoc;
         if (!hasReadPermission(wiki, tenantId, req.currentGroup!.permissionLevel)) {
             throw new NotFoundError("Der Eintrag konnte nicht gefunden werden.")
+        }
+        if (wiki.etherpadGroupId) {
+            await Etherpad.deleteGroup(wiki.etherpadGroupId);
         }
         await WikiSection.deleteMany({ wikiId: wiki._id });
         await wiki.deleteOne();
@@ -209,7 +213,9 @@ export const updateWikiSection = async (req: Request, res: Response, next: NextF
         if (!section || !section.wikiId.equals(wiki._id)) {
             throw new NotFoundError("Der Eintrag konnte nicht gefunden werden.")
         }
-        section.content = body.content ? body.content : section.content;
+        if (section.type !== "etherpad") {
+            section.content = body.content ? body.content : section.content;
+        }
 
         if (body.title !== section.title) {
 
@@ -288,6 +294,9 @@ export const deleteWikiSection = async (req: Request, res: Response, next: NextF
         wiki.tableOfContents = await recursiveDelete(wiki.tableOfContents, new Types.ObjectId(sectionId));
 
         if (section?.deleteOne) {
+            if (section.etherpadPadId) {
+                await Etherpad.deletePad(section.etherpadPadId);
+            }
             for (const material of section.materials) {
                 await deleteFile(material.link)
             }
@@ -299,3 +308,97 @@ export const deleteWikiSection = async (req: Request, res: Response, next: NextF
         next(error);
     }
 }
+
+const loadWikiSection = async (req: Request) => {
+    const { wikiId, tenantId, sectionId } = req.params as { wikiId: string, tenantId: string, sectionId: string };
+    const wiki = await Wiki.findById(wikiId) as WikiDoc;
+    if (!hasReadPermission(wiki, tenantId, req.currentGroup!.permissionLevel)) {
+        throw new NotFoundError("Der Eintrag konnte nicht gefunden werden.");
+    }
+    const section = await WikiSection.findById(sectionId);
+    if (!section || !section.wikiId.equals(wiki._id)) {
+        throw new NotFoundError("Der Eintrag konnte nicht gefunden werden.");
+    }
+    return { wiki, section };
+};
+
+const ensureEtherpadGroup = async (wiki: WikiDoc) => {
+    if (wiki.etherpadGroupId) {
+        return wiki.etherpadGroupId;
+    }
+    const groupID = await Etherpad.createGroup();
+    wiki.etherpadGroupId = groupID;
+    await wiki.save();
+    return groupID;
+};
+
+const canEditWiki = (req: Request, wiki: WikiDoc) => {
+    return Boolean(req.permission) || Boolean(req.currentUser && wiki.authorId.equals(req.currentUser._id));
+};
+
+interface setWikiSectionTypeRequest {
+    type: WikiSectionType;
+}
+
+export const setWikiSectionType = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const body = req.body as setWikiSectionTypeRequest;
+        const { wiki, section } = await loadWikiSection(req);
+        if (section.type) {
+            throw new APIError("ConflictError", "Der Kapiteltyp ist bereits festgelegt.", 409);
+        }
+        if (body.type === "editor") {
+            section.type = "editor";
+            await section.save();
+            res.status(200).json(section);
+            return;
+        }
+
+        const groupID = await ensureEtherpadGroup(wiki);
+        section.etherpadPadId = await Etherpad.createGroupPad(groupID, section._id.toString());
+        section.type = "etherpad";
+        await section.save();
+        res.status(200).json(section);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getWikiSectionEtherpad = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { wiki, section } = await loadWikiSection(req);
+        if (section.type !== "etherpad" || !section.etherpadPadId || !wiki.etherpadGroupId) {
+            throw new NotFoundError("Für dieses Kapitel gibt es kein Etherpad.");
+        }
+        const userName = req.currentUser?.mail || "Gast";
+        const authorID = await Etherpad.createAuthor(req.currentUser!._id, userName);
+        const sessionID = await Etherpad.createSession(wiki.etherpadGroupId, authorID);
+        const padID = canEditWiki(req, wiki)
+            ? section.etherpadPadId
+            : await Etherpad.getReadOnlyID(section.etherpadPadId);
+        res.cookie(Etherpad.sessionCookieName, Etherpad.sessionCookieValue(req.headers.cookie, sessionID), {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000,
+            secure: req.secure || req.get("x-forwarded-proto") === "https",
+        });
+        res.status(200).json({ url: Etherpad.padUrl(padID, userName) });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const syncWikiSectionEtherpad = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { section } = await loadWikiSection(req);
+        if (section.type !== "etherpad" || !section.etherpadPadId) {
+            throw new NotFoundError("Für dieses Kapitel gibt es kein Etherpad.");
+        }
+        section.content = await Etherpad.getHTML(section.etherpadPadId);
+        await section.save();
+        res.status(200).json(section);
+    } catch (error) {
+        next(error);
+    }
+};

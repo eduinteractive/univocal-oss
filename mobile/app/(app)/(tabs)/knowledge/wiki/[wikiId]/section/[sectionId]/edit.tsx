@@ -74,6 +74,10 @@ export default () => {
 	});
 
 	useLayoutEffect(() => {
+		if (wikiSectionQuery.data?.type !== "editor") {
+			navigation.setOptions({ headerRight: undefined });
+			return;
+		}
 		navigation.setOptions({
 			headerRight: () => (
 				<Button
@@ -99,7 +103,7 @@ export default () => {
 				</Button>
 			),
 		});
-	}, [navigation, content, title, updateMutation.isPending]);
+	}, [navigation, content, title, updateMutation.isPending, wikiSectionQuery.data?.type, currentTenant, wikiId, sectionId]);
 
 	if (wikiSectionQuery.isLoading) {
 		return <UVCLoader />;
@@ -134,6 +138,25 @@ export default () => {
 					fw="bold"
 				>
 					Wiki-Abschnitt nicht gefunden
+				</Text>
+			</Flex>
+		);
+	}
+
+	if (wikiSectionQuery.data.type !== "editor") {
+		return (
+			<Flex
+				flex={1}
+				justify="center"
+				align="center"
+				p="sm"
+			>
+				<Text
+					fs="sm"
+				>
+					{wikiSectionQuery.data.type === "etherpad"
+						? "Dieses Kapitel ist ein Etherpad und kann in der App nur gelesen werden."
+						: "Die Schreibweise für dieses Kapitel wird in der Web-App gewählt."}
 				</Text>
 			</Flex>
 		);

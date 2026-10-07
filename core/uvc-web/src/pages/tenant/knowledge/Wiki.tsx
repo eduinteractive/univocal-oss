@@ -13,11 +13,14 @@ import WikiContent from '../../../components/features/tenant/knowledge/wiki/Wiki
 import WikiModal from '../../../components/features/tenant/knowledge/wiki/WikiModal';
 import { useMediaQuery } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../context/AuthContext';
+import { checkPermission } from '../../../utils/Permission';
 
 const Wiki = () => {
     const { wikiId } = useParams();
     const matchMedia = useMediaQuery('(max-width: 48em)');
     const { currentTenant } = useTenant();
+    const { authData } = useAuth();
     const [wikiModalVisible, setWikiModalVisible] = useState(false);
     const [currentWikiSection, setCurrentWikiSection] = useState<string | null>(
         null
@@ -37,6 +40,12 @@ const Wiki = () => {
             }),
     });
 
+    const canEdit = Boolean(
+        currentTenant &&
+            (checkPermission(currentTenant, 'knowledge:edit') ||
+                wikiQuery.data?.authorId === authData?._id)
+    );
+
     const wikiSectionQuery = useQuery({
         queryKey: ['wikiSection', currentWikiSection],
         queryFn: () =>
@@ -45,6 +54,20 @@ const Wiki = () => {
                 wikiId: wikiId!,
                 sectionId: currentWikiSection!,
             }),
+        enabled: !!currentWikiSection,
+    });
+
+    const etherpadQuery = useQuery({
+        queryKey: ['wikiSectionEtherpad', wikiId, currentWikiSection],
+        queryFn: () =>
+            SAPI.KNOWLEDGE.TENANT.getWikiSectionEtherpad({
+                tenantId: currentTenant!._id,
+                wikiId: wikiId!,
+                sectionId: currentWikiSection!,
+            }),
+        enabled: currentData?.type === 'etherpad' && !!currentWikiSection,
+        staleTime: 30 * 60 * 1000,
+        refetchOnWindowFocus: false,
     });
 
     const wikiUpdateMutation = useMutation({
@@ -95,11 +118,55 @@ const Wiki = () => {
         onError: NotificationHandler.showAxiosError,
     });
 
+    const setSectionTypeMutation = useMutation({
+        mutationFn: SAPI.KNOWLEDGE.TENANT.setWikiSectionType,
+        onSuccess: (section) => {
+            setCurrentData(section);
+            wikiSectionQuery.refetch();
+        },
+        onError: NotificationHandler.showAxiosError,
+    });
+
+    const etherpadSyncMutation = useMutation({
+        mutationFn: SAPI.KNOWLEDGE.TENANT.syncWikiSectionEtherpad,
+    });
+
     useEffect(() => {
-        if (wikiSectionQuery.data) {
+        setCurrentData(undefined);
+    }, [currentWikiSection]);
+
+    useEffect(() => {
+        if (wikiSectionQuery.data?._id === currentWikiSection) {
             setCurrentData(wikiSectionQuery.data);
         }
-    }, [wikiSectionQuery.data]);
+    }, [wikiSectionQuery.data, currentWikiSection]);
+
+    useEffect(() => {
+        if (
+            currentData?.type !== 'etherpad' ||
+            currentData._id !== currentWikiSection ||
+            !canEdit ||
+            !currentWikiSection ||
+            !currentTenant ||
+            !wikiId
+        ) {
+            return;
+        }
+        const tenantId = currentTenant._id;
+        const sectionId = currentWikiSection;
+        const sync = () => {
+            etherpadSyncMutation.mutate({
+                tenantId,
+                wikiId,
+                sectionId,
+            });
+        };
+        const timer = window.setInterval(sync, 5000);
+        return () => {
+            window.clearInterval(timer);
+            sync();
+        };
+    }, [currentData?.type, currentWikiSection, canEdit, currentTenant, wikiId, etherpadSyncMutation.mutate]);
 
     useEffect(() => {
         if (searchParams.get('sectionId') !== "undefined" && searchParams.get('sectionId') !== null) {
@@ -160,6 +227,19 @@ const Wiki = () => {
                 />
                 <WikiContent
                     data={currentData}
+                    canEdit={canEdit}
+                    permissionsReady={wikiQuery.isFetched}
+                    choosingType={setSectionTypeMutation.isPending}
+                    padUrl={etherpadQuery.data?.url}
+                    padError={etherpadQuery.isError}
+                    onChooseType={(type) =>
+                        setSectionTypeMutation.mutate({
+                            tenantId: currentTenant!._id,
+                            wikiId: wikiId!,
+                            sectionId: currentWikiSection!,
+                            body: { type },
+                        })
+                    }
                     onDelete={(sectionId) =>
                         wikiDeleteSectionMutation.mutate({
                             tenantId: currentTenant!._id,
@@ -174,7 +254,7 @@ const Wiki = () => {
                             sectionId: currentWikiSection!,
                             body: {
                                 title: body.title,
-                                content: body.content,
+                                ...(body.content !== undefined ? { content: body.content } : {}),
                                 materials: body.materials,
                                 newUploads: body.newUploads,
                             },
