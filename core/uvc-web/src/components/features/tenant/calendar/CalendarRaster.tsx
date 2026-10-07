@@ -1,7 +1,8 @@
-/* eslint-disable react-refresh/only-export-components */
-import { Button, Flex, Group, Popover, SimpleGrid, Text } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { Button, Flex, Popover, Text } from '@mantine/core';
+import { Calendar } from '@mantine/dates';
+import { useState } from 'react';
 import { CalendarEvent } from '@eduinteractive/uvc-api';
+import dayjs from 'dayjs';
 import CalendarViewModal from './CalendarViewModal';
 import CalendarEventModal, {
     CalendarEventSubmitProps,
@@ -9,31 +10,33 @@ import CalendarEventModal, {
 import { EDIModal } from '@eduinteractive/mantine-common';
 import { useTranslation } from 'react-i18next';
 
-export const CALENDAR_WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-export const CALENDAR_MONTHS = [
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember',
-];
-
 const MAX_EVENTS_PER_DAY = 2;
+
+export const eventCoversDay = (event: CalendarEvent, day: string | Date) => {
+    let start = dayjs(event.startDate).startOf('day');
+    let end = dayjs(event.endDate || event.startDate).startOf('day');
+    if (end.isBefore(start)) {
+        const swap = start;
+        start = end;
+        end = swap;
+    }
+    const current = dayjs(day).startOf('day');
+    return !current.isBefore(start) && !current.isAfter(end);
+};
 
 interface CalendarRasterProps {
     events: CalendarEvent[];
-    month: number;
-    year: number;
+    date: Date;
+    onDateChange: (date: Date) => void;
     onSave: (data: CalendarEventSubmitProps) => void;
     onDelete: (eventId: string) => void;
 }
+
+const eventLabel = (event: CalendarEvent) =>
+    `${new Date(event.startDate).toLocaleTimeString('de-DE', {
+        hour: '2-digit',
+        minute: '2-digit',
+    })} ${event.title}`;
 
 const CalendarRaster = (props: CalendarRasterProps) => {
     const { t } = useTranslation();
@@ -42,34 +45,47 @@ const CalendarRaster = (props: CalendarRasterProps) => {
     );
     const [isEventEditing, setIsEventEditing] = useState<boolean>(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [calendarDays, setCalendarDays] = useState<Date[]>([]);
-    const [popoverOpened, setPopoverOpened] = useState<boolean[]>([]);
+    const [moreDate, setMoreDate] = useState<string | null>(null);
     const [calendarDeleteId, setCalendarDeleteId] = useState<string | null>(
         null
     );
 
-    useEffect(() => {
-        const startOfMonth = new Date(props.year, props.month, 1);
+    const applyDate = (value: string) => {
+        props.onDateChange(dayjs(value).toDate());
+    };
 
-        let weekday = startOfMonth.getDay();
-        if (weekday === 0) {
-            weekday = 7;
-        }
+    const eventsOnDay = (day: string) =>
+        props.events
+            .filter((event) => eventCoversDay(event, day))
+            .sort(
+                (a, b) =>
+                    new Date(a.startDate).getTime() -
+                    new Date(b.startDate).getTime()
+            );
 
-        startOfMonth.setDate(startOfMonth.getDate() - (weekday - 1));
-
-        const days = [];
-        for (let i = 0; i < 42; i++) {
-            days.push(new Date(startOfMonth));
-            startOfMonth.setDate(startOfMonth.getDate() + 1);
-        }
-
-        setCalendarDays(days);
-        setPopoverOpened(new Array(days.length).fill(false));
-    }, [props.year, props.month]);
+    const renderEventButton = (event: CalendarEvent) => (
+        <Button
+            key={event._id}
+            h={17.5}
+            w="100%"
+            px={4}
+            mb={2}
+            color={event.color || 'violet'}
+            justify="flex-start"
+            onClick={(eventClick) => {
+                eventClick.stopPropagation();
+                setMoreDate(null);
+                setCurrentEvent(event);
+            }}
+        >
+            <Text size="xs" truncate>
+                {eventLabel(event)}
+            </Text>
+        </Button>
+    );
 
     return (
-        <Flex direction="column">
+        <Flex direction="column" pb="lg">
             <CalendarViewModal
                 event={!isEventEditing ? currentEvent : null}
                 onClose={() => setCurrentEvent(null)}
@@ -105,214 +121,103 @@ const CalendarRaster = (props: CalendarRasterProps) => {
                     setCalendarDeleteId(null);
                 }}
             >
-                <Text size="sm">
-                    {t('CALENDAR.EVENT_DELETE_DESCRIPTION')}
-                </Text>
+                <Text size="sm">{t('CALENDAR.EVENT_DELETE_DESCRIPTION')}</Text>
             </EDIModal>
-            <SimpleGrid cols={7} spacing={0} pb="lg">
-                {calendarDays.map((day, index) => {
-                    // Alle Events für diesen Tag herausfiltern
-                    const dayEvents = props.events.filter((event) => {
-                        // Start- und Enddatum holen und beide auf Mitternacht setzen
-                        let start = new Date(event.startDate);
-                        start.setHours(0, 0, 0, 0);
-
-                        let end = new Date(event.endDate || event.startDate);
-                        end.setHours(0, 0, 0, 0);
-
-                        // Falls ein Termin-Ende vor dem -Start liegt, einmal umdrehen
-                        if (end < start) {
-                            [start, end] = [end, start];
-                        }
-
-                        // Auch den aktuellen Tag auf Mitternacht setzen
-                        const currentDay = new Date(day);
-                        currentDay.setHours(0, 0, 0, 0);
-
-                        // Prüfen, ob currentDay zwischen start und end liegt (inklusive)
-                        return currentDay >= start && currentDay <= end;
-                    });
-
+            <Calendar
+                static
+                fullWidth
+                highlightToday
+                withCellSpacing={false}
+                date={props.date}
+                onDateChange={applyDate}
+                onNextMonth={applyDate}
+                onPreviousMonth={applyDate}
+                getDayProps={(day) => ({
+                    onClick: () => setSelectedDate(dayjs(day).toDate()),
+                })}
+                styles={{
+                    levelsGroup: { width: '100%', maxWidth: 'unset' },
+                    calendarHeader: {
+                        width: '100%',
+                        maxWidth: 'unset',
+                        marginBottom: 8,
+                    },
+                    month: { width: '100%', tableLayout: 'fixed' },
+                    monthCell: {
+                        height: 'calc(85vh / 6)',
+                        minHeight: 100,
+                        padding: 0,
+                        border: '1px solid var(--mantine-color-gray-3)',
+                        verticalAlign: 'top',
+                    },
+                    day: {
+                        width: '100%',
+                        height: 'calc(85vh / 6)',
+                        minHeight: 100,
+                        borderRadius: 0,
+                        aspectRatio: 'auto',
+                        alignItems: 'stretch',
+                        justifyContent: 'flex-start',
+                        padding: 4,
+                        cursor: 'pointer',
+                        overflow: 'hidden',
+                    },
+                }}
+                renderDay={(day) => {
+                    const dayEvents = eventsOnDay(day);
+                    const hiddenEvents = dayEvents.slice(MAX_EVENTS_PER_DAY);
                     return (
-                        <Flex
-                            direction="column"
-                            key={index}
-                            style={{
-                                border: '1px solid #ccc',
-                                overflow: 'hidden',
-                            }}
-                            h="calc(85vh / 6)"
-                            mih={100}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedDate(day);
-                            }}
-                            bg={
-                                day.getMonth() !== props.month
-                                    ? 'gray.0'
-                                    : 'white'
-                            }
-                        >
-                            {index < 7 && (
-                                <Text
-                                    ta="center"
-                                    size="xs"
-                                    c="dimmed"
-                                    mt={5}
-                                    pb={0}
-                                >
-                                    {CALENDAR_WEEKDAYS[index]}
-                                </Text>
-                            )}
+                        <Flex direction="column" w="100%" gap={0}>
                             <Text
                                 ta="center"
                                 size="xs"
-                                mt={index < 7 ? 0 : 5}
                                 c={
-                                    day.getMonth() !== props.month
-                                        ? 'dimmed'
-                                        : undefined
+                                    dayjs(day).isSame(props.date, 'month')
+                                        ? undefined
+                                        : 'dimmed'
                                 }
                             >
-                                {day.getDate()}
-                                {day.getDate() === 1
-                                    ? '. ' + CALENDAR_MONTHS[day.getMonth()]
-                                    : ''}
+                                {dayjs(day).date()}
                             </Text>
                             {dayEvents
-                                .sort(
-                                    (a, b) =>
-                                        new Date(a.startDate).getTime() -
-                                        new Date(b.startDate).getTime()
-                                )
                                 .slice(0, MAX_EVENTS_PER_DAY)
-                                .map((event) => (
-                                    <Group justify="center" key={event._id}>
-                                        <Button
-                                            h={17.5}
-                                            w="95%"
-                                            mt={0}
-                                            px={4}
-                                            mb={2}
-                                            color={event.color || 'violet'}
-                                            justify="flex-start"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setCurrentEvent(event);
-                                            }}
-                                        >
-                                            <Text size="xs">
-                                                {new Date(
-                                                    event.startDate
-                                                ).toLocaleTimeString('de-DE', {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                })}
-                                                {' ' + event.title}
-                                            </Text>
-                                        </Button>
-                                    </Group>
-                                ))}
-                            {dayEvents.length > MAX_EVENTS_PER_DAY && (
+                                .map(renderEventButton)}
+                            {hiddenEvents.length > 0 && (
                                 <Popover
                                     width={200}
                                     position="bottom"
                                     withArrow
                                     shadow="md"
-                                    opened={popoverOpened[index]}
-                                    onClose={() => {
-                                        const newPopoverOpened = [
-                                            ...popoverOpened,
-                                        ];
-                                        newPopoverOpened[index] = false;
-                                        setPopoverOpened(newPopoverOpened);
-                                    }}
+                                    opened={moreDate === day}
+                                    onClose={() => setMoreDate(null)}
                                 >
                                     <Popover.Target>
-                                        <Group justify="center">
-                                            <Button
-                                                variant="subtle"
-                                                h={17.5}
-                                                size="xs"
-                                                mt={2}
-                                                w="95%"
-                                                px={4}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    const newPopoverOpened = [
-                                                        ...popoverOpened,
-                                                    ];
-                                                    newPopoverOpened[index] =
-                                                        true;
-                                                    setPopoverOpened(
-                                                        newPopoverOpened
-                                                    );
-                                                }}
-                                            >
-                                                +{' '}
-                                                {dayEvents.length -
-                                                    MAX_EVENTS_PER_DAY}{' '}
-                                                {t('COMMON.MORE').toLowerCase()}
-                                            </Button>
-                                        </Group>
+                                        <Button
+                                            variant="subtle"
+                                            h={17.5}
+                                            size="xs"
+                                            w="100%"
+                                            px={4}
+                                            onClick={(click) => {
+                                                click.stopPropagation();
+                                                setMoreDate(day);
+                                            }}
+                                        >
+                                            + {hiddenEvents.length}{' '}
+                                            {t('COMMON.MORE').toLowerCase()}
+                                        </Button>
                                     </Popover.Target>
                                     <Popover.Dropdown>
-                                        {dayEvents
-                                            .sort(
-                                                (a, b) =>
-                                                    new Date(
-                                                        a.startDate
-                                                    ).getTime() -
-                                                    new Date(
-                                                        b.startDate
-                                                    ).getTime()
-                                            )
-                                            .slice(MAX_EVENTS_PER_DAY)
-                                            .map((event) => (
-                                                <Group
-                                                    justify="center"
-                                                    key={event._id}
-                                                >
-                                                    <Button
-                                                        h={17.5}
-                                                        w="95%"
-                                                        mt={0}
-                                                        px={4}
-                                                        mb={2}
-                                                        color={
-                                                            event.color ||
-                                                            'violet'
-                                                        }
-                                                        justify="flex-start"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setCurrentEvent(
-                                                                event
-                                                            );
-                                                        }}
-                                                    >
-                                                        <Text size="xs">
-                                                            {new Date(
-                                                                event.startDate
-                                                            ).toLocaleTimeString(
-                                                                'de-DE',
-                                                                {
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                }
-                                                            )}
-                                                            {' ' + event.title}
-                                                        </Text>
-                                                    </Button>
-                                                </Group>
-                                            ))}
+                                        <Flex direction="column">
+                                            {hiddenEvents.map(renderEventButton)}
+                                        </Flex>
                                     </Popover.Dropdown>
                                 </Popover>
                             )}
                         </Flex>
                     );
-                })}
-            </SimpleGrid>
+                }}
+            />
         </Flex>
     );
 };

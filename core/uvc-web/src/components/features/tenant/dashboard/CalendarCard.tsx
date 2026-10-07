@@ -19,6 +19,7 @@ import { checkPermission } from '../../../../utils/Permission';
 import { useTenant } from '../../../../context/TenantContext';
 import { useAuth } from '../../../../context/AuthContext';
 import CalendarViewModal from '../../tenant/calendar/CalendarViewModal';
+import { eventCoversDay } from '../../tenant/calendar/CalendarRaster';
 
 interface CalendarCardProps {
     events: CalendarEvent[];
@@ -70,7 +71,7 @@ const CalendarCard = (props: CalendarCardProps) => {
                         }}
                         renderDay={(date) => {
                             const event = props.events.find((event) =>
-                                dayjs(event.startDate).isSame(date, 'day')
+                                eventCoversDay(event, date)
                             );
                             if (event) {
                                 return (

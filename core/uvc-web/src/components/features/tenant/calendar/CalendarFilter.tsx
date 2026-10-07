@@ -1,11 +1,9 @@
-import { ActionIcon, Button, Group, Paper, Text, Title } from '@mantine/core';
+import { Button, Group, Paper, Text } from '@mantine/core';
 import { useState } from 'react';
 import { CalendarToken, CalendarTokenStatus } from '@eduinteractive/uvc-api';
 import { useTenant } from '../../../../context/TenantContext';
 import { EDIModal } from '@eduinteractive/mantine-common';
 import SVHFilter, { SVHFilterObject } from '../../../common/SVHFilter';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
-import { CALENDAR_MONTHS } from './CalendarRaster';
 import { useTranslation } from 'react-i18next';
 
 type CalendarFilterObject = SVHFilterObject;
@@ -13,12 +11,8 @@ type CalendarFilterObject = SVHFilterObject;
 interface CalendarFilterProps {
     calenderToken?: CalendarToken;
     filter?: CalendarFilterObject;
-    month: number;
-    year: number;
     onAdd: () => void;
     onFilter: (filter: CalendarFilterObject) => void;
-    onNextMonth: () => void;
-    onPreviousMonth: () => void;
 }
 
 const CalendarFilter = (props: CalendarFilterProps) => {
@@ -91,28 +85,7 @@ const CalendarFilter = (props: CalendarFilterProps) => {
                         )}
                 </Group>
             }
-        >
-            <Group justify="center" align="center" h="100%" gap={0}>
-                <ActionIcon
-                    variant="subtle"
-                    color="violet"
-                    onClick={props.onPreviousMonth}
-                >
-                    <IconArrowLeft size={24} />
-                </ActionIcon>
-                <ActionIcon
-                    variant="subtle"
-                    color="violet"
-                    onClick={props.onNextMonth}
-                    mr="xs"
-                >
-                    <IconArrowRight size={24} />
-                </ActionIcon>
-                <Title order={5}>
-                    {CALENDAR_MONTHS[props.month]} {props.year}
-                </Title>
-            </Group>
-        </SVHFilter>
+        />
     );
 };
 
