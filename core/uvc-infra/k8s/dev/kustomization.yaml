@@ -11,10 +11,12 @@ resources:
   - uvc-statistics-depl.yaml
   - uvc-profile-depl.yaml
   - uvc-knowledge-depl.yaml
+  - uvc-etherpad-depl.yaml
   - uvc-event-depl.yaml
   - uvc-chat-depl.yaml
   - uvc-calendar-depl.yaml
   - uvc-ingress-srv.yaml
+  - uvc-etherpad-ingress.yaml
   - uvc-web-depl.yaml
   - uvc-landing-depl.yaml
   - uvc-redis-depl.yaml

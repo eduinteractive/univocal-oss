@@ -441,7 +441,15 @@
                 "NO_CONTENT": "Es ist noch kein Inhalt vorhanden.",
                 "PICK_CHAPTER": "Wähle ein Kapitel aus.",
                 "DELETE_TITLE": "Kapitel löschen",
-                "DELETE_DESCRIPTION": "Möchtest du dieses Kapitel wirklich löschen?"
+                "DELETE_DESCRIPTION": "Möchtest du dieses Kapitel wirklich löschen?",
+                "TYPE_TITLE": "Wie soll dieses Kapitel geschrieben werden?",
+                "TYPE_HINT": "Die Auswahl gilt dauerhaft für dieses Kapitel.",
+                "TYPE_EDITOR_TITLE": "Editor",
+                "TYPE_EDITOR_DESCRIPTION": "Formatierten Text schreiben, mit Überschriften, Listen und Links.",
+                "TYPE_ETHERPAD_TITLE": "Etherpad",
+                "TYPE_ETHERPAD_DESCRIPTION": "Gleichzeitig mit anderen im selben Text schreiben.",
+                "TYPE_UNSET_READONLY": "Für dieses Kapitel wurde noch keine Schreibweise gewählt.",
+                "TYPE_PAD_ERROR": "Das Etherpad konnte nicht geöffnet werden."
             }
         },
         "CONTACT_GROUP": {
