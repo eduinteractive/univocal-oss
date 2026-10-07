@@ -34,6 +34,8 @@ export const getTenantSurveys = async (req: Request, res: Response, next: NextFu
                 options: {
                     executionMode: survey.options.executionMode,
                     isActive: survey.options.isActive,
+                    startDate: survey.options.startDate ?? null,
+                    endDate: survey.options.endDate ?? null,
                 },
             },
             components: components.filter((component) => component.surveyId.equals(survey._id as Types.ObjectId)),

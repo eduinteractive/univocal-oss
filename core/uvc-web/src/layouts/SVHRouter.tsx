@@ -46,6 +46,7 @@ const ContactGroup = lazy(
 const Surveys = lazy(() => import('../pages/tenant/surveys/Surveys'));
 const Survey = lazy(() => import('../pages/tenant/surveys/Survey'));
 const SurveyTransaction = lazy(() => import('../pages/SurveyTransaction'));
+const SurveyPublicResults = lazy(() => import('../pages/SurveyPublicResults'));
 const Events = lazy(() => import('../pages/tenant/events/Events'));
 const Event = lazy(() => import('../pages/tenant/events/Event'));
 const EventRegistration = lazy(() => import('../pages/EventRegistration'));
@@ -59,6 +60,14 @@ const PublicSite = lazy(() => import('../pages/site/PublicSite'));
 const SVHRouter = (): JSX.Element => {
     return (
         <Routes>
+            <Route
+                path="/survey-transaction/:surveyId/results"
+                element={
+                    <SVHSuspense>
+                        <SurveyPublicResults />
+                    </SVHSuspense>
+                }
+            />
             <Route
                 path="/survey-transaction/:surveyId"
                 element={

@@ -177,6 +177,8 @@ export interface PublicSiteSurvey {
         options: {
             executionMode: string;
             isActive: boolean;
+            startDate?: Date | string | null;
+            endDate?: Date | string | null;
         };
     };
     components: PublicSiteSurveyComponent[];

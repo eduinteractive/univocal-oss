@@ -13,18 +13,17 @@ import {
 import SVHLoader from '../components/common/SVHLoader';
 import HTTP_403 from './error/HTTP_403';
 import {
+    Badge,
     Box,
     Button,
     Card,
     Checkbox,
-    Container,
-    Divider,
     Flex,
+    Group,
     Text,
     Title,
 } from '@mantine/core';
-import SVHTitle from '../components/common/SVHTitle';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     EDITextarea,
     EDITextInput,
@@ -33,6 +32,9 @@ import {
 import { SurveyComponentNominalScale } from '../constants/Enums';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
+
+const redirectHref = (url: string) =>
+    url.includes('https://') || url.includes('http://') ? url : `https://${url}`;
 
 const SurveyTransaction = () => {
     const { t } = useTranslation();
@@ -49,7 +51,8 @@ const SurveyTransaction = () => {
         queryFn: () => SAPI.SURVEY.PUBLIC.getPublicSurvey({ surveyId: surveyId! }),
         retry: (failureCount, error) => {
             if (error instanceof AxiosError) {
-                return error.response?.status !== 403;
+                const status = error.response?.status;
+                return status !== 403 && status !== 404;
             }
             return failureCount < 3;
         },
@@ -59,7 +62,6 @@ const SurveyTransaction = () => {
         mutationFn: SAPI.SURVEY.PUBLIC.createSurveyResult,
         onSuccess: () => {
             setIsFinished(true);
-            NotificationHandler.showSuccess(t('PAGES.SURVEY.SUCCESS'));
         },
         onError: NotificationHandler.showAxiosError,
     });
@@ -107,6 +109,29 @@ const SurveyTransaction = () => {
             }
         }
     }, [surveyQuery.data]);
+
+    const redirectionUrl = surveyQuery.data?.survey.options.redirectionUrl;
+
+    useEffect(() => {
+        if (!isFinished || !redirectionUrl) return;
+        const timer = setTimeout(() => {
+            if (redirectionUrl.includes('http://')) return;
+            window.location.href = redirectHref(redirectionUrl);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [isFinished, redirectionUrl]);
+
+    const questionNumbers = useMemo(() => {
+        const numbers = new Map<string, number>();
+        let count = 0;
+        components.forEach((component) => {
+            if (component.type !== SurveyComponentType.TEXT) {
+                count += 1;
+                numbers.set(component._id, count);
+            }
+        });
+        return numbers;
+    }, [components]);
 
     const handleSubmit = () => {
         for (const key in result) {
@@ -352,47 +377,76 @@ const SurveyTransaction = () => {
     }
 
     if (surveyQuery.isError) {
-        const error = surveyQuery.error as AxiosError;
+        const error = surveyQuery.error as AxiosError<{ error?: { message?: string } }>;
+        const message = error.response?.data?.error?.message;
         if (error.response?.status === 403) {
-            return <HTTP_403 title={t('COMMON.NO_ACCESS')} description={t('PAGES.SURVEY.ALREADY_COMPLETED')} />;
+            return (
+                <HTTP_403
+                    title={t('ERROR_PAGES.HTTP_403.TITLE')}
+                    description={message || t('PAGES.SURVEY.ALREADY_COMPLETED')}
+                />
+            );
         }
-        return <HTTP_403  />;
+        return <HTTP_403 description={message} />;
     }
 
     if (surveyQuery.data) {
+        const showQuestionNumbers =
+            surveyQuery.data.survey.options.showQuestionNumbers !== false;
         return (
-            <Container h="100%" size="xl" w="100%" mt="xl" pb="xl">
-                <Flex direction="column" gap="md" pb="xl">
-                    <Card withBorder p="sm" radius="md" shadow="sm" w="100%">
-                        <SVHTitle />
-                        {isFinished && (
-                            <Text size="sm" ta="center" fw="bold" pb="md">
+            <Flex direction="column" mih="100%">
+                <Box bg="violet.6" p="md" px="xl">
+                    <Title order={2} c="white" mb="xs" mt="lg">
+                        {surveyQuery.data.survey.title}
+                    </Title>
+                    {surveyQuery.data.survey.description && (
+                        <Text size="sm" c="white" mb="md">
+                            {surveyQuery.data.survey.description}
+                        </Text>
+                    )}
+                    <Badge color="white" c="violet.6" size="lg" tt="none" mb="sm">
+                        {t('PAGES.SURVEY.QUESTION_COUNT', {
+                            count: questionNumbers.size,
+                        })}
+                    </Badge>
+                </Box>
+                <Box p="md" pt="xs" px="xl" pb="xl">
+                    {isFinished ? (
+                        <Flex direction="column" align="center" py="xl">
+                            <Title order={3} ta="center" c="violet.6">
                                 {t('PAGES.SURVEY.THANKS')}
-                            </Text>
-                        )}
-                    </Card>
-                    {!isFinished && (
-                        <Card
-                            withBorder
-                            p="xl"
-                            radius="md"
-                            shadow="sm"
-                            w="100%"
-                        >
-                            <Title order={3}>
-                                {surveyQuery.data.survey.title}
                             </Title>
-                            <Text size="sm">
-                                {surveyQuery.data.survey.description}
-                            </Text>
-                            <Divider mt="md" />
+                            {redirectionUrl && (
+                                <>
+                                    <Title order={4} ta="center" mt="md" c="violet.6">
+                                        {t('PAGES.SURVEY.REDIRECTION_TITLE')}
+                                    </Title>
+                                    <Text ta="center" mt="xs">
+                                        {t('PAGES.SURVEY.REDIRECTION_DESCRIPTION')}
+                                    </Text>
+                                    <Text
+                                        component="a"
+                                        href={redirectHref(redirectionUrl)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        ta="center"
+                                        mt="sm"
+                                        c="violet.6"
+                                    >
+                                        {redirectionUrl}
+                                    </Text>
+                                </>
+                            )}
+                        </Flex>
+                    ) : (
+                        <>
                             {surveyQuery.data.survey.options.executionMode ===
                                 SurveyExecutionMode.TAN && (
-                                <Box style={{ flex: 1 }} my="md">
+                                <Card radius="md" p="lg" my="md" shadow="sm">
                                     <Title order={4} mb="sm">
                                         {t('PAGES.SURVEY.SECTIONS.SURVEY_CODE_TITLE')}
                                     </Title>
-                                    <Text size="sm">
+                                    <Text size="sm" mb="sm">
                                         {t('PAGES.SURVEY.SECTIONS.SURVEY_CODE_DESCRIPTION')}
                                     </Text>
                                     <EDITextInput
@@ -400,20 +454,18 @@ const SurveyTransaction = () => {
                                         placeholder={t('PAGES.SURVEY.FIELDS.SURVEY_CODE_PLACEHOLDER')}
                                         value={tan}
                                         onChange={(event) => {
-                                            const val =
-                                                event.currentTarget?.value;
-                                            setTan(val);
+                                            setTan(event.currentTarget?.value);
                                         }}
                                     />
-                                </Box>
+                                </Card>
                             )}
                             {surveyQuery.data.survey.options.executionMode ===
                                 SurveyExecutionMode.PERSONAL && (
-                                <Box style={{ flex: 1 }} my="md">
+                                <Card radius="md" p="lg" my="md" shadow="sm">
                                     <Title order={4} mb="sm">
                                         {t('PAGES.SURVEY.SECTIONS.EMAIL_TITLE')}
                                     </Title>
-                                    <Text size="sm">
+                                    <Text size="sm" mb="sm">
                                         {t('PAGES.SURVEY.SECTIONS.EMAIL_DESCRIPTION')}
                                     </Text>
                                     <EDITextInput
@@ -421,35 +473,49 @@ const SurveyTransaction = () => {
                                         placeholder={t('PAGES.SURVEY.FIELDS.EMAIL_PLACEHOLDER')}
                                         value={email}
                                         onChange={(event) => {
-                                            const val =
-                                                event.currentTarget?.value;
-                                            setEmail(val);
+                                            setEmail(event.currentTarget?.value);
                                         }}
                                     />
-                                </Box>
+                                </Card>
                             )}
-                            <Divider mt="md" />
                             {components.map((component) => (
-                                <Fragment key={component._id}>
-                                    <Box
-                                        style={{ flex: 1 }}
-                                        my="xl"
-                                    >
-                                        <Title order={4} mb="sm">
-                                            {component.title}{component.required && <span style={{color: 'red'}}> *</span>}
+                                <Card
+                                    key={component._id}
+                                    radius="md"
+                                    p="lg"
+                                    my="md"
+                                    shadow="sm"
+                                >
+                                    <Group gap="xs" align="center" mb="md">
+                                        {showQuestionNumbers &&
+                                            questionNumbers.has(component._id) && (
+                                                <Badge color="violet" size="lg" circle>
+                                                    {questionNumbers.get(component._id)}
+                                                </Badge>
+                                            )}
+                                        <Title order={4}>
+                                            {component.title}
+                                            {component.required && (
+                                                <span style={{ color: 'red' }}> *</span>
+                                            )}
                                         </Title>
-                                        {renderComponentContent(component)}
-                                    </Box>
-                                    <Divider />
-                                </Fragment>
+                                    </Group>
+                                    {renderComponentContent(component)}
+                                </Card>
                             ))}
-                            <Button w="100%" mt="md" onClick={handleSubmit}>
-                                {t('PAGES.SURVEY.SUBMIT')}
-                            </Button>
-                        </Card>
+                            <Group justify="flex-end" mt="md">
+                                <Button
+                                    radius="xl"
+                                    onClick={handleSubmit}
+                                    loading={createSurveyResultMutation.isPending}
+                                >
+                                    {t('PAGES.SURVEY.SUBMIT')}
+                                </Button>
+                            </Group>
+                        </>
                     )}
-                </Flex>
-            </Container>
+                </Box>
+            </Flex>
         );
     }
 

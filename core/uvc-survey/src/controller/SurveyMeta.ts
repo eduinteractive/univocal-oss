@@ -63,7 +63,9 @@ export const createSurvey = async (req: Request, res: Response, next: NextFuncti
             ...surveyAttrs,
             options: {
                 executionMode: body.options.executionMode,
-                isActive: false
+                isActive: false,
+                resultsSharing: false,
+                showQuestionNumbers: true,
             }
         });
         await survey.save();
@@ -77,6 +79,11 @@ interface updateSurveyRequest extends updateSVHMetadataAttrs {
     options?: {
         executionMode?: EXECUTION_MODE;
         isActive?: boolean;
+        startDate?: Date | null;
+        endDate?: Date | null;
+        redirectionUrl?: string | null;
+        resultsSharing?: boolean;
+        showQuestionNumbers?: boolean;
     }
 }
 
@@ -91,6 +98,23 @@ export const updateSurvey = async (req: Request, res: Response, next: NextFuncti
         updateSVHMetadata(survey, body);
         survey.options.executionMode = body.options?.executionMode !== undefined ? body.options.executionMode : survey.options.executionMode;
         survey.options.isActive = body.options?.isActive !== undefined ? body.options.isActive : survey.options.isActive;
+        if (body.options?.startDate !== undefined) {
+            survey.options.startDate = body.options.startDate;
+        }
+        if (body.options?.endDate !== undefined) {
+            survey.options.endDate = body.options.endDate;
+        }
+        if (body.options?.redirectionUrl !== undefined) {
+            const redirectionUrl = body.options.redirectionUrl?.trim();
+            survey.options.redirectionUrl = redirectionUrl ? redirectionUrl : null;
+        }
+        if (body.options?.resultsSharing !== undefined) {
+            survey.options.resultsSharing = body.options.resultsSharing;
+        }
+        if (body.options?.showQuestionNumbers !== undefined) {
+            survey.options.showQuestionNumbers = body.options.showQuestionNumbers;
+        }
+        survey.markModified("options");
         await survey.save();
         res.status(200).json(survey);
     } catch (err) {

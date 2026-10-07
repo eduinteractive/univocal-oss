@@ -1,10 +1,24 @@
 import { Request, Response, NextFunction } from "express";
-import SurveyMeta, { EXECUTION_MODE } from "../models/SurveyMeta";
+import SurveyMeta, { EXECUTION_MODE, SurveyMetaDoc } from "../models/SurveyMeta";
 import SurveyComponent from "../models/SurveyComponent";
 import { BadRequestError, ForbiddenError, NotFoundError } from "@eduinteractive/uvc-common";
 import mongoose, { Types } from "mongoose";
 import SurveyResult from "../models/SurveyResult";
 import { getOrCreateVisitorId } from "../utils/cookieUtils";
+
+const assertSurveyOpen = (survey: SurveyMetaDoc) => {
+    if (!survey.options.isActive) {
+        throw new ForbiddenError("Die Umfrage ist nicht aktiv.");
+    }
+
+    const now = new Date();
+    if (survey.options.startDate && now < new Date(survey.options.startDate)) {
+        throw new ForbiddenError("Die Umfrage hat noch nicht begonnen.");
+    }
+    if (survey.options.endDate && now > new Date(survey.options.endDate)) {
+        throw new ForbiddenError("Die Umfrage ist bereits beendet.");
+    }
+};
 
 export const getSurvey = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -13,9 +27,7 @@ export const getSurvey = async (req: Request, res: Response, next: NextFunction)
         if (!survey) {
             throw new NotFoundError("Die Umfrage wurde nicht gefunden.");
         }
-        if (!survey.options.isActive) {
-            throw new ForbiddenError("Die Umfrage ist nicht aktiv.");
-        }
+        assertSurveyOpen(survey);
 
         let identifier: string | undefined;
         if (survey.options.executionMode === EXECUTION_MODE.ANONYMOUS) {
@@ -41,7 +53,9 @@ export const getSurvey = async (req: Request, res: Response, next: NextFunction)
                 description: survey.description,
                 options: {
                     executionMode: survey.options.executionMode,
-                    isActive: survey.options.isActive
+                    isActive: survey.options.isActive,
+                    redirectionUrl: survey.options.redirectionUrl ?? null,
+                    showQuestionNumbers: survey.options.showQuestionNumbers !== false,
                 },
             },
             components
@@ -73,9 +87,7 @@ export const createSurveyResult = async (req: Request, res: Response, next: Next
             throw new NotFoundError("Die Umfrage wurde nicht gefunden.");
         }
 
-        if (!surveyMeta.options.isActive) {
-            throw new ForbiddenError("Die Umfrage ist nicht aktiv.");
-        }
+        assertSurveyOpen(surveyMeta);
 
         if (surveyMeta.options.executionMode === EXECUTION_MODE.ANONYMOUS) {
             // Für anonyme Umfragen: Verwende Cookie-basierte Visitor-ID
@@ -131,5 +143,40 @@ export const createSurveyResult = async (req: Request, res: Response, next: Next
         next(err);
     } finally {
         session.endSession();
+    }
+}
+
+export const getSurveyResults = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { surveyId } = req.params as { surveyId: string };
+        const survey = await SurveyMeta.findById(surveyId);
+        if (!survey || !survey.options.resultsSharing) {
+            throw new NotFoundError("Die Ergebnisse dieser Umfrage sind nicht öffentlich.");
+        }
+
+        const components = await SurveyComponent.find({ surveyId: new Types.ObjectId(surveyId) });
+        const results = await SurveyResult.find({ surveyId: survey._id });
+        const mappedResults = results.map((result) => ({
+            _id: result._id,
+            surveyId: result.surveyId,
+            answers: result.answers.reduce((acc: Record<string, unknown>, answer) => {
+                acc[answer.key] = answer.value;
+                return acc;
+            }, {}),
+            createdAt: result.createdAt,
+            updatedAt: result.updatedAt,
+        }));
+
+        res.status(200).json({
+            survey: {
+                _id: survey._id,
+                title: survey.title,
+                description: survey.description,
+            },
+            components,
+            results: mappedResults,
+        });
+    } catch (err) {
+        next(err);
     }
 }

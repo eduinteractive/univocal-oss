@@ -7,6 +7,7 @@ import { getSurveyChain } from "../controller/SurveyMeta.validate";
 const PublicRouter = Router({ mergeParams: true });
 
 PublicRouter.get("/survey/:surveyId", getSurveyChain(), validateRequestSchema, SurveyPublicController.getSurvey);
+PublicRouter.get("/survey/:surveyId/result", getSurveyChain(), validateRequestSchema, SurveyPublicController.getSurveyResults);
 PublicRouter.post("/survey/:surveyId/result", createSurveyResultChain(), validateRequestSchema, SurveyPublicController.createSurveyResult);
 
 export default PublicRouter;

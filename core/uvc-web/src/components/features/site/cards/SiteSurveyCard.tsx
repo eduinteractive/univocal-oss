@@ -38,6 +38,15 @@ const POLL_TYPES: string[] = [
 ];
 const POLL_MODES: string[] = [SurveyExecutionMode.DEFAULT, SurveyExecutionMode.ANONYMOUS];
 
+type SurveyWindow = 'open' | 'upcoming' | 'ended';
+
+const getSurveyWindow = (options: PublicSiteSurvey['survey']['options']): SurveyWindow => {
+    const now = Date.now();
+    if (options.startDate && now < new Date(options.startDate).getTime()) return 'upcoming';
+    if (options.endDate && now > new Date(options.endDate).getTime()) return 'ended';
+    return 'open';
+};
+
 const votedKey = (surveyId: string) => `uvc-voted-${surveyId}`;
 
 const readVote = (surveyId: string): number[] | undefined => {
@@ -88,6 +97,8 @@ const SitePoll = ({ entry, component }: PollProps) => {
     const { t } = useTranslation();
     const { subdomain, preview } = useSite();
     const surveyId = entry.survey._id;
+    const windowState = getSurveyWindow(entry.survey.options);
+    const closed = windowState !== 'open';
     const options = getOptions(component);
     const multiple = component.type === SurveyComponentType.CHOICE && !!component.multiple;
     const maxSelection = multiple ? component.max || options.length : 1;
@@ -133,7 +144,7 @@ const SitePoll = ({ entry, component }: PollProps) => {
     });
 
     const toggle = (index: number) => {
-        if (hasVoted || preview) return;
+        if (hasVoted || preview || closed) return;
         if (!multiple) {
             setSelection([index]);
             return;
@@ -169,7 +180,7 @@ const SitePoll = ({ entry, component }: PollProps) => {
                         <UnstyledButton
                             key={`${label}-${index}`}
                             onClick={() => toggle(index)}
-                            disabled={resultsVisible || preview}
+                            disabled={resultsVisible || preview || closed}
                             aria-pressed={isChosen}
                         >
                             <Box
@@ -236,7 +247,7 @@ const SitePoll = ({ entry, component }: PollProps) => {
                         </Group>
                     </Anchor>
                 )}
-                {!hasVoted && (
+                {!hasVoted && !closed && (
                     <Button
                         color="var(--site-primary)"
                         radius="xl"
@@ -246,6 +257,15 @@ const SitePoll = ({ entry, component }: PollProps) => {
                     >
                         {t('SITE.PUBLIC.POLL_SUBMIT')}
                     </Button>
+                )}
+                {closed && (
+                    <Text size="sm" c="dimmed">
+                        {t(
+                            windowState === 'upcoming'
+                                ? 'SITE.PUBLIC.SURVEY_NOT_STARTED'
+                                : 'SITE.PUBLIC.SURVEY_ENDED'
+                        )}
+                    </Text>
                 )}
                 {hasVoted && (
                     <Text size="sm" c="green.8" fw={600}>
@@ -261,6 +281,8 @@ export const SiteSurveyFeatured = ({ entry }: { entry: PublicSiteSurvey }) => {
     const { t } = useTranslation();
     const { preview } = useSite();
     const poll = getPollComponent(entry);
+    const windowState = getSurveyWindow(entry.survey.options);
+    const closed = windowState !== 'open';
 
     return (
         <Card radius="lg" p="var(--site-card-padding)" bg="var(--site-soft)" h="100%">
@@ -279,16 +301,23 @@ export const SiteSurveyFeatured = ({ entry }: { entry: PublicSiteSurvey }) => {
                 ) : (
                     <Group justify="space-between" mt="sm">
                         <Text size="sm" c="dimmed">
-                            {t('SITE.PUBLIC.SURVEY_QUESTIONS', {
-                                count: entry.components.filter((c) => c.type !== SurveyComponentType.TEXT).length,
-                            })}
+                            {closed
+                                ? t(
+                                      windowState === 'upcoming'
+                                          ? 'SITE.PUBLIC.SURVEY_NOT_STARTED'
+                                          : 'SITE.PUBLIC.SURVEY_ENDED'
+                                  )
+                                : t('SITE.PUBLIC.SURVEY_QUESTIONS', {
+                                      count: entry.components.filter((c) => c.type !== SurveyComponentType.TEXT)
+                                          .length,
+                                  })}
                         </Text>
                         <Button
                             color="var(--site-primary)"
                             radius="xl"
                             component={Link}
                             to={`/survey-transaction/${entry.survey._id}`}
-                            disabled={preview}
+                            disabled={preview || closed}
                         >
                             {t('SITE.PUBLIC.SURVEY_START')}
                         </Button>

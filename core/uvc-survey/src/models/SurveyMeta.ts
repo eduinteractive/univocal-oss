@@ -16,6 +16,11 @@ interface SurveyMetaAttrs extends SVHMetadataAttrs {
             isUsed: boolean;
         }[];
         isActive: boolean;
+        startDate?: Date | null;
+        endDate?: Date | null;
+        redirectionUrl?: string | null;
+        resultsSharing?: boolean;
+        showQuestionNumbers?: boolean;
     }
 }
 
@@ -31,6 +36,11 @@ export interface SurveyMetaDoc extends SVHMetadataDoc {
             isUsed: boolean;
         }[];
         isActive: boolean;
+        startDate?: Date | null;
+        endDate?: Date | null;
+        redirectionUrl?: string | null;
+        resultsSharing?: boolean;
+        showQuestionNumbers?: boolean;
     },
 }
 
@@ -44,7 +54,12 @@ const SurveyMetaSchema = new Schema({
                 _id: false,
             }], default: []
         },
-        isActive: { type: Boolean, required: true, default: false }
+        isActive: { type: Boolean, required: true, default: false },
+        startDate: { type: Date, default: null },
+        endDate: { type: Date, default: null },
+        redirectionUrl: { type: String, default: null },
+        resultsSharing: { type: Boolean, default: false },
+        showQuestionNumbers: { type: Boolean, default: true },
     }
 })
 

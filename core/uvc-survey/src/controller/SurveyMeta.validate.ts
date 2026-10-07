@@ -22,7 +22,18 @@ export const updateSurveyChain = () => {
         check("surveyId").isMongoId().withMessage("Survey ID must be a valid Mongo ID"),
         body("options").optional().isObject().withMessage("Options must be an object"),
         body("options.executionMode").optional().isIn(Object.keys(EXECUTION_MODE)).withMessage("Execution mode must be one of: " + Object.keys(EXECUTION_MODE).join(", ")),
-        body("options.isActive").optional().isBoolean().withMessage("Is active must be a boolean")
+        body("options.isActive").optional().isBoolean().withMessage("Is active must be a boolean"),
+        body("options.startDate").optional({ values: "null" }).isISO8601().toDate().withMessage("Startzeit muss ein gültiges Datum sein"),
+        body("options.endDate").optional({ values: "null" }).isISO8601().toDate().withMessage("Endzeit muss ein gültiges Datum sein"),
+        body("options.redirectionUrl").optional({ values: "falsy" }).isURL({ require_protocol: false }).withMessage("Weiterleitung muss eine gültige Adresse sein"),
+        body("options.resultsSharing").optional().isBoolean().withMessage("Ergebnis-Freigabe muss ein Boolean sein"),
+        body("options.showQuestionNumbers").optional().isBoolean().withMessage("Fragennummerierung muss ein Boolean sein"),
+        body("options").optional().custom((options) => {
+            if (options?.startDate && options?.endDate && new Date(options.startDate) > new Date(options.endDate)) {
+                throw new Error("Die Startzeit muss vor der Endzeit liegen.");
+            }
+            return true;
+        }),
     ]
 }
 
