@@ -354,6 +354,8 @@
         "CALENDAR_EMPTY_DAY": "Es sind keine Termine an diesem Tag eingetragen",
         "MEMBERS_TITLE": "Mitglieder",
         "NOTIFICATIONS_GROUP_TITLE": "Benachrichtigungen aus der Gruppe",
+        "ASSIGNED_TASKS_TITLE": "Fällige Aufgaben",
+        "ASSIGNED_TASKS_EMPTY": "Keine überfälligen oder bald fälligen Aufgaben.",
         "SHOW_MORE": "Mehr anzeigen"
     },
     "EVENTS": {
@@ -537,6 +539,36 @@
         "TABS": {
             "TASKS": "Aufgaben",
             "DESCRIPTION": "Beschreibung"
+        },
+        "LIST_TABS": {
+            "ASSIGNED": "Meine Aufgaben",
+            "PLANNING": "Übersicht",
+            "PROJECTS": "Projekte"
+        },
+        "PLANNING": {
+            "EMPTY": "Es sind noch keine Projekte vorhanden.",
+            "EMPTY_CHARTS": "Es sind noch keine Aufgaben vorhanden.",
+            "PROJECTS": "Projekte",
+            "OPEN": "Offen",
+            "DONE": "Erledigt",
+            "OVERDUE": "Überfällig",
+            "DUE_SOON": "Bald fällig",
+            "UNASSIGNED": "Ohne Zuständige",
+            "REMAINING": "Weitere offene",
+            "PROJECT": "Projekt",
+            "DONE_SHARE": "Fortschritt",
+            "STATUS_CHART": "Aufgaben nach Status",
+            "PROJECT_CHART": "Aufgaben je Projekt",
+            "PROJECT_TABLE": "Projektübersicht"
+        },
+        "ASSIGNED": {
+            "EMPTY": "Dir sind noch keine Aufgaben zugewiesen.",
+            "TASK": "Aufgabe",
+            "PROJECT": "Projekt",
+            "COLUMN": "Spalte",
+            "DUE_DATE": "Fälligkeitsdatum",
+            "OVERDUE": "Überfällig",
+            "NO_DATE": "Kein Datum"
         },
         "MODAL": {
             "EDIT": "Projekt bearbeiten",

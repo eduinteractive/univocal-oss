@@ -37,6 +37,31 @@ export interface ProjectTask {
     updatedAt: Date;
 }
 
+export interface AssignedProjectTask extends ProjectTask {
+    projectId: string;
+    projectTitle: string;
+    columnTitle: string;
+}
+
+export interface ProjectPlanningCounts {
+    tasks: number;
+    open: number;
+    done: number;
+    overdue: number;
+    dueSoon: number;
+    unassigned: number;
+}
+
+export interface ProjectPlanningProject extends ProjectPlanningCounts {
+    projectId: string;
+    projectTitle: string;
+}
+
+export interface ProjectPlanning {
+    totals: ProjectPlanningCounts & { projects: number };
+    projects: ProjectPlanningProject[];
+}
+
 export interface ProjectTaskColumn {
     _id: string;
     title: string;
