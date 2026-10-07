@@ -1,4 +1,4 @@
-import { ActionIcon, Avatar, Group, Table, Text } from '@mantine/core';
+import { ActionIcon, Avatar, Badge, Group, Table, Text } from '@mantine/core';
 import { TenantUser } from '@eduinteractive/uvc-api';
 import { IconEdit, IconMessage, IconTrash } from '@tabler/icons-react';
 import { useTenant } from '../../../../context/TenantContext';
@@ -24,6 +24,7 @@ const MembersTable = (props: MembersTableProps) => {
     const columns = [
         { key: 'firstName', label: t('MEMBERS.TABLE.NAME') },
         { key: 'group_permission', label: t('MEMBERS.TABLE.ROLE') },
+        { key: 'badges', label: t('MEMBERS.TABLE.BADGES'), sortable: false },
         { key: 'actions', label: t('MEMBERS.TABLE.ACTIONS'), sortable: false },
     ];
 
@@ -50,6 +51,15 @@ const MembersTable = (props: MembersTableProps) => {
                 </Text>
             </Table.Td>
             <Table.Td>
+                <Group gap={4}>
+                    {(user.badges ?? []).map((badge) => (
+                        <Badge key={badge} variant="light" color="violet" tt="none">
+                            {badge}
+                        </Badge>
+                    ))}
+                </Group>
+            </Table.Td>
+            <Table.Td>
                 <Group gap="sm" align="center">
                     {authData!._id !== user._id && (
                         <ActionIcon
@@ -59,23 +69,24 @@ const MembersTable = (props: MembersTableProps) => {
                             <IconMessage size={24} />
                         </ActionIcon>
                     )}
+                    {(checkPermission(currentTenant!, "member:administration") ||
+                        checkPermission(currentTenant!, "member:badges")) && (
+                        <ActionIcon
+                            variant="subtle"
+                            onClick={() => props.onEdit(user._id)}
+                        >
+                            <IconEdit size={24} />
+                        </ActionIcon>
+                    )}
                     {checkPermission(currentTenant!, "member:administration") && (
-                        <>
-                            <ActionIcon
-                                variant="subtle"
-                                onClick={() => props.onEdit(user._id)}
-                            >
-                                <IconEdit size={24} />
-                            </ActionIcon>
-                            <ActionIcon
-                                variant="subtle"
-                                size="compact-sm"
-                                color="gray"
-                                onClick={() => props.onDelete(user._id)}
-                            >
-                                <IconTrash size={24} />
-                            </ActionIcon>
-                        </>
+                        <ActionIcon
+                            variant="subtle"
+                            size="compact-sm"
+                            color="gray"
+                            onClick={() => props.onDelete(user._id)}
+                        >
+                            <IconTrash size={24} />
+                        </ActionIcon>
                     )}
                 </Group>
             </Table.Td>

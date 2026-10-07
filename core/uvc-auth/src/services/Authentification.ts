@@ -33,12 +33,24 @@ export const setAuthCookie = (res: Response, token: string, refreshToken?: strin
     }
 }
 
+/** Session payload keeps authorization fields only. Display badges stay on the membership document. */
+export const toSessionGroups = (
+    groups: Array<{ _id: { toString(): string }; permissionLevel: number }>
+) =>
+    groups.map((group) => ({
+        _id: group._id.toString(),
+        permissionLevel: group.permissionLevel,
+    }));
+
 export const normalizeUserData = (data: UserAccountDoc & { contact: UserContactDoc }) => {
     return {
         _id: data._id,
         mail: data.mail,
         permissionLevel: data.permissionLevel,
-        groups: data.groups,
+        groups: data.groups.map(({ _id, permissionLevel }) => ({
+            _id,
+            permissionLevel,
+        })),
         domains: data.domains,
         dataProtectionAgreement: data.dataProtectionAgreement,
         activationStatus: data.activationStatus,

@@ -39,6 +39,7 @@ export interface TenantUser {
     lastName: string;
     group_id: string;
     group_permission: number;
+    badges: string[];
 }
 
 export interface TenantInvitation {

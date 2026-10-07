@@ -1297,11 +1297,16 @@
         "MODAL": {
             "EDIT": "Mitglied bearbeiten",
             "INVITE": "Mitglied einladen",
-            "MEMBER": "Mitglied"
+            "MEMBER": "Mitglied",
+            "BADGES": "Funktion",
+            "BADGES_PLACEHOLDER": "Funktion eingeben und bestätigen",
+            "BADGES_HINT": "Sichtbar für alle Mitglieder. Höchstens 8 Funktionen, jeweils bis zu 40 Zeichen.",
+            "BADGES_TOO_LONG": "Eine Funktion darf höchstens 40 Zeichen lang sein!"
         },
         "TABLE": {
             "NAME": "Name",
             "ROLE": "Rolle",
+            "BADGES": "Funktion",
             "ACTIONS": "Aktionen"
         },
         "INVITATIONS": {

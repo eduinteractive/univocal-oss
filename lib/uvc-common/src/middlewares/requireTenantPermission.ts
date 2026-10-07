@@ -5,6 +5,7 @@ import { ForbiddenError } from '../errors/ForbiddenError';
 const acl: Record<string, Array<GROUP_PERMISSION_LEVEL>> = {
     "tenant:administration": [GROUP_PERMISSION_LEVEL.ADMIN],
     "member:administration": [GROUP_PERMISSION_LEVEL.ADMIN],
+    "member:badges": [GROUP_PERMISSION_LEVEL.ADMIN, GROUP_PERMISSION_LEVEL.MODERATOR],
     "calendar:create": [GROUP_PERMISSION_LEVEL.ADMIN, GROUP_PERMISSION_LEVEL.MODERATOR, GROUP_PERMISSION_LEVEL.MEMBER],
     "calendar:edit": [GROUP_PERMISSION_LEVEL.ADMIN, GROUP_PERMISSION_LEVEL.MODERATOR],
     "calendar:delete": [GROUP_PERMISSION_LEVEL.ADMIN, GROUP_PERMISSION_LEVEL.MODERATOR],

@@ -2,7 +2,8 @@ import { Response, Request, NextFunction } from 'express';
 import UserAccount, { ActivationStatus, UserAccountDoc } from '../models/UserAccount';
 import { UserContactDoc } from '../models/UserContact';
 import { Types } from 'mongoose';
-import { BadRequestError, ForbiddenError, GROUP_PERMISSION_LEVEL, NotFoundError, RedisClient, REQ_CLIENT } from '@eduinteractive/uvc-common';
+import { BadRequestError, ForbiddenError, NotFoundError, RedisClient, REQ_CLIENT } from '@eduinteractive/uvc-common';
+import { normalizeMemberBadges } from './Groups.validate';
 
 export const getUsersByGroup = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -18,6 +19,7 @@ export const getUsersByGroup = async (req: Request, res: Response, next: NextFun
                 lastName: user.contact.last_name,
                 group_id: group?._id,
                 group_permission: group?.permissionLevel,
+                badges: Array.isArray(group?.badges) ? group.badges : [],
             }
         })
 
@@ -72,6 +74,38 @@ export const updateUserGroup = async (req: Request, res: Response, next: NextFun
         await RedisClient.set("auth_invalidate_" + user._id.toString(), "true");
         await user.save();
         res.status(200).json(user);
+    } catch (err) {
+        next(err);
+    }
+}
+
+interface updateUserBadgesRequest {
+    userId: string;
+    badges: string[];
+}
+
+export const updateUserBadges = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { tenantId } = req.params;
+        const body = req.body as updateUserBadgesRequest;
+        const user = await UserAccount.findById(body.userId);
+        if (!user) {
+            throw new NotFoundError("Der Benutzer wurde nicht gefunden!");
+        }
+        const group = user.groups.find((group) => group._id.toString() === tenantId);
+        if (!group) {
+            throw new NotFoundError("Die Gruppe wurde nicht gefunden!");
+        }
+        let badges: string[];
+        try {
+            badges = normalizeMemberBadges(body.badges);
+        } catch (err) {
+            throw new BadRequestError(err instanceof Error ? err.message : "Die Funktionen sind ungültig!");
+        }
+        group.badges = badges;
+        user.markModified('groups');
+        await user.save();
+        res.status(200).json({ badges });
     } catch (err) {
         next(err);
     }

@@ -35,6 +35,8 @@ export interface PublicUserAccountAndContact {
 interface Groups {
     _id: Types.ObjectId,
     permissionLevel: GROUP_PERMISSION_LEVEL,
+    /** Display labels for this tenant. Not part of the session token. */
+    badges?: string[],
 }
 
 interface UserAccountAttrs {
