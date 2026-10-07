@@ -50,13 +50,19 @@ const SVHTextEditor = (props: SVHTextEditorProps) => {
         ],
         content: props.text,
         onUpdate: ({ editor }) => {
+            if (!editor.schema) {
+                return;
+            }
             props.onChange(editor.getHTML());
         },
     });
 
     useEffect(() => {
-        if (props.text !== editor?.getHTML()) {
-            editor?.commands.setContent(props.text, { emitUpdate: false });
+        if (!editor?.schema) {
+            return;
+        }
+        if (props.text !== editor.getHTML()) {
+            editor.commands.setContent(props.text, { emitUpdate: false });
         }
     }, [props.text, editor]);
 

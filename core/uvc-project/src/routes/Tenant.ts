@@ -8,6 +8,8 @@ import { createProjectChain, deleteProjectChain, getProjectChain, updateProjectC
 
 const TenantRouter = Router({ mergeParams: true });
 
+TenantRouter.get("/tasks/assigned", ProjectController.getAssignedTasks);
+TenantRouter.get("/projects/planning", ProjectController.getProjectPlanning);
 TenantRouter.get("/project", ProjectController.getProjects);
 TenantRouter.post("/project", requireTenantPermission('project:create', false), createProjectChain(), validateRequestSchema, ProjectController.createProject);
 TenantRouter.get("/project/:projectId", getProjectChain(), validateRequestSchema, ProjectController.getProject)

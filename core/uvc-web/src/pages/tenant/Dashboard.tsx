@@ -7,6 +7,7 @@ import NotificationCard from '../../components/features/tenant/dashboard/Notific
 import { Notification } from '@eduinteractive/uvc-api';
 import { useEffect, useState } from 'react';
 import CalendarCard from '../../components/features/tenant/dashboard/CalendarCard';
+import AssignedTasksCard from '../../components/features/tenant/dashboard/AssignedTasksCard';
 import SVHPageWrapper from '../../components/common/SVHPageWrapper';
 import { useTranslation } from 'react-i18next';
 
@@ -69,6 +70,7 @@ const Dashboard = () => {
                 <MemberCard users={tenantQuery.data?.users || []} />
                 <NotificationCard notifications={notifications} />
             </Flex>
+            {currentTenant?.tenant?.integrations.project && <AssignedTasksCard />}
             <CalendarCard events={calendarEventsQuery.data || []} />
         </SVHPageWrapper>
     );
