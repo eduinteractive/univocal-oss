@@ -13,6 +13,7 @@ resources:
   - uvc-knowledge-depl.yaml
   - uvc-etherpad-depl.yaml
   - uvc-event-depl.yaml
+  - uvc-seed-depl.yaml
   - uvc-chat-depl.yaml
   - uvc-calendar-depl.yaml
   - uvc-ingress-srv.yaml

@@ -1,0 +1,86 @@
+import { Types } from "mongoose";
+
+/** Stable ids so a second seed replaces the same documents. */
+export const oid = (n: number) => new Types.ObjectId(`6a5eed${n.toString(16).padStart(18, "0")}`);
+
+export const ids = {
+    domain: oid(1),
+    tenant: oid(2),
+    invitation: oid(3),
+    notification: oid(4),
+    request: oid(5),
+
+    admin: oid(11),
+    adminContact: oid(12),
+    moderator: oid(13),
+    moderatorContact: oid(14),
+    member: oid(15),
+    memberContact: oid(16),
+    guest: oid(17),
+    guestContact: oid(18),
+    requester: oid(19),
+    requesterContact: oid(20),
+
+    profile: oid(30),
+    newsPublished: oid(31),
+    newsDraft: oid(32),
+    profileProject: oid(33),
+    supportRequest: oid(34),
+    supportResponse: oid(35),
+
+    calendarPast: oid(41),
+    calendarToday: oid(42),
+    calendarSpan: oid(43),
+    calendarModerators: oid(44),
+
+    eventPublished: oid(51),
+    eventDraft: oid(52),
+    eventProgram: oid(53),
+    registrationA: oid(61),
+    registrationB: oid(62),
+    registrationC: oid(63),
+    attendeeA: oid(71),
+    attendeeB: oid(72),
+
+    wiki: oid(80),
+    wikiSectionWelcome: oid(81),
+    wikiSectionMeeting: oid(82),
+    contactGroup: oid(83),
+    contactOffice: oid(84),
+    contactDean: oid(85),
+
+    surveyOpen: oid(90),
+    surveyScheduled: oid(91),
+    surveyClosed: oid(92),
+    surveyOpenChoice: oid(93),
+    surveyOpenText: oid(94),
+    surveyScheduledText: oid(95),
+    surveyClosedChoice: oid(96),
+    surveyResultA: oid(100),
+    surveyResultB: oid(101),
+    surveyResultC: oid(102),
+    surveyResultD: oid(103),
+    surveyResultE: oid(104),
+
+    project: oid(110),
+    columnOpen: oid(111),
+    columnDoing: oid(112),
+    columnDone: oid(113),
+    taskOverdue: oid(114),
+    taskWithSubtask: oid(115),
+    subtask: oid(116),
+
+    budget: oid(120),
+    positionIncomeGroup: oid(121),
+    positionIncome: oid(122),
+    positionExpenseGroup: oid(123),
+    positionExpense: oid(124),
+    receipt: oid(125),
+
+    groupMessageA: oid(130),
+    groupMessageB: oid(131),
+    groupMessageC: oid(132),
+    groupMessageD: oid(133),
+    privateMessageA: oid(134),
+    privateMessageB: oid(135),
+};

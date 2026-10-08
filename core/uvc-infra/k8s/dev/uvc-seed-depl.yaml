@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uvc-seed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uvc-seed
+  template:
+    metadata:
+      labels:
+        app: uvc-seed
+    spec:
+      containers:
+        - name: uvc-seed
+          image: uvc/uvc-seed
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3012
+          env:
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cluster
+                  key: uri
+            - name: SEED_TOKEN
+              value: "dev-seed"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uvc-seed-srv
+spec:
+  selector:
+    app: uvc-seed
+  ports:
+    - name: uvc-seed
+      protocol: TCP
+      port: 3012
+      targetPort: 3012

@@ -9,6 +9,9 @@ catalogs:
     '@getbrevo/brevo':
       specifier: ^6.0.3
       version: 6.0.3
+    '@types/bcryptjs':
+      specifier: ^3.0.0
+      version: 3.0.0
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
@@ -870,6 +873,34 @@ importers:
       ts-node:
         specifier: catalog:uvc-express-boilerplate-dev
         version: 10.9.2(@types/node@26.6.4)(typescript@6.0.3)
+      tsx:
+        specifier: catalog:uvc-express-boilerplate-dev
+        version: 4.23.15
+
+  core/uvc-seed:
+    dependencies:
+      bcryptjs:
+        specifier: 'catalog:'
+        version: 3.0.3
+      express:
+        specifier: catalog:uvc-express-boilerplate
+        version: 5.2.1(supports-color@8.1.1)
+      mongoose:
+        specifier: catalog:uvc-express-boilerplate
+        version: 9.10.4
+    devDependencies:
+      '@types/bcryptjs':
+        specifier: 'catalog:'
+        version: 3.0.0
+      '@types/express':
+        specifier: catalog:uvc-express-boilerplate-dev
+        version: 5.0.6
+      nodemon:
+        specifier: catalog:uvc-express-boilerplate-dev
+        version: 3.1.14
+      rimraf:
+        specifier: catalog:uvc-express-boilerplate-dev
+        version: 6.1.3
       tsx:
         specifier: catalog:uvc-express-boilerplate-dev
         version: 4.23.15
@@ -3629,6 +3660,10 @@ packages:
 
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
+
+  '@types/bcryptjs@3.0.0':
+    resolution: {integrity: sha512-WRZOuCuaz8UcZZE4R5HXTco2goQSI2XxjGY3hbM/xDvwmqFWd4ivooImsMx65OKM6CtNKbnZ5YL+YwAwK7c1dg==}
+    deprecated: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
 
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
@@ -10026,6 +10061,10 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.8
     optional: true
+
+  '@types/bcryptjs@3.0.0':
+    dependencies:
+      bcryptjs: 3.0.3
 
   '@types/body-parser@1.19.6':
     dependencies:
