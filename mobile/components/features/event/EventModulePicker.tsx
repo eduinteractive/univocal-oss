@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView } from "react-native";
 import { Button, Card, Flex, Text, applyColor } from "@eduinteractive/balladui";
+import { IconCheck } from "@/assets/icons/Icon";
 
 export type EventModuleId = "program" | "registration" | "checkin";
 
@@ -73,21 +74,34 @@ export default function EventModulePicker({ disabled, onActivate }: EventModuleP
 								}}
 							>
 								<Flex
-									direction="column"
-									gap="xs"
+									direction="row"
+									align="center"
+									gap="sm"
 								>
-									<Text
-										fw="bold"
-										fs="smd"
+									<Flex
+										direction="column"
+										gap="xs"
+										flex={1}
 									>
-										{module.title}
-									</Text>
-									<Text
-										fs="sm"
-										c="gray.6"
-									>
-										{module.description}
-									</Text>
+										<Text
+											fw="bold"
+											fs="smd"
+										>
+											{module.title}
+										</Text>
+										<Text
+											fs="sm"
+											c="gray.6"
+										>
+											{module.description}
+										</Text>
+									</Flex>
+									{active && (
+										<IconCheck
+											size={20}
+											color={applyColor("primary")}
+										/>
+									)}
 								</Flex>
 							</Card>
 						</Pressable>

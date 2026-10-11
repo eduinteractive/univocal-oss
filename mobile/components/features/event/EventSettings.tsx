@@ -1,6 +1,6 @@
 import { UVCEvent, publicEventUrl } from "@/api/Events";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import { Box, Button, Flex, Text, applyColor, applySizeProp } from "@eduinteractive/balladui";
+import { Box, Button, Card, Flex, Text, applyColor, applySizeProp } from "@eduinteractive/balladui";
 import { useState } from "react";
 import { ScrollView, Share, Switch } from "react-native";
 
@@ -89,60 +89,72 @@ export default function EventSettings({ event, onUpdate }: EventSettingsProps) {
 						Bereiche ein- oder ausschalten. Ausgeschaltete Bereiche verschwinden aus den Reitern.
 					</Text>
 					{MODULES.map((module) => (
-						<Flex
+						<Card
 							key={module.id}
-							direction="row"
-							align="center"
-							gap="md"
+							variant="outline"
+							bg="white"
+							p="sm"
 						>
-							<Switch
-								value={enabled[module.id]}
-								onValueChange={() => toggleModule(module.id)}
-							/>
 							<Flex
-								flex={1}
-								direction="column"
+								direction="row"
+								align="center"
+								gap="md"
 							>
-								<Text
-									fs="smd"
-									fw="bold"
+								<Switch
+									value={enabled[module.id]}
+									onValueChange={() => toggleModule(module.id)}
+								/>
+								<Flex
+									flex={1}
+									direction="column"
 								>
-									{module.title}
-								</Text>
-								<Text fs="sm">{module.description}</Text>
+									<Text
+										fs="smd"
+										fw="bold"
+									>
+										{module.title}
+									</Text>
+									<Text fs="sm">{module.description}</Text>
+								</Flex>
 							</Flex>
-						</Flex>
+						</Card>
 					))}
 				</Flex>
 
-				<Flex
-					direction="row"
-					align="center"
-					gap="md"
+				<Card
+					variant="outline"
+					bg="white"
+					p="sm"
 				>
-					<Switch
-						value={published}
-						onValueChange={(value) =>
-							onUpdate({ config: { public: { published: value } } })
-						}
-					/>
 					<Flex
-						flex={1}
-						direction="column"
+						direction="row"
+						align="center"
+						gap="md"
 					>
-						<Text
-							fs="smd"
-							fw="bold"
+						<Switch
+							value={published}
+							onValueChange={(value) =>
+								onUpdate({ config: { public: { published: value } } })
+							}
+						/>
+						<Flex
+							flex={1}
+							direction="column"
 						>
-							Öffentliche Seite
-						</Text>
-						<Text fs="sm">
-							{published
-								? "Die Veranstaltung ist über den öffentlichen Link erreichbar."
-								: "Die Veranstaltung ist nicht veröffentlicht."}
-						</Text>
+							<Text
+								fs="smd"
+								fw="bold"
+							>
+								Öffentliche Seite
+							</Text>
+							<Text fs="sm">
+								{published
+									? "Die Veranstaltung ist über den öffentlichen Link erreichbar."
+									: "Die Veranstaltung ist nicht veröffentlicht."}
+							</Text>
+						</Flex>
 					</Flex>
-				</Flex>
+				</Card>
 
 				<Box
 					bg={applyColor("gray.1")}

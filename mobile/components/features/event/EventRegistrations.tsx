@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UVCEvent, UVCEventAttendee, UVCEventRegistration, publicEventUrl } from "@/api/Events";
 import EventFieldsDisplay from "./EventFieldsDisplay";
-import { Button, Flex, Text, TextInput } from "@eduinteractive/balladui";
+import { Box, Button, Flex, Text, TextInput } from "@eduinteractive/balladui";
 
 interface EventRegistrationsProps {
 	data?: {
@@ -76,8 +76,39 @@ export default function EventRegistrations({ data, onUpdate, onDeleteRegistratio
 						c="gray.6"
 					>
 						Leer lassen für unbegrenzte Anmeldungen.
-						{limit !== null ? ` ${taken} von ${limit} Plätzen belegt.` : ` ${taken} Anmeldungen.`}
 					</Text>
+					{limit !== null ? (
+						<Flex
+							direction="column"
+							gap="xs"
+						>
+							<Text
+								fs="sm"
+								fw="bold"
+							>
+								{taken} von {limit}
+							</Text>
+							<Box
+								h={8}
+								w="100%"
+								bg="gray.2"
+								style={{ borderRadius: 4, overflow: "hidden" }}
+							>
+								<Box
+									h={8}
+									bg={taken > limit ? "red.6" : "primary"}
+									w={`${limit === 0 ? (taken > 0 ? 100 : 0) : Math.min(100, Math.round((taken / limit) * 100))}%`}
+								/>
+							</Box>
+						</Flex>
+					) : (
+						<Text
+							fs="sm"
+							c="gray.6"
+						>
+							{taken} Anmeldungen.
+						</Text>
+					)}
 					<TextInput
 						size="sm"
 						label="Plätze"

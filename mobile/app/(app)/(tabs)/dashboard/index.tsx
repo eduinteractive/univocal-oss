@@ -1,4 +1,3 @@
-import { getAssignedTasks } from "@/api/Project";
 import { getTenantDashboard, TenantDashboardItemType } from "@/api/Tenant";
 import {
 	IconBucket,
@@ -17,9 +16,7 @@ import CalendarItem from "@/components/features/calendar/CalendarItem";
 import { FEATURE_COLORS } from "@/constants/Colors";
 import { useTenant } from "@/context/TenantContext";
 import { registerForPushNotificationsAsync, sendPushNotification } from "@/utils/PushNotifications";
-import { isOverdueAssignedTask, sortAssignedTasks } from "@/utils/assignedTasks";
-import { Box, Button, Card, Flex, Text } from "@eduinteractive/balladui";
-import dayjs from "dayjs";
+import { Box, Card, Flex, Text } from "@eduinteractive/balladui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { RelativePathString, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -98,16 +95,6 @@ const StartScreen = () => {
 		queryKey: ["dashboard", currentTenant?._id],
 		queryFn: () => getTenantDashboard({ tenantId: currentTenant!._id }),
 	});
-
-	const assignedTasksQuery = useQuery({
-		queryKey: ["assignedTasks", currentTenant?._id],
-		queryFn: () => getAssignedTasks({ tenantId: currentTenant!._id }),
-		enabled: !!currentTenant?._id,
-	});
-
-	const openTasks = sortAssignedTasks(assignedTasksQuery.data || [])
-		.filter((task) => task.columnTitle.trim().toLowerCase() !== "erledigt")
-		.slice(0, 8);
 
 	const updatePushTokenMutation = useMutation({
 		mutationFn: updateUserPushToken,
@@ -195,74 +182,6 @@ const StartScreen = () => {
 				FlatListProps={{
 					ListHeaderComponent: () => (
 						<>
-							<Box
-								mx="sm"
-								mt="sm"
-							>
-								<Text
-									fs="md"
-									fw="bold"
-									c="gray.8"
-								>
-									Meine Aufgaben
-								</Text>
-								{!assignedTasksQuery.isLoading && openTasks.length === 0 && (
-									<Text
-										fs="sm"
-										c="gray.5"
-										mt="xs"
-									>
-										Keine offenen Aufgaben.
-									</Text>
-								)}
-								{openTasks.map((task) => {
-									const overdue = isOverdueAssignedTask(task);
-									return (
-										<TouchableOpacity
-											key={task._id}
-											onPress={() =>
-												router.navigate(
-													`/projects/${task.projectId}/tasks/${task._id}` as RelativePathString
-												)
-											}
-										>
-											<Flex
-												direction="row"
-												justify="space-between"
-												align="center"
-												py="xs"
-											>
-												<Flex
-													direction="column"
-													flex={1}
-												>
-													<Text
-														fw="bold"
-														fs="sm"
-													>
-														{task.title}
-													</Text>
-													<Text
-														fs="xs"
-														c="gray.5"
-													>
-														{task.projectTitle}
-													</Text>
-												</Flex>
-												{!!task.dueDate && (
-													<Text
-														fs="xs"
-														c={overdue ? "red" : "gray.5"}
-													>
-														{overdue ? "Überfällig · " : ""}
-														{dayjs(task.dueDate).format("DD.MM.YYYY")}
-													</Text>
-												)}
-											</Flex>
-										</TouchableOpacity>
-									);
-								})}
-							</Box>
 							{dashboardQuery.data?.calendarEvents &&
 								dashboardQuery.data?.calendarEvents.length > 0 && (
 									<Box
