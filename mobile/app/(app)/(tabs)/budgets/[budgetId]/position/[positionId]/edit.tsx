@@ -6,6 +6,7 @@ import { NotificationHandler } from "@/utils/NotificationHandler";
 import { updateBudgetPosition, BudgetPositionType, getBudget, deleteBudgetPosition } from "@/api/Budget";
 import { KeyboardAvoidingView, Platform, ScrollView, Alert } from "react-native";
 import { useState, useEffect, useLayoutEffect } from "react";
+import { parseBudgetAmount } from "@/utils/budgetAmount";
 import { Button, Flex, TextInput, Text } from "@eduinteractive/balladui";
 import { applyColor } from "@eduinteractive/balladui";
 import UVCLoader from "@/components/common/UVCLoader";
@@ -111,14 +112,14 @@ export default () => {
 
 		// For individual positions, validate amounts
 		if (!isGroup) {
-			sollAmountNum = parseFloat(sollAmount.replace(",", "."));
-			if (isNaN(sollAmountNum) || sollAmountNum < 0) {
+			sollAmountNum = parseBudgetAmount(sollAmount);
+			if (!/\d/.test(sollAmount) || sollAmountNum < 0) {
 				return NotificationHandler.showError("Bitte gebe einen gültigen Soll-Betrag ein");
 			}
 
 			if (showManualIst && istAmount.trim()) {
-				istAmountNum = parseFloat(istAmount.replace(",", "."));
-				if (isNaN(istAmountNum) || istAmountNum < 0) {
+				istAmountNum = parseBudgetAmount(istAmount);
+				if (!/\d/.test(istAmount) || istAmountNum < 0) {
 					return NotificationHandler.showError("Bitte gebe einen gültigen Ist-Betrag ein");
 				}
 			}

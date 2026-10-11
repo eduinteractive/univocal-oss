@@ -9,9 +9,11 @@ import {
 } from "@/api/Survey";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
-import { ScrollView, Pressable, TextInput, RefreshControl } from "react-native";
+import { ScrollView, Pressable, TextInput, RefreshControl, Share } from "react-native";
 import React from "react";
-import { applyColor, applySizeProp, Card, Flex, Text, Box, Divider } from "@eduinteractive/balladui";
+import { applyColor, applySizeProp, Button, Card, Flex, Switch, Text, Box, Divider } from "@eduinteractive/balladui";
+import { BASE_URL } from "@/api/APIHandler";
+import { NotificationHandler } from "@/utils/NotificationHandler";
 
 // TODO: Move these to a proper constants file
 const SurveyComponentNominalScale: Record<string, string[]> = {
@@ -32,6 +34,7 @@ interface SurveyResultsProps {
 	};
 	refreshing: boolean;
 	onRefresh: () => void;
+	onUpdate: (data: { resultsSharing: boolean }) => Promise<void>;
 }
 
 export default function SurveyResults(props: SurveyResultsProps) {
@@ -349,6 +352,17 @@ export default function SurveyResults(props: SurveyResultsProps) {
 		);
 	};
 
+	const resultsSharing = !!props.data?.survey.options.resultsSharing;
+	const resultsLink = `${BASE_URL}/survey-transaction/${props.data?.survey._id}/results`;
+
+	const shareResults = async () => {
+		try {
+			await Share.share({ message: resultsLink });
+		} catch {
+			NotificationHandler.showError("Fehler beim Teilen des Links");
+		}
+	};
+
 	return (
 		<ScrollView
 			style={{ padding: applySizeProp("sm"), backgroundColor: "white" }}
@@ -363,6 +377,49 @@ export default function SurveyResults(props: SurveyResultsProps) {
 				gap="md"
 				direction="column"
 			>
+				<Flex
+					direction="row"
+					align="center"
+					gap="md"
+				>
+					<Switch
+						checked={resultsSharing}
+						onChange={(value) => props.onUpdate({ resultsSharing: value })}
+					/>
+					<Flex
+						flex={1}
+						direction="column"
+					>
+						<Text
+							fs="smd"
+							fw="bold"
+						>
+							Ergebnisse teilen
+						</Text>
+						<Text fs="sm">
+							Wenn diese Option aktiviert ist, können die Ergebnisse dieser Umfrage mit anderen geteilt werden.
+						</Text>
+					</Flex>
+				</Flex>
+				{resultsSharing && (
+					<Flex
+						direction="column"
+						gap="xs"
+					>
+						<Text
+							fs="xs"
+							c="gray.5"
+						>
+							{resultsLink}
+						</Text>
+						<Button
+							variant="default"
+							onPress={shareResults}
+						>
+							Ergebnislink teilen
+						</Button>
+					</Flex>
+				)}
 				{components.map(renderResult)}
 			</Flex>
 		</ScrollView>

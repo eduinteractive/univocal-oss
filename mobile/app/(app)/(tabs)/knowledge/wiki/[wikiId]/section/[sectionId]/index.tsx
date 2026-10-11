@@ -1,13 +1,14 @@
-import { deleteWikiSection, getWikiSection } from "@/api/Wiki";
+import { deleteWikiSection, getWikiSection, getWikiSectionEtherpad, setWikiSectionType, WikiSectionType } from "@/api/Wiki";
 import UVCLoader from "@/components/common/UVCLoader";
 import { useTenant } from "@/context/TenantContext";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { Alert, Linking, RefreshControl, ScrollView } from "react-native";
+import { Alert, Linking, Pressable, RefreshControl, ScrollView } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { htmlToMarkdown } from "@/utils/Parser";
 import React, { useLayoutEffect } from "react";
-import { applySizeProp, Divider, Text } from "@eduinteractive/balladui";
+import { applySizeProp, Button, Card, Divider, Flex, Text } from "@eduinteractive/balladui";
+import { NotificationHandler } from "@/utils/NotificationHandler";
 import UVCMaterials from "@/components/common/UVCMaterials";
 import { IconEdit, IconFiles, IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
@@ -57,6 +58,42 @@ export default () => {
 				},
 			},
 		]);
+	};
+
+	const setTypeMutation = useMutation({
+		mutationFn: setWikiSectionType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["wiki", currentTenant?._id, wikiId, sectionId],
+			});
+		},
+		onError: NotificationHandler.showAxiosError,
+	});
+
+	const openEtherpad = async () => {
+		try {
+			const pad = await getWikiSectionEtherpad({
+				tenantId: currentTenant!._id,
+				wikiId: wikiId as string,
+				sectionId: sectionId as string,
+			});
+			if (!pad.url) {
+				NotificationHandler.showError("Das Etherpad konnte nicht geöffnet werden.");
+				return;
+			}
+			await Linking.openURL(pad.url);
+		} catch (error) {
+			NotificationHandler.showAxiosError(error as Parameters<typeof NotificationHandler.showAxiosError>[0]);
+		}
+	};
+
+	const chooseType = (type: WikiSectionType) => {
+		setTypeMutation.mutate({
+			tenantId: currentTenant!._id,
+			wikiId: wikiId as string,
+			sectionId: sectionId as string,
+			body: { type },
+		});
 	};
 
 	const sectionType = wikiSectionQuery.data?.type;
@@ -132,11 +169,70 @@ export default () => {
 				{wiki.title}
 			</Text>
 			{!wiki.type ? (
-				<Text fs="sm">
-					Die Schreibweise für dieses Kapitel wird in der Web-App gewählt.
-				</Text>
+				<Flex
+					direction="column"
+					gap="sm"
+					mt="md"
+				>
+					<Text
+						fs="md"
+						fw="bold"
+					>
+						Wie soll dieses Kapitel geschrieben werden?
+					</Text>
+					<Text
+						fs="sm"
+						c="gray.6"
+					>
+						Die Auswahl gilt dauerhaft für dieses Kapitel.
+					</Text>
+					{(
+						[
+							{
+								type: "editor" as const,
+								title: "Editor",
+								description: "Formatierten Text schreiben, mit Überschriften, Listen und Links.",
+							},
+							{
+								type: "etherpad" as const,
+								title: "Etherpad",
+								description: "Gleichzeitig mit anderen im selben Text schreiben.",
+							},
+						]
+					).map((option) => (
+						<Pressable
+							key={option.type}
+							disabled={setTypeMutation.isPending}
+							onPress={() => chooseType(option.type)}
+						>
+							<Card
+								variant="outline"
+								p="md"
+							>
+								<Text fw="bold">{option.title}</Text>
+								<Text
+									fs="sm"
+									c="gray.6"
+								>
+									{option.description}
+								</Text>
+							</Card>
+						</Pressable>
+					))}
+				</Flex>
 			) : (
-				<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+				<>
+					<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+					{wiki.type === "etherpad" && (
+						<Button
+							variant="outline"
+							mt="sm"
+							onPress={openEtherpad}
+						>
+							Im Browser bearbeiten
+						</Button>
+					)}
+				</>
 			)}
 			{wiki.materials.length > 0 && (
 				<>

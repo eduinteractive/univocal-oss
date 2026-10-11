@@ -1,8 +1,7 @@
-import React from "react";
-import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
+import { useState } from "react";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration, publicEventUrl } from "@/api/Events";
 import EventFieldsDisplay from "./EventFieldsDisplay";
-import { useMemo } from "react";
-import { BASE_URL } from "@/api/APIHandler";
+import { Button, Flex, Text, TextInput } from "@eduinteractive/balladui";
 
 interface EventRegistrationsProps {
 	data?: {
@@ -10,24 +9,40 @@ interface EventRegistrationsProps {
 		attendees: UVCEventAttendee[];
 		registrations: UVCEventRegistration[];
 	};
-	onUpdate: (data: any) => void;
+	onUpdate: (data: {
+		config: {
+			registration: {
+				capacity: number | null;
+			};
+		};
+	}) => void;
+	onDeleteRegistration?: (registrationId: string) => void;
 }
 
-export default function EventRegistrations({ data, onUpdate }: EventRegistrationsProps) {
-	const registrationLink = useMemo(() => {
-		return `${BASE_URL}/event-registration/${data?.event._id}`;
-	}, [data?.event._id]);
+export default function EventRegistrations({ data, onUpdate, onDeleteRegistration }: EventRegistrationsProps) {
+	const savedCapacity = data?.event.config.registration.capacity;
+	const [capacity, setCapacity] = useState(
+		typeof savedCapacity === "number" ? String(savedCapacity) : ""
+	);
 
 	if (!data) {
 		return null;
 	}
 
-	const handleToggleRegistration = async (enabled: boolean, fields: any[]) => {
-		await onUpdate({
+	const capacityDirty = capacity !== (typeof savedCapacity === "number" ? String(savedCapacity) : "");
+	const taken = data.registrations.length;
+	const limit = typeof savedCapacity === "number" ? savedCapacity : null;
+
+	const saveCapacity = () => {
+		const trimmed = capacity.trim();
+		const next = trimmed === "" ? null : Number(trimmed);
+		if (next !== null && (!Number.isFinite(next) || next < 0)) {
+			return;
+		}
+		onUpdate({
 			config: {
 				registration: {
-					enabled,
-					fields,
+					capacity: next,
 				},
 			},
 		});
@@ -41,13 +56,45 @@ export default function EventRegistrations({ data, onUpdate }: EventRegistration
 			participants={data.registrations}
 			participantLabel="Angemeldete Teilnehmer"
 			emptyMessage="Noch keine Anmeldungen vorhanden"
-			enabledInitially={data.event.config.registration.enabled || false}
-			enableLabel="Anmeldung aktivieren"
-			enableDescription="Aktiviere die Anmeldung, um die Teilnehmer*innen sich im Voraus für das Event anmelden lassen zu können."
-			onToggleEnabled={handleToggleRegistration}
-			linkUrl={registrationLink}
-			linkLabel="Informationen zur Anmeldung"
+			onDeleteParticipant={onDeleteRegistration}
+			linkUrl={publicEventUrl(data.event._id)}
+			linkLabel="Öffentliche Seite"
 			eventId={data.event._id}
+			additionalContent={
+				<Flex
+					direction="column"
+					gap="sm"
+				>
+					<Text
+						fs="md"
+						fw="bold"
+					>
+						Kapazität
+					</Text>
+					<Text
+						fs="sm"
+						c="gray.6"
+					>
+						Leer lassen für unbegrenzte Anmeldungen.
+						{limit !== null ? ` ${taken} von ${limit} Plätzen belegt.` : ` ${taken} Anmeldungen.`}
+					</Text>
+					<TextInput
+						size="sm"
+						label="Plätze"
+						keyboardType="number-pad"
+						value={capacity}
+						onChangeText={setCapacity}
+						placeholder="Unbegrenzt"
+					/>
+					<Button
+						variant="filled"
+						disabled={!capacityDirty}
+						onPress={saveCapacity}
+					>
+						Kapazität speichern
+					</Button>
+				</Flex>
+			}
 		/>
 	);
 }

@@ -1,8 +1,5 @@
-import React from "react";
-import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration, publicEventUrl } from "@/api/Events";
 import EventFieldsDisplay from "./EventFieldsDisplay";
-import { useMemo } from "react";
-import { BASE_URL } from "@/api/APIHandler";
 
 interface EventCheckInProps {
 	data?: {
@@ -10,28 +7,14 @@ interface EventCheckInProps {
 		attendees: UVCEventAttendee[];
 		registrations: UVCEventRegistration[];
 	};
-	onUpdate: (data: any) => void;
+	onUpdate: (data: unknown) => void;
+	onDeleteAttendee?: (attendeeId: string) => void;
 }
 
-export default function EventCheckIn({ data, onUpdate }: EventCheckInProps) {
-	const checkInLink = useMemo(() => {
-		return `${BASE_URL}/event-checkin/${data?.event._id}`;
-	}, [data?.event._id]);
-
+export default function EventCheckIn({ data, onDeleteAttendee }: EventCheckInProps) {
 	if (!data) {
 		return null;
 	}
-
-	const handleToggleCheckIn = async (enabled: boolean, fields: any[]) => {
-		await onUpdate({
-			config: {
-				accreditation: {
-					enabled,
-					fields,
-				},
-			},
-		});
-	};
 
 	return (
 		<EventFieldsDisplay
@@ -41,12 +24,9 @@ export default function EventCheckIn({ data, onUpdate }: EventCheckInProps) {
 			participants={data.attendees}
 			participantLabel="Eingecheckte Teilnehmer"
 			emptyMessage="Noch keine Check-Ins vorhanden"
-			enabledInitially={data.event.config.accreditation.enabled || false}
-			enableLabel="Check-In aktivieren"
-			enableDescription="Aktiviere den Check-In, um die Teilnehmer*innen beim Eintreten ins Event zu registrieren."
-			onToggleEnabled={handleToggleCheckIn}
-			linkUrl={checkInLink}
-			linkLabel="Informationen zum Check-In"
+			onDeleteParticipant={onDeleteAttendee}
+			linkUrl={publicEventUrl(data.event._id)}
+			linkLabel="Öffentliche Seite"
 			eventId={data.event._id}
 		/>
 	);

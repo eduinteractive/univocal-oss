@@ -49,6 +49,10 @@ export default () => {
 		viewAccess: number;
 		startDate: Date;
 		endDate: Date;
+		place: {
+			name: string;
+			address: string;
+		};
 	}) => {
 		setLoading(true);
 		try {
@@ -61,6 +65,7 @@ export default () => {
 					viewAccess: data.viewAccess,
 					startDate: data.startDate,
 					endDate: data.endDate,
+					place: data.place,
 				},
 			});
 		} finally {

@@ -162,5 +162,29 @@ export const deleteWikiSection = async (req: deleteWikiSectionRequest): Promise<
     return response.data;
 }
 
+interface setWikiSectionTypeRequest {
+    tenantId: string;
+    wikiId: string;
+    sectionId: string;
+    body: {
+        type: WikiSectionType;
+    }
+}
+
+export const setWikiSectionType = async (req: setWikiSectionTypeRequest): Promise<WikiSection> => {
+    const response = await APIHandler.post(
+        `/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/type`,
+        req.body
+    );
+    return response.data;
+}
+
+export const getWikiSectionEtherpad = async (req: getWikiSectionRequest): Promise<{ url: string }> => {
+    const response = await APIHandler.get(
+        `/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/etherpad`
+    );
+    return response.data;
+}
+
 
 

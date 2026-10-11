@@ -60,6 +60,22 @@ export default function EventGeneral({ data }: EventGeneralProps) {
 				</Text>
 			</Flex>
 
+			{(event.place?.name || event.place?.address) && (
+				<Flex
+					direction="column"
+					gap="sm"
+				>
+					<Text
+						fs="md"
+						fw="bold"
+					>
+						Ort
+					</Text>
+					{!!event.place?.name && <Text>{event.place.name}</Text>}
+					{!!event.place?.address && <Text>{event.place.address}</Text>}
+				</Flex>
+			)}
+
 			<Flex
 				direction="column"
 				gap="sm"

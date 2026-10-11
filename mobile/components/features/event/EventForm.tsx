@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import UVCMetaForm, { UVCMetaFormSubmit } from "@/components/common/UVCMetaForm";
-import { DateInput, Flex, TimeInput } from "@eduinteractive/balladui";
+import { DateInput, Flex, TextInput, TimeInput } from "@eduinteractive/balladui";
 import { UVCEvent } from "@/api/Events";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 
@@ -14,6 +14,10 @@ interface EventFormProps {
 		viewAccess: number;
 		startDate: Date;
 		endDate: Date;
+		place: {
+			name: string;
+			address: string;
+		};
 	}) => void;
 }
 
@@ -35,6 +39,8 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 		hours: data?.endDate ? new Date(data.endDate).getHours() : new Date().getHours(),
 		minutes: data?.endDate ? new Date(data.endDate).getMinutes() : new Date().getMinutes(),
 	});
+	const [placeName, setPlaceName] = useState(data?.place?.name ?? "");
+	const [placeAddress, setPlaceAddress] = useState(data?.place?.address ?? "");
 
 	// Update dates and times when data changes (for edit mode)
 	useEffect(() => {
@@ -54,6 +60,8 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 				hours: newEndDate.getHours(),
 				minutes: newEndDate.getMinutes(),
 			});
+			setPlaceName(data.place?.name ?? "");
+			setPlaceAddress(data.place?.address ?? "");
 		}
 	}, [data]);
 
@@ -93,6 +101,10 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 			...formData,
 			startDate: finalStartDate,
 			endDate: finalEndDate,
+			place: {
+				name: placeName.trim(),
+				address: placeAddress.trim(),
+			},
 		});
 	};
 
@@ -190,6 +202,20 @@ export default function EventForm({ data, loading, onSubmit }: EventFormProps) {
 								onChange={handleEndTimeChange}
 							/>
 						</Flex>
+						<TextInput
+							size="sm"
+							label="Ort"
+							placeholder="z. B. Hörsaal 1"
+							value={placeName}
+							onChangeText={setPlaceName}
+						/>
+						<TextInput
+							size="sm"
+							label="Adresse"
+							placeholder="Straße und Ort"
+							value={placeAddress}
+							onChangeText={setPlaceAddress}
+						/>
 					</Fragment>
 				}
 			/>

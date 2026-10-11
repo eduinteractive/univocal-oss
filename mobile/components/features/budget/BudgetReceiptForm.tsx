@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { parseBudgetAmount } from "@/utils/budgetAmount";
 import { Button, Flex, Select, Text, TextInput } from "@eduinteractive/balladui";
 import * as DocumentPicker from "expo-document-picker";
 import dayjs from "dayjs";
@@ -128,8 +129,8 @@ const BudgetReceiptForm = ({
 	};
 
 	const handleSubmit = () => {
-		const amountNum = parseFloat(amount.replace(",", "."));
-		if (isNaN(amountNum) || amountNum < 0) {
+		const amountNum = parseBudgetAmount(amount);
+		if (!/\d/.test(amount) || amountNum < 0) {
 			return NotificationHandler.showError("Bitte gebe einen gültigen Betrag ein");
 		}
 

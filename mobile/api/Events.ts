@@ -1,9 +1,26 @@
-import APIHandler, { createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
+import APIHandler, { BASE_URL, createUVCMetadataAttrs, getUVCFilterParams, UVCFilterObject, UVCMetadata, updateUVCMetadataAttrs } from "./APIHandler";
+
+export interface UVCEventSession {
+    id: string;
+    title: string;
+    start: Date | string;
+    end?: Date | string;
+    place?: string;
+    description?: string;
+}
+
+export interface UVCEventPlace {
+    name: string;
+    address: string;
+}
+
+export const publicEventUrl = (eventId: string) => `${BASE_URL}/event/${eventId}`;
 
 export interface UVCEvent extends UVCMetadata {
     _id: string;
     startDate: Date;
     endDate?: Date;
+    place?: UVCEventPlace;
     config: {
         toc: {
             enabled: boolean;
@@ -13,9 +30,11 @@ export interface UVCEvent extends UVCMetadata {
                 link: string;
                 mimetype: string;
             }[]
+            sessions?: UVCEventSession[];
         }
         registration: {
             enabled: boolean;
+            capacity?: number | null;
             fields: {
                 key: string;
                 value: string;
@@ -27,6 +46,12 @@ export interface UVCEvent extends UVCMetadata {
                 key: string;
                 value: string;
             }[]
+        }
+        public?: {
+            coverKey?: string;
+            accent?: string;
+            layout?: string;
+            published?: boolean;
         }
     }
 }
@@ -99,6 +124,7 @@ interface createEventRequest {
     body: createUVCMetadataAttrs & {
         startDate: Date;
         endDate?: Date;
+        place?: UVCEventPlace;
     }
 }
 
@@ -112,6 +138,7 @@ interface updateEventRequest {
     body: updateUVCMetadataAttrs & {
         startDate?: Date;
         endDate?: Date;
+        place?: UVCEventPlace;
         config?: {
             toc?: {
                 enabled?: boolean;
@@ -121,10 +148,12 @@ interface updateEventRequest {
                     link: string;
                     mimetype: string;
                 }[];
+                sessions?: UVCEventSession[];
                 newUploads?: File[];
             }
             registration?: {
                 enabled?: boolean;
+                capacity?: number | null;
                 fields?: {
                     key: string;
                     value: string;
@@ -136,6 +165,9 @@ interface updateEventRequest {
                     key: string;
                     value: string;
                 }[]
+            }
+            public?: {
+                published?: boolean;
             }
         }
     }
@@ -202,4 +234,24 @@ interface createAttendeeRequest {
 
 export const createEventAttendee = async (req: createAttendeeRequest) => {
     return await APIHandler.post(`/event/public/event/${req.eventId}/attendee`, req.body);
+}
+
+interface deleteEventRegistrationRequest {
+    tenantId: string;
+    eventId: string;
+    registrationId: string;
+}
+
+export const deleteEventRegistration = async (req: deleteEventRegistrationRequest): Promise<void> => {
+    await APIHandler.delete(`/event/tenant/${req.tenantId}/event/${req.eventId}/registration/${req.registrationId}`);
+}
+
+interface deleteEventAttendeeRequest {
+    tenantId: string;
+    eventId: string;
+    attendeeId: string;
+}
+
+export const deleteEventAttendee = async (req: deleteEventAttendeeRequest): Promise<void> => {
+    await APIHandler.delete(`/event/tenant/${req.tenantId}/event/${req.eventId}/attendee/${req.attendeeId}`);
 }
