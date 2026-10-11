@@ -1,7 +1,7 @@
 import { Badge, Card, Group, Table, Text, Title } from '@mantine/core';
 import { SAPI } from '@eduinteractive/uvc-api';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTenant } from '../../../../context/TenantContext';
 import {
