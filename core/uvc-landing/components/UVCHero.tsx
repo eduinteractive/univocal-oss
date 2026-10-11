@@ -3,6 +3,7 @@ import { COLORS } from "../constants/Colors";
 
 interface UVCHeroProps {
 	title: string;
+	titleOrder?: 1 | 2;
 	subtitle?: string;
 	justify?: "start" | "center" | "end" | "space-between" | "space-around" | "space-evenly";
 	content: string | React.ReactNode;
@@ -27,7 +28,7 @@ const UVCHero = (props: UVCHeroProps) => {
 					justify={"flex-start"}
 				>
 					<Title
-						order={2}
+						order={props.titleOrder ?? 2}
 						mb={5}
 						ta={"start"}
 						c={COLORS.PRIMARY}
@@ -44,13 +45,15 @@ const UVCHero = (props: UVCHeroProps) => {
 							{props.subtitle}
 						</Title>
 					)}
-					<Text
-						size="md"
-						ta="justify"
-						c={COLORS.PRIMARY}
-					>
-						{props.content}
-					</Text>
+					{props.content ? (
+						<Text
+							size="md"
+							ta="justify"
+							c={COLORS.PRIMARY}
+						>
+							{props.content}
+						</Text>
+					) : null}
 				</Flex>
 			</Flex>
 		</Box>
