@@ -27,6 +27,11 @@ import {
 import SVHTextArea from '../../../common/SVHTextArea';
 import SVHDateInput from '../../../common/SVHDateInput';
 import { useTranslation } from 'react-i18next';
+import {
+    budgetAmountInputProps,
+    commitBudgetAmount,
+    parseBudgetAmount,
+} from './budgetAmount';
 
 export interface BudgetReceiptModalSubmitData {
     positionId?: string;
@@ -41,6 +46,7 @@ interface BudgetReceiptModalProps {
     data: BudgetReceipt | null;
     positions: BudgetPosition[];
     visible: boolean;
+    loading?: boolean;
     onClose: () => void;
     onSubmit: (body: BudgetReceiptModalSubmitData) => void;
 }
@@ -49,7 +55,7 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
     const { t } = useTranslation();
     const theme = useMantineTheme();
     const [positionId, setPositionId] = useState<string | null>(null);
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState<number | string>(0);
     const [description, setDescription] = useState('');
     const [date, setDate] = useState<Date | null>(new Date());
     const [newFile, setNewFile] = useState<File | undefined>(undefined);
@@ -81,7 +87,7 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
             setNewFile(undefined);
             setFile(undefined);
         }
-    }, [props.visible, props.data, props.positions]);
+    }, [props.visible, props.data]);
 
     const positionOptions = useMemo(() => {
         const groups = props.positions.filter(
@@ -136,7 +142,8 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
     }, [props.positions, t]);
 
     const handleSubmit = () => {
-        if (amount < 0) {
+        const parsedAmount = parseBudgetAmount(amount);
+        if (parsedAmount < 0) {
             return NotificationHandler.showError(
                 t('BUDGET.ATTRIBUTES.AMOUNT_ERROR')
             );
@@ -155,7 +162,7 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
         }
         props.onSubmit({
             positionId: resolvedPositionId,
-            amount: Math.round((amount + Number.EPSILON) * 100) / 100,
+            amount: Math.round((parsedAmount + Number.EPSILON) * 100) / 100,
             description: description || undefined,
             date,
             file: file || undefined,
@@ -175,6 +182,7 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
                 props.data ? t('BUDGET.RECEIPT_EDIT') : t('BUDGET.RECEIPT_NEW')
             }
             visible={props.visible}
+            loading={props.loading}
             onClose={props.onClose}
             onSubmit={handleSubmit}
             isForm
@@ -183,12 +191,9 @@ const BudgetReceiptModal = (props: BudgetReceiptModalProps) => {
                 label={t('BUDGET.ATTRIBUTES.AMOUNT')}
                 placeholder={t('BUDGET.ATTRIBUTES.AMOUNT_PLACEHOLDER')}
                 value={amount}
-                onChange={(value) =>
-                    setAmount(typeof value === 'number' ? value : 0)
-                }
-                decimalScale={2}
+                onChange={(value) => setAmount(commitBudgetAmount(value))}
                 required
-                fixedDecimalScale
+                {...budgetAmountInputProps}
             />
             <SVHDateInput
                 label={t('BUDGET.ATTRIBUTES.DATE')}

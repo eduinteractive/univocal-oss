@@ -1,4 +1,7 @@
+import fs from "fs";
 import multer from "multer";
+
+fs.mkdirSync("uploads", { recursive: true });
 
 const getExtension = (filename: string) => {
     return filename.substring(filename.lastIndexOf('.'), filename.length);
