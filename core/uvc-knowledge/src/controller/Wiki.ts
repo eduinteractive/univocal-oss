@@ -364,6 +364,27 @@ export const setWikiSectionType = async (req: Request, res: Response, next: Next
     }
 };
 
+const setEtherpadSessionCookie = (req: Request, res: Response, sessionID: string) => {
+    res.cookie(Etherpad.sessionCookieName, Etherpad.sessionCookieValue(req.headers.cookie, sessionID), {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 24 * 60 * 60 * 1000,
+        secure: req.secure || req.get("x-forwarded-proto") === "https",
+    });
+};
+
+export const launchWikiSectionEtherpad = (req: Request, res: Response) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    const launch = Etherpad.readLaunchToken(token);
+    if (!launch) {
+        res.status(400).type("text/plain").send("Der Etherpad-Link ist abgelaufen. Bitte das Kapitel erneut öffnen.");
+        return;
+    }
+    setEtherpadSessionCookie(req, res, launch.sessionID);
+    res.redirect(302, launch.url);
+};
+
 export const getWikiSectionEtherpad = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { wiki, section } = await loadWikiSection(req);
@@ -376,14 +397,9 @@ export const getWikiSectionEtherpad = async (req: Request, res: Response, next: 
         const padID = canEditWiki(req, wiki)
             ? section.etherpadPadId
             : await Etherpad.getReadOnlyID(section.etherpadPadId);
-        res.cookie(Etherpad.sessionCookieName, Etherpad.sessionCookieValue(req.headers.cookie, sessionID), {
-            httpOnly: true,
-            sameSite: "lax",
-            path: "/",
-            maxAge: 24 * 60 * 60 * 1000,
-            secure: req.secure || req.get("x-forwarded-proto") === "https",
-        });
-        res.status(200).json({ url: Etherpad.padUrl(padID, userName) });
+        const url = Etherpad.padUrl(padID, userName);
+        setEtherpadSessionCookie(req, res, sessionID);
+        res.status(200).json({ url, launchUrl: Etherpad.launchUrl(sessionID, url) });
     } catch (error) {
         next(error);
     }

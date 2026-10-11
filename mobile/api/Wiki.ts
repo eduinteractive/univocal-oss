@@ -179,7 +179,7 @@ export const setWikiSectionType = async (req: setWikiSectionTypeRequest): Promis
     return response.data;
 }
 
-export const getWikiSectionEtherpad = async (req: getWikiSectionRequest): Promise<{ url: string }> => {
+export const getWikiSectionEtherpad = async (req: getWikiSectionRequest): Promise<{ url: string; launchUrl: string }> => {
     const response = await APIHandler.get(
         `/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/etherpad`
     );

@@ -1,4 +1,5 @@
 import axios from "axios";
+import crypto from "crypto";
 import { BadRequestError } from "@eduinteractive/uvc-common";
 
 interface EtherpadResponse<T> {
@@ -141,4 +142,52 @@ export const padUrl = (padID: string, userName: string): string => {
     });
     const pathId = encodeURIComponent(padID).replace(/%24/g, "$");
     return `${base}/p/${pathId}?${params.toString()}`;
+};
+
+const launchTtlMs = 60 * 1000;
+
+export const launchUrl = (sessionID: string, url: string): string => {
+    requireConfig();
+    const payload = Buffer.from(JSON.stringify({
+        sessionID,
+        url,
+        exp: Date.now() + launchTtlMs,
+    })).toString("base64url");
+    const signature = crypto.createHmac("sha256", process.env.ETHERPAD_API_KEY!).update(payload).digest("base64url");
+    const origin = new URL(process.env.ETHERPAD_PUBLIC_URL!).origin;
+    return `${origin}/api/knowledge/public/etherpad/launch?token=${encodeURIComponent(`${payload}.${signature}`)}`;
+};
+
+export const readLaunchToken = (token: string): { sessionID: string; url: string } | null => {
+    const separator = token.lastIndexOf(".");
+    if (separator <= 0 || !process.env.ETHERPAD_API_KEY || !process.env.ETHERPAD_PUBLIC_URL) {
+        return null;
+    }
+    const payload = token.slice(0, separator);
+    const signature = token.slice(separator + 1);
+    const expected = crypto.createHmac("sha256", process.env.ETHERPAD_API_KEY).update(payload).digest("base64url");
+    const actualBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expected);
+    if (actualBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(actualBuffer, expectedBuffer)) {
+        return null;
+    }
+    try {
+        const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as {
+            sessionID?: unknown;
+            url?: unknown;
+            exp?: unknown;
+        };
+        if (typeof data.sessionID !== "string" || typeof data.url !== "string" || typeof data.exp !== "number" || data.exp < Date.now()) {
+            return null;
+        }
+        const allowed = new URL(process.env.ETHERPAD_PUBLIC_URL);
+        const target = new URL(data.url);
+        const padPrefix = `${allowed.pathname.replace(/\/$/, "")}/p/`;
+        if (target.origin !== allowed.origin || !target.pathname.startsWith(padPrefix)) {
+            return null;
+        }
+        return { sessionID: data.sessionID, url: target.toString() };
+    } catch {
+        return null;
+    }
 };

@@ -81,7 +81,7 @@ export default () => {
 				NotificationHandler.showError("Das Etherpad konnte nicht geöffnet werden.");
 				return;
 			}
-			await Linking.openURL(pad.url);
+			await Linking.openURL(pad.launchUrl || pad.url);
 		} catch (error) {
 			NotificationHandler.showAxiosError(error as Parameters<typeof NotificationHandler.showAxiosError>[0]);
 		}

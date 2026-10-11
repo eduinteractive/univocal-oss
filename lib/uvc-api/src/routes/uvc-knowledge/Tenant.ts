@@ -286,7 +286,7 @@ interface wikiSectionEtherpadRequest {
     sectionId: string;
 }
 
-export const getWikiSectionEtherpad = async (req: wikiSectionEtherpadRequest): Promise<{ url: string }> => {
+export const getWikiSectionEtherpad = async (req: wikiSectionEtherpadRequest): Promise<{ url: string; launchUrl: string }> => {
     const response = await APIHandler.get(`/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/etherpad`);
     return response.data;
 }

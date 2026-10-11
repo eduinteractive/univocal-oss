@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => {
                 workbox: {
                     // Hier kannst du z.B. bestimmte Dateien/Ordner vom Caching ausschließen:
                     // So werden alle Request-URLs, die '/api/' enthalten, ignoriert:
-                    navigateFallbackDenylist: [/^\/api/, /^\/Shibboleth\.sso/]
+                    navigateFallbackDenylist: [/^\/api/, /^\/Shibboleth\.sso/, /^\/etherpad/]
                 }
             })
         ],

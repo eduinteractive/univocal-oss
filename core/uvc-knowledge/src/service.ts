@@ -2,6 +2,7 @@ import express from "express";
 import { createSVHService, currentUser, errorHandler, isK8s, requireAuth, requireSVHConfig, requireTenant, streamImage } from "@eduinteractive/uvc-common";
 import TenantRouter from "./routes/Tenant";
 import NetworkRouter from "./routes/Network";
+import { launchWikiSectionEtherpad } from "./controller/Wiki";
 
 
 if (!process.env.MONGODB_USER || !process.env.MONGODB_PASSWORD || !process.env.MONGODB_URI) {
@@ -12,6 +13,7 @@ if (!process.env.MONGODB_USER || !process.env.MONGODB_PASSWORD || !process.env.M
 const app = express();
 requireSVHConfig(app, { S3Support: true });
 
+app.get("/api/knowledge/public/etherpad/launch", launchWikiSectionEtherpad);
 app.use("/api/knowledge/tenant/:tenantId", currentUser, requireAuth, requireTenant, TenantRouter);
 app.use("/api/knowledge/network", isK8s, NetworkRouter);
 

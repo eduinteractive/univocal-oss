@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uvc-etherpad-proxy-headers
+data:
+  X-Proxy-Path: /etherpad
+  X-Forwarded-Prefix: /etherpad
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,15 +14,11 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-set-headers: default/uvc-etherpad-proxy-headers
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Accept-Encoding "";
-      proxy_set_header X-Forwarded-Prefix /etherpad;
-      sub_filter_once on;
-      sub_filter_types text/html;
-      sub_filter '</head>' '<style>li[data-key="savedRevision"]{display:none!important}</style></head>';
 spec:
   ingressClassName: nginx
   tls:
