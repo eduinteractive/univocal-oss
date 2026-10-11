@@ -1,6 +1,7 @@
 import { APIHandler } from "../base";
 import {
     Profile,
+    ProfileSiteLegal,
     News,
     TenantProject,
     PublicSite,
@@ -13,7 +14,7 @@ import {
 export const getPublicProfile = async (tenantId: string) => {
     const response = await APIHandler.get(`/profile/public/profile/${tenantId}`);
     return response.data as {
-        profile: Profile & { title?: string; site?: { subdomain: string; published: true } };
+        profile: Profile & { title?: string; site?: { subdomain: string; published: true; legal?: ProfileSiteLegal } };
         news: News[];
         projects: TenantProject[];
     };

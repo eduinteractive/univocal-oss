@@ -3,7 +3,7 @@ import Funktionen from "./pageContent";
 import { PLACEHOLDER_IMAGE } from "../../constants/placeholderImage";
 
 const DESCRIPTION =
-	"Univocal für Fachschaften, ASten sowie Gremien und Ausschüsse: Projektmanagement, Kalender, Gruppenchat, Wiki, Umfragen, Events und Finanzen – mit Use Cases zu Fachschaftsfahrt, Onboarding, Haushaltsführung, Stimmungsbildern, Terminkoordination und mehr. Inklusive SSO via Shibboleth und DSGVO-konform.";
+	"Was Fachschaften, ASten und Gremien mit univocal im Alltag schaffen: Aufgaben, Termine, Absprachen, Wissen, Umfragen, Veranstaltungen, Haushalt und die eigene Seite.";
 
 export const metadata = {
 	title: "Funktionen | univocal – Für Fachschaften, ASten und Gremien",
@@ -19,19 +19,10 @@ export const metadata = {
 		"Events",
 		"Finanzen",
 		"Fachschaft",
-		"Fachschaftsfahrt",
-		"Onboarding",
 		"AStA",
 		"Haushaltsführung",
-		"Stimmungsbilder",
-		"Terminkoordination",
 		"Gremien",
 		"Ausschüsse",
-		"Personalrat",
-		"Tagungsorganisation",
-		"SSO",
-		"Shibboleth",
-		"DSGVO",
 		"studentische Selbstverwaltung",
 	],
 	openGraph: {

@@ -10,9 +10,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 		{
 			url: "https://univocal.de/funktionen",
-			lastModified: new Date("2026-07-20"),
+			lastModified: new Date("2026-10-08"),
 			changeFrequency: "monthly",
 			priority: 0.9,
+		},
+		{
+			url: "https://univocal.de/funktionen/fachschaften",
+			lastModified: new Date("2026-10-08"),
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
+			url: "https://univocal.de/funktionen/asten",
+			lastModified: new Date("2026-10-08"),
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
+			url: "https://univocal.de/funktionen/gremien",
+			lastModified: new Date("2026-10-08"),
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
+			url: "https://univocal.de/funktionen/changelog",
+			lastModified: new Date("2026-10-11"),
+			changeFrequency: "monthly",
+			priority: 0.6,
+		},
+		{
+			url: "https://univocal.de/funktionen/roadmap",
+			lastModified: new Date("2026-10-11"),
+			changeFrequency: "monthly",
+			priority: 0.5,
 		},
 		{
 			url: "https://univocal.de/forschung",

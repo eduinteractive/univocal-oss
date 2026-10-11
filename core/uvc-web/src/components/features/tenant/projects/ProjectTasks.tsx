@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     DndContext,
     DragStartEvent,
@@ -45,6 +45,7 @@ import { useAuth } from '../../../../context/AuthContext';
 import { checkPermission } from '../../../../utils/Permission';
 import WikiToCAddButton from '../knowledge/wiki/WikiToCAddButton';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum ProjectTaskViewOptions {
@@ -68,6 +69,8 @@ interface ProjectTasksProps {
 
 const ProjectTasks = (props: ProjectTasksProps) => {
     const { t } = useTranslation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const openedTaskId = useRef<string | null>(null);
     const tenantMembers = useTenantMembers();
     const { currentTenant } = useTenant();
     const { authData } = useAuth();
@@ -89,6 +92,25 @@ const ProjectTasks = (props: ProjectTasksProps) => {
     useEffect(() => {
         setColumns(props.data.columns);
     }, [props.data.columns]);
+
+    useEffect(() => {
+        const taskId = searchParams.get('task');
+        if (!taskId || openedTaskId.current === taskId) {
+            return;
+        }
+        const task = props.data.columns
+            .flatMap((column) => column.tasks)
+            .find((item) => item?._id === taskId);
+        if (!task) {
+            return;
+        }
+        openedTaskId.current = taskId;
+        setTaskModalData(task);
+        setViewTaskModalVisible(true);
+        const next = new URLSearchParams(searchParams);
+        next.delete('task');
+        setSearchParams(next, { replace: true });
+    }, [props.data.columns, searchParams, setSearchParams]);
 
     const hasPermission = useMemo(
         () =>

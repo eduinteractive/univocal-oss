@@ -4,6 +4,11 @@ import { LandingStatDims } from "../models/LandingDailyStat";
 export const MARKETING_PATHS = [
 	"/",
 	"/funktionen",
+	"/funktionen/fachschaften",
+	"/funktionen/asten",
+	"/funktionen/gremien",
+	"/funktionen/changelog",
+	"/funktionen/roadmap",
 	"/faq",
 	"/forschung",
 	"/forschung/beitraege",

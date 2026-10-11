@@ -4,8 +4,10 @@ import SVHSuspense from '../components/common/SVHSuspense';
 
 const PublicSite = lazy(() => import('../pages/site/PublicSite'));
 const SurveyTransaction = lazy(() => import('../pages/SurveyTransaction'));
+const SurveyPublicResults = lazy(() => import('../pages/SurveyPublicResults'));
 const EventRegistration = lazy(() => import('../pages/EventRegistration'));
 const EventProgram = lazy(() => import('../pages/EventProgram'));
+const PublicEvent = lazy(() => import('../pages/PublicEvent'));
 
 interface SiteHostRouterProps {
     subdomain: string;
@@ -15,10 +17,26 @@ interface SiteHostRouterProps {
 const SiteHostRouter = ({ subdomain }: SiteHostRouterProps): JSX.Element => (
     <Routes>
         <Route
+            path="/survey-transaction/:surveyId/results"
+            element={
+                <SVHSuspense>
+                    <SurveyPublicResults />
+                </SVHSuspense>
+            }
+        />
+        <Route
             path="/survey-transaction/:surveyId"
             element={
                 <SVHSuspense>
                     <SurveyTransaction />
+                </SVHSuspense>
+            }
+        />
+        <Route
+            path="/event/:eventId"
+            element={
+                <SVHSuspense>
+                    <PublicEvent />
                 </SVHSuspense>
             }
         />

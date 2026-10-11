@@ -354,6 +354,8 @@
         "CALENDAR_EMPTY_DAY": "Es sind keine Termine an diesem Tag eingetragen",
         "MEMBERS_TITLE": "Mitglieder",
         "NOTIFICATIONS_GROUP_TITLE": "Benachrichtigungen aus der Gruppe",
+        "ASSIGNED_TASKS_TITLE": "Fällige Aufgaben",
+        "ASSIGNED_TASKS_EMPTY": "Keine überfälligen oder bald fälligen Aufgaben.",
         "SHOW_MORE": "Mehr anzeigen"
     },
     "EVENTS": {
@@ -361,6 +363,74 @@
         "REGISTRATIONS": "Anmeldungen",
         "TOC": "Programm",
         "ACCREDITATIONS": "Check-In",
+        "SETTINGS": "Einstellungen",
+        "PREVIEW": "Vorschau",
+        "PUBLISH": "Veröffentlichen",
+        "UNPUBLISH": "Offline nehmen",
+        "STATUS_LIVE": "Online",
+        "STATUS_DRAFT": "Nicht veröffentlicht",
+        "COPY_PUBLIC_LINK": "Link kopieren",
+        "PRINT_QR": "QR-Code ausdrucken",
+        "SETTINGS_MODULES": "Module",
+        "SETTINGS_PUBLIC": "Öffentliche Seite",
+        "SETTINGS_PUBLIC_HINT": "Farbpalette und Titelbild der öffentlichen Seite.",
+        "AGENDA": "Ablauf",
+        "AGENDA_HINT": "Programmpunkte der öffentlichen Seite.",
+        "AGENDA_EMPTY": "Noch keine Programmpunkte.",
+        "SESSION_ADD": "Programmpunkt hinzufügen",
+        "SESSION_ADD_HINT": "Titel, Beginn und Beschreibung für den öffentlichen Ablauf.",
+        "SESSION_TITLE": "Titel",
+        "SESSION_TITLE_PLACEHOLDER": "Titel eingeben...",
+        "SESSION_START": "Beginn",
+        "SESSION_START_PLACEHOLDER": "Beginn und Uhrzeit",
+        "SESSION_END": "Ende",
+        "SESSION_END_PLACEHOLDER": "Ende und Uhrzeit",
+        "SESSION_PLACE": "Ort",
+        "SESSION_PLACE_PLACEHOLDER": "Ort eingeben...",
+        "SESSION_DESCRIPTION": "Beschreibung",
+        "SESSION_SAVE": "Speichern",
+        "SESSION_CANCEL": "Abbrechen",
+        "SESSION_EDIT": "Programmpunkt bearbeiten",
+        "SESSION_DELETE": "Programmpunkt entfernen",
+        "SESSION_UP": "Nach oben",
+        "SESSION_DOWN": "Nach unten",
+        "SESSION_REQUIRED": "Titel und Beginn sind erforderlich.",
+        "SESSION_END_BEFORE_START": "Das Ende muss nach dem Beginn liegen.",
+        "LEGACY_PROGRAM": "Bisheriger Programmtext",
+        "LEGACY_PROGRAM_CLEAR": "Text entfernen",
+        "CAPACITY_LABEL": "Kapazität",
+        "CAPACITY_HINT": "Leer lassen für unbegrenzte Anmeldungen.",
+        "FIELDS_HINT": "Zusätzliche Angaben im Formular.",
+        "REGISTRATIONS_LIST": "Eingegangene Anmeldungen",
+        "REGISTRATIONS_LIST_HINT": "Personen, die sich angemeldet haben.",
+        "CHECKINS_LIST": "Eingegangene Check-Ins",
+        "CHECKINS_LIST_HINT": "Personen, die vor Ort erfasst wurden.",
+        "CAPACITY_COUNT": "{{count}} von {{capacity}} Plätzen belegt",
+        "REGISTRATION_COUNT": "{{count}} Anmeldungen",
+        "GENERAL_SETTINGS": "Allgemeine Einstellungen",
+        "GENERAL_SETTINGS_HINT": "Titel, Beschreibung und Sichtbarkeit der Veranstaltung.",
+        "PLACE_AND_TIME": "Ort und Zeit",
+        "PLACE_AND_TIME_HINT": "Wann und wo die Veranstaltung stattfindet.",
+        "PLACE_NAME": "Ort",
+        "PLACE_NAME_PLACEHOLDER": "z. B. Hörsaal 1",
+        "PLACE_ADDRESS": "Adresse",
+        "PLACE_ADDRESS_PLACEHOLDER": "Straße und Ort",
+        "PLACE_SAVE": "Ort speichern",
+        "ACCENT": "Akzentfarbe",
+        "COVER": "Titelbild",
+        "COVER_UPLOAD": "Bild auswählen",
+        "COVER_REMOVE": "Bild entfernen",
+        "MODULES": {
+            "TITLE": "Welche Bereiche gehören zu dieser Veranstaltung?",
+            "HINT": "Mehrere Bereiche können aktiv sein. Die Auswahl kannst du später in den Einstellungen ändern.",
+            "ACTIVATE": "Bereiche aktivieren",
+            "PROGRAM_TITLE": "Programm",
+            "PROGRAM_DESCRIPTION": "Ablauf mit Programmpunkten und Materialien für die Teilnehmenden.",
+            "REGISTRATION_TITLE": "Anmeldung",
+            "REGISTRATION_DESCRIPTION": "Teilnehmende melden sich vorab mit eigenen Feldern an.",
+            "CHECKIN_TITLE": "Check-in",
+            "CHECKIN_DESCRIPTION": "Anwesenheit vor Ort über ein Formular erfassen."
+        },
         "EDIT": "Event bearbeiten",
         "CREATE": "Event erstellen",
         "PROGRAM_ENABLE_TITLE": "Programm aktivieren",
@@ -371,6 +441,7 @@
         "PROGRAM": "Programm",
         "NO_CONTENT": "Es ist noch kein Inhalt vorhanden.",
         "MATERIALS": "Materialien",
+        "MATERIALS_HINT": "Dateien, die Teilnehmende herunterladen können.",
         "REGISTRATION_ENABLE_TITLE": "Registrierung aktivieren",
         "REGISTRATION_ENABLE_DESCRIPTION": "Aktivieren Sie die Registrierung, um die vorherige Anmeldung von Teilnehmer*innen zu ermöglichen.",
         "REGISTRATION_INFO": "Informationen zur Registrierung",
@@ -379,10 +450,14 @@
         "ACCREDITATION_ENABLE_DESCRIPTION": "Aktivieren Sie den Check-In, um die Anwesenheit der Teilnehmer*innen über ein Formular zu erfassen.",
         "ACCREDITATION_INFO": "Informationen zum Check-In",
         "ACCREDITATION_LINK": "Link zum Check-In",
+        "CHECKIN_OPEN": "Check-In öffnen",
         "TABLE": {
             "NAME": "Vor- und Nachname",
             "EMAIL": "E-Mail",
-            "EMPTY": "Keine Teilnehmer*innen gefunden"
+            "EMPTY": "Keine Teilnehmer*innen gefunden",
+            "DELETE": "Eintrag entfernen",
+            "DELETE_DESCRIPTION": "Dieser Eintrag wird unwiderruflich gelöscht.",
+            "DELETED": "Der Eintrag wurde entfernt."
         },
         "CERTIFICATE": {
             "TITLE": "Teilnahmebescheinigung",
@@ -391,6 +466,8 @@
             "DOWNLOAD_FILENAME": "Teilnahmebescheinigung.pdf"
         },
         "META": {
+            "EXPORT_TITLE": "Export",
+            "EXPORT_HINT": "Sharepic und Teilnahmebescheinigung.",
             "GENERATE_SHAREPIC": "Sharepic generieren",
             "GENERATE_CERTIFICATE": "Teilnahmebescheinigung generieren",
             "CREATED_AT": "Erstellt am",
@@ -439,7 +516,15 @@
                 "NO_CONTENT": "Es ist noch kein Inhalt vorhanden.",
                 "PICK_CHAPTER": "Wähle ein Kapitel aus.",
                 "DELETE_TITLE": "Kapitel löschen",
-                "DELETE_DESCRIPTION": "Möchtest du dieses Kapitel wirklich löschen?"
+                "DELETE_DESCRIPTION": "Möchtest du dieses Kapitel wirklich löschen?",
+                "TYPE_TITLE": "Wie soll dieses Kapitel geschrieben werden?",
+                "TYPE_HINT": "Die Auswahl gilt dauerhaft für dieses Kapitel.",
+                "TYPE_EDITOR_TITLE": "Editor",
+                "TYPE_EDITOR_DESCRIPTION": "Formatierten Text schreiben, mit Überschriften, Listen und Links.",
+                "TYPE_ETHERPAD_TITLE": "Etherpad",
+                "TYPE_ETHERPAD_DESCRIPTION": "Gleichzeitig mit anderen im selben Text schreiben.",
+                "TYPE_UNSET_READONLY": "Für dieses Kapitel wurde noch keine Schreibweise gewählt.",
+                "TYPE_PAD_ERROR": "Das Etherpad konnte nicht geöffnet werden."
             }
         },
         "CONTACT_GROUP": {
@@ -538,6 +623,36 @@
             "TASKS": "Aufgaben",
             "DESCRIPTION": "Beschreibung"
         },
+        "LIST_TABS": {
+            "ASSIGNED": "Meine Aufgaben",
+            "PLANNING": "Übersicht",
+            "PROJECTS": "Projekte"
+        },
+        "PLANNING": {
+            "EMPTY": "Es sind noch keine Projekte vorhanden.",
+            "EMPTY_CHARTS": "Es sind noch keine Aufgaben vorhanden.",
+            "PROJECTS": "Projekte",
+            "OPEN": "Offen",
+            "DONE": "Erledigt",
+            "OVERDUE": "Überfällig",
+            "DUE_SOON": "Bald fällig",
+            "UNASSIGNED": "Ohne Zuständige",
+            "REMAINING": "Weitere offene",
+            "PROJECT": "Projekt",
+            "DONE_SHARE": "Fortschritt",
+            "STATUS_CHART": "Aufgaben nach Status",
+            "PROJECT_CHART": "Aufgaben je Projekt",
+            "PROJECT_TABLE": "Projektübersicht"
+        },
+        "ASSIGNED": {
+            "EMPTY": "Dir sind noch keine Aufgaben zugewiesen.",
+            "TASK": "Aufgabe",
+            "PROJECT": "Projekt",
+            "COLUMN": "Spalte",
+            "DUE_DATE": "Fälligkeitsdatum",
+            "OVERDUE": "Überfällig",
+            "NO_DATE": "Kein Datum"
+        },
         "MODAL": {
             "EDIT": "Projekt bearbeiten",
             "CREATE": "Projekt erstellen"
@@ -615,10 +730,10 @@
         },
         "EXECUTION": {
             "ACTIVATE": "Umfrage aktivieren",
-            "ACTIVATE_DESCRIPTION": "Aktivieren Sie die Umfrage, um sie für die Teilnehmer sichtbar zu machen. Wenn die Umfrage aktiv ist oder Ergebnisse übermittelt wurden, kann sie nicht mehr bearbeitet werden.",
-            "INFO_TITLE": "Informationen zur Durchführung der Umfrage:",
-            "SURVEY_ID": "Umfrage-ID:",
-            "SURVEY_MODE": "Umfragemodus:",
+            "ACTIVATE_DESCRIPTION": "Aktivieren Sie die Umfrage, um sie für die Teilnehmer sichtbar zu machen. Achtung: Wenn die Umfrage aktiv ist oder bereits Ergebnisse vorliegen, können spätere Änderungen die bestehenden Ergebnisse und Auswertungen beeinflussen.",
+            "INFO_TITLE": "Zugang zur Umfrage",
+            "SURVEY_ID": "Umfrage-ID",
+            "SURVEY_MODE": "Umfragemodus",
             "COPY_LINK": "Link kopieren",
             "COPY_LINK_SUCCESS": "Der Link wurde in die Zwischenablage kopiert.",
             "QR_CODE_PRINT": "QR-Code ausdrucken",
@@ -629,7 +744,22 @@
             "CODES_AMOUNT_LABEL": "Anzahl der Codes",
             "CODES_SHOW": "Umfragecodes anzeigen",
             "CODES_EMPTY": "Es wurden noch keine Umfragecodes generiert.",
-            "LINK_TO_SURVEY": "Link zur Umfrage"
+            "LINK_TO_SURVEY": "Link zur Umfrage",
+            "GENERAL_SETTINGS": "Allgemeine Einstellungen",
+            "ADDITIONAL_SETTINGS": "Zusätzliche Einstellungen",
+            "SECTION_ACCESS": "Zugang & Zeitraum",
+            "SECTION_DISPLAY": "Darstellung & Abschluss",
+            "START_DATE": "Startzeit",
+            "START_DATE_PLACEHOLDER": "Startzeit hinzufügen...",
+            "END_DATE": "Endzeit",
+            "END_DATE_PLACEHOLDER": "Endzeit hinzufügen...",
+            "REDIRECTION_URL": "Weiterleitungs-URL",
+            "REDIRECTION_URL_PLACEHOLDER": "Weiterleitungs-URL eingeben...",
+            "REDIRECTION_URL_TOOLTIP": "Nach Beantwortung der Umfrage wird der Nutzer auf die angegebene URL weitergeleitet.",
+            "SHOW_QUESTION_NUMBERS": "Fragennummern anzeigen",
+            "SHOW_QUESTION_NUMBERS_DESCRIPTION": "Wenn aktiviert, sehen Teilnehmende bei jeder Frage eine fortlaufende Nummer. Deaktivieren Sie die Option, um die Nummern auszublenden.",
+            "SAVE": "Speichern",
+            "START_END_ERROR": "Die Startzeit muss vor der Endzeit liegen."
         },
         "RESULTS": {
             "DELETE_TITLE": "Ergebnisse löschen",
@@ -640,7 +770,19 @@
             "ANSWERS": "Antworten",
             "NO_ANSWER": "Keine Angabe",
             "QUESTION": "Frage:",
-            "NO_ANSWERS_MESSAGE": "Wenn eine Antwort vorliegt, wird sie hier angezeigt."
+            "NO_ANSWERS_MESSAGE": "Wenn eine Antwort vorliegt, wird sie hier angezeigt.",
+            "SECTION_GENERAL": "Allgemeines",
+            "SECTION_PUBLISHING": "Veröffentlichung",
+            "SHARING": "Ergebnisse teilen",
+            "SHARING_DESCRIPTION": "Wenn diese Option aktiviert ist, können die Ergebnisse dieser Umfrage mit anderen geteilt werden.",
+            "COPY_RESULTS_LINK": "Ergebnislink kopieren",
+            "COPY_RESULTS_LINK_SUCCESS": "Der Ergebnislink wurde in die Zwischenablage kopiert.",
+            "CHART_TYPE": "Diagrammtyp",
+            "CHART_BAR": "Balkendiagramm",
+            "CHART_PIE": "Kreisdiagramm",
+            "CHART_DONUT": "Ringdiagramm",
+            "CHART_RADAR": "Netzdiagramm",
+            "CHART_WAFFLE": "Waffeldiagramm"
         },
         "COMPONENTS": {
             "ADD_QUESTION": "Frage hinzufügen",
@@ -783,6 +925,12 @@
             },
             "SUBMIT": "Antwort absenden",
             "THANKS": "Vielen Dank für die Teilnahme an der Umfrage.",
+            "QUESTION_COUNT": "Anzahl der Fragen: {{count}}",
+            "ANSWER_COUNT": "Anzahl der Antworten: {{count}}",
+            "REDIRECTION_TITLE": "Du wirst weitergeleitet",
+            "REDIRECTION_DESCRIPTION": "Die Weiterleitung erfolgt in wenigen Sekunden.",
+            "RESULTS_UNAVAILABLE_TITLE": "Ergebnisse nicht verfügbar",
+            "RESULTS_UNAVAILABLE": "Die Ergebnisse dieser Umfrage sind nicht öffentlich.",
             "UNKNOWN_QUESTION": "Unbekannte Frage"
         },
         "HOMEPAGE": {
@@ -807,7 +955,16 @@
                     "EMAIL": "Email",
                     "EMAIL_PLACEHOLDER": "Email eingeben"
                 },
-                "SUBMIT": "Registrierung abschicken"
+                "SUBMIT": "Registrierung abschicken",
+                "FULL": "Die Veranstaltung ist ausgebucht.",
+                "SPOTS": "{{count}} Plätze frei"
+            },
+            "PUBLIC": {
+                "PROGRAM": "Ablauf",
+                "MATERIALS": "Materialien",
+                "REGISTER": "Anmeldung",
+                "BACK": "Zur Veranstaltung",
+                "PROFILE": "Zur Gruppenseite"
             },
             "PROGRAM": {
                 "NO_ACCESS_TITLE": "Kein Zugriff",
@@ -1224,11 +1381,16 @@
         "MODAL": {
             "EDIT": "Mitglied bearbeiten",
             "INVITE": "Mitglied einladen",
-            "MEMBER": "Mitglied"
+            "MEMBER": "Mitglied",
+            "BADGES": "Funktion",
+            "BADGES_PLACEHOLDER": "Funktion eingeben und bestätigen",
+            "BADGES_HINT": "Sichtbar für alle Mitglieder. Höchstens 8 Funktionen, jeweils bis zu 40 Zeichen.",
+            "BADGES_TOO_LONG": "Eine Funktion darf höchstens 40 Zeichen lang sein!"
         },
         "TABLE": {
             "NAME": "Name",
             "ROLE": "Rolle",
+            "BADGES": "Funktion",
             "ACTIONS": "Aktionen"
         },
         "INVITATIONS": {
@@ -1606,6 +1768,8 @@
             "POLL_ALREADY_VOTED": "Du hast bei dieser Kurzfrage bereits abgestimmt.",
             "SURVEY_QUESTIONS": "{{count}} Fragen",
             "SURVEY_START": "Zur Umfrage",
+            "SURVEY_NOT_STARTED": "Diese Umfrage hat noch nicht begonnen.",
+            "SURVEY_ENDED": "Diese Umfrage ist bereits beendet.",
             "SUPPORT_SINCE": "Seit {{date}}",
             "SUPPORT_CLOSED": "Diese Anfrage ist abgeschlossen",
             "SUPPORT_OFFER": "Jetzt eintragen",

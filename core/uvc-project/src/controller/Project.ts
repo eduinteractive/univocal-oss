@@ -147,6 +147,158 @@ export const deleteProject = async (req: Request, res: Response, next: NextFunct
     }
 }
 
+export const getAssignedTasks = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { tenantId } = req.params as { tenantId: string };
+        const projects = await Project.find({
+            tenantId: new Types.ObjectId(tenantId),
+            viewAccess: { $lte: req.currentGroup!.permissionLevel },
+        });
+
+        const locations = new Map<string, { projectId: string; projectTitle: string; columnTitle: string }>();
+        const taskIds: Types.ObjectId[] = [];
+
+        for (const project of projects) {
+            for (const column of project.columns) {
+                for (const taskId of column.tasks) {
+                    locations.set(taskId.toString(), {
+                        projectId: project._id.toString(),
+                        projectTitle: project.title,
+                        columnTitle: column.title,
+                    });
+                    taskIds.push(taskId);
+                }
+            }
+        }
+
+        if (taskIds.length === 0) {
+            res.status(200).json([]);
+            return;
+        }
+
+        const tasks = await ProjectTask.find({
+            _id: { $in: taskIds },
+            owner: new Types.ObjectId(req.currentUser!._id),
+        });
+
+        res.status(200).json(tasks.map((task) => {
+            const location = locations.get(task._id.toString());
+            return {
+                ...task.toJSON(),
+                projectId: location?.projectId,
+                projectTitle: location?.projectTitle,
+                columnTitle: location?.columnTitle,
+            };
+        }));
+    } catch (err) {
+        next(err);
+    }
+}
+
+const DONE_COLUMN = "erledigt";
+const DUE_SOON_DAYS = 14;
+
+const startOfDay = (date: Date) => {
+    const copy = new Date(date);
+    copy.setHours(0, 0, 0, 0);
+    return copy.getTime();
+};
+
+export const getProjectPlanning = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { tenantId } = req.params as { tenantId: string };
+        const projects = await Project.find({
+            tenantId: new Types.ObjectId(tenantId),
+            viewAccess: { $lte: req.currentGroup!.permissionLevel },
+        });
+
+        const taskIds: Types.ObjectId[] = [];
+        for (const project of projects) {
+            for (const column of project.columns) {
+                for (const taskId of column.tasks) {
+                    taskIds.push(taskId);
+                }
+            }
+        }
+
+        const tasks = taskIds.length === 0
+            ? []
+            : await ProjectTask.find({ _id: { $in: taskIds } });
+        const tasksById = new Map(tasks.map((task) => [task._id.toString(), task]));
+
+        const today = startOfDay(new Date());
+        const horizonDate = new Date(today);
+        horizonDate.setDate(horizonDate.getDate() + DUE_SOON_DAYS);
+        const horizon = horizonDate.getTime();
+
+        const totals = {
+            projects: projects.length,
+            tasks: 0,
+            open: 0,
+            done: 0,
+            overdue: 0,
+            dueSoon: 0,
+            unassigned: 0,
+        };
+
+        const rows = projects.map((project) => {
+            const counts = {
+                projectId: project._id.toString(),
+                projectTitle: project.title,
+                tasks: 0,
+                open: 0,
+                done: 0,
+                overdue: 0,
+                dueSoon: 0,
+                unassigned: 0,
+            };
+
+            for (const column of project.columns) {
+                const isDone = column.title.trim().toLowerCase() === DONE_COLUMN;
+                for (const taskId of column.tasks) {
+                    const task = tasksById.get(taskId.toString());
+                    if (!task) {
+                        continue;
+                    }
+                    counts.tasks += 1;
+                    if (!task.owner) {
+                        counts.unassigned += 1;
+                    }
+                    if (isDone) {
+                        counts.done += 1;
+                        continue;
+                    }
+                    counts.open += 1;
+                    if (!task.dueDate) {
+                        continue;
+                    }
+                    const due = startOfDay(new Date(task.dueDate));
+                    if (Number.isNaN(due)) {
+                        continue;
+                    }
+                    if (due < today) {
+                        counts.overdue += 1;
+                    } else if (due <= horizon) {
+                        counts.dueSoon += 1;
+                    }
+                }
+            }
+
+            totals.tasks += counts.tasks;
+            totals.open += counts.open;
+            totals.done += counts.done;
+            totals.overdue += counts.overdue;
+            totals.dueSoon += counts.dueSoon;
+            totals.unassigned += counts.unassigned;
+            return counts;
+        });
+
+        res.status(200).json({ totals, projects: rows });
+    } catch (err) {
+        next(err);
+    }
+}
+
 export const resetProjectsACL = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { tenantId } = req.params as { tenantId: string };

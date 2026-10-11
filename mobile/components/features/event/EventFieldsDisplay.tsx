@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, Switch, Share } from "react-native";
+import { Alert, FlatList, Switch, Share } from "react-native";
 import { Flex, Text, Button, Box, Card, applyColor, applySizeProp } from "@eduinteractive/balladui";
 import { RelativePathString, useRouter, useLocalSearchParams } from "expo-router";
 import { NotificationHandler } from "@/utils/NotificationHandler";
@@ -33,10 +33,11 @@ interface EventFieldsDisplayProps {
 	participants: ParticipantData[];
 	participantLabel: string;
 	emptyMessage: string;
-	enabledInitially: boolean;
-	enableLabel: string;
-	enableDescription: string;
-	onToggleEnabled: (enabled: boolean, fields: CustomField[]) => void;
+	enabledInitially?: boolean;
+	enableLabel?: string;
+	enableDescription?: string;
+	onToggleEnabled?: (enabled: boolean, fields: CustomField[]) => void;
+	onDeleteParticipant?: (id: string) => void;
 	additionalContent?: React.ReactNode;
 	linkUrl?: string;
 	linkLabel?: string;
@@ -50,10 +51,11 @@ export default function EventFieldsDisplay({
 	participants,
 	participantLabel,
 	emptyMessage,
-	enabledInitially,
+	enabledInitially = true,
 	enableLabel,
 	enableDescription,
 	onToggleEnabled,
+	onDeleteParticipant,
 	additionalContent,
 	linkUrl,
 	linkLabel,
@@ -111,10 +113,25 @@ export default function EventFieldsDisplay({
 		return String(customField);
 	};
 
+	const showToggle = Boolean(onToggleEnabled);
+	const contentVisible = !showToggle || enabled;
+
 	const handleToggleEnabled = async () => {
+		if (!onToggleEnabled) return;
 		const newValue = !enabled;
 		setEnabled(newValue);
 		await onToggleEnabled(newValue, fields);
+	};
+
+	const confirmDelete = (id: string) => {
+		Alert.alert("Eintrag entfernen", "Möchtest du diesen Eintrag wirklich entfernen?", [
+			{ text: "Abbrechen", style: "cancel" },
+			{
+				text: "Entfernen",
+				style: "destructive",
+				onPress: () => onDeleteParticipant?.(id),
+			},
+		]);
 	};
 
 	const handleShare = async () => {
@@ -150,6 +167,15 @@ export default function EventFieldsDisplay({
 					{item.personal.email}
 				</Text>
 				{/* Display custom field values */}
+				{onDeleteParticipant && (
+					<Button
+						variant="subtle"
+						size="sm"
+						onPress={() => confirmDelete(item._id)}
+					>
+						Entfernen
+					</Button>
+				)}
 				{item.customFields && Object.keys(item.customFields).length > 0 && (
 					<Flex
 						direction="column"
@@ -184,33 +210,33 @@ export default function EventFieldsDisplay({
 
 	const renderListHeader = () => (
 		<>
-			{/* Enable/Disable Toggle */}
-			<Flex
-				direction="row"
-				align="center"
-				gap="md"
-				p="sm"
-			>
-				<Switch
-					value={enabled}
-					onValueChange={handleToggleEnabled}
-				/>
+			{showToggle && (
 				<Flex
-					flex={1}
-					direction="column"
+					direction="row"
+					align="center"
+					gap="md"
+					p="sm"
 				>
-					<Text
-						fs="smd"
-						fw="bold"
+					<Switch
+						value={enabled}
+						onValueChange={handleToggleEnabled}
+					/>
+					<Flex
+						flex={1}
+						direction="column"
 					>
-						{enableLabel}
-					</Text>
-					<Text fs="sm">{enableDescription}</Text>
+						<Text
+							fs="smd"
+							fw="bold"
+						>
+							{enableLabel}
+						</Text>
+						<Text fs="sm">{enableDescription}</Text>
+					</Flex>
 				</Flex>
-			</Flex>
+			)}
 
-			{/* Link Information - shown directly below toggle when enabled */}
-			{enabled && linkUrl && (
+			{contentVisible && linkUrl && (
 				<Box
 					bg={applyColor("gray.1")}
 					p="sm"
@@ -262,7 +288,7 @@ export default function EventFieldsDisplay({
 				</Box>
 			)}
 
-			{enabled && (
+			{contentVisible && (
 				<>
 					{/* Fields Configuration Section */}
 					<Flex
@@ -397,7 +423,7 @@ export default function EventFieldsDisplay({
 	return (
 		<Box flex={1}>
 			<FlatList
-				data={enabled ? participants : []}
+				data={contentVisible ? participants : []}
 				renderItem={renderParticipantItem}
 				keyExtractor={(item) => item._id}
 				ListHeaderComponent={renderListHeader}

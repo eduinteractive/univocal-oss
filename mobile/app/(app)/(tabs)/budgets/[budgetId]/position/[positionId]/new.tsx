@@ -5,6 +5,7 @@ import { NotificationHandler } from "@/utils/NotificationHandler";
 import { createBudgetPosition, BudgetPositionType, getBudget } from "@/api/Budget";
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useState, useLayoutEffect } from "react";
+import { parseBudgetAmount } from "@/utils/budgetAmount";
 import { Button, Flex, TextInput, Text } from "@eduinteractive/balladui";
 
 export default () => {
@@ -62,15 +63,15 @@ export default () => {
 			return NotificationHandler.showError("Bitte gebe einen Titel ein");
 		}
 
-		const sollAmountNum = parseFloat(sollAmount.replace(",", "."));
-		if (isNaN(sollAmountNum) || sollAmountNum < 0) {
+		const sollAmountNum = parseBudgetAmount(sollAmount);
+		if (!/\d/.test(sollAmount) || sollAmountNum < 0) {
 			return NotificationHandler.showError("Bitte gebe einen gültigen Soll-Betrag ein");
 		}
 
 		let istAmountNum = 0;
 		if (showManualIst && istAmount.trim()) {
-			istAmountNum = parseFloat(istAmount.replace(",", "."));
-			if (isNaN(istAmountNum) || istAmountNum < 0) {
+			istAmountNum = parseBudgetAmount(istAmount);
+			if (!/\d/.test(istAmount) || istAmountNum < 0) {
 				return NotificationHandler.showError("Bitte gebe einen gültigen Ist-Betrag ein");
 			}
 		}

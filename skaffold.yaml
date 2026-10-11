@@ -72,6 +72,13 @@ profiles:
         sync:
           infer:
             - "core/uvc-event/**/*.ts"
+      - image: uvc/uvc-seed
+        context: .
+        docker:
+          dockerfile: core/uvc-seed/Dockerfile
+        sync:
+          infer:
+            - "core/uvc-seed/**/*.ts"
       - image: uvc/uvc-project
         context: .
         docker:

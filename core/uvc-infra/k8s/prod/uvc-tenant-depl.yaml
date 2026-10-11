@@ -109,6 +109,26 @@ spec:
                 secretKeyRef:
                   name: environment
                   key: support_email
+            - name: S3_ENDPOINT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: endpoint_url
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: access_key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: secret_key
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: s3-config
+                  key: bucket_name
 ---
 apiVersion: v1
 kind: Service

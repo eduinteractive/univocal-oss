@@ -1,5 +1,5 @@
 import { APIHandler, createSVHMetadataAttrs, getSVHFilterParams, SVHFilterObject, updateSVHMetadataAttrs } from "../base";
-import { Project, ProjectTask } from "./Types";
+import { AssignedProjectTask, Project, ProjectPlanning, ProjectTask } from "./Types";
 
 interface getProjectsRequest {
     tenantId: string;
@@ -10,6 +10,24 @@ export const getProjects = async (req: getProjectsRequest): Promise<Project[]> =
     const response = await APIHandler.get(`/project/tenant/${req.tenantId}/project`, {
         params: getSVHFilterParams(req.params)
     });
+    return response.data;
+}
+
+interface getAssignedTasksRequest {
+    tenantId: string;
+}
+
+export const getAssignedTasks = async (req: getAssignedTasksRequest): Promise<AssignedProjectTask[]> => {
+    const response = await APIHandler.get(`/project/tenant/${req.tenantId}/tasks/assigned`);
+    return response.data;
+}
+
+interface getProjectPlanningRequest {
+    tenantId: string;
+}
+
+export const getProjectPlanning = async (req: getProjectPlanningRequest): Promise<ProjectPlanning> => {
+    const response = await APIHandler.get(`/project/tenant/${req.tenantId}/projects/planning`);
     return response.data;
 }
 

@@ -60,6 +60,41 @@ export const getProjects = async (req: getProjectsRequest): Promise<Project[]> =
     return response.data;
 }
 
+export interface AssignedProjectTask extends ProjectTask {
+    projectId: string;
+    projectTitle: string;
+    columnTitle: string;
+}
+
+export interface ProjectPlanningCounts {
+    tasks: number;
+    open: number;
+    done: number;
+    overdue: number;
+    dueSoon: number;
+    unassigned: number;
+}
+
+export interface ProjectPlanningProject extends ProjectPlanningCounts {
+    projectId: string;
+    projectTitle: string;
+}
+
+export interface ProjectPlanning {
+    totals: ProjectPlanningCounts & { projects: number };
+    projects: ProjectPlanningProject[];
+}
+
+export const getAssignedTasks = async (req: { tenantId: string }): Promise<AssignedProjectTask[]> => {
+    const response = await APIHandler.get(`/project/tenant/${req.tenantId}/tasks/assigned`);
+    return response.data;
+}
+
+export const getProjectPlanning = async (req: { tenantId: string }): Promise<ProjectPlanning> => {
+    const response = await APIHandler.get(`/project/tenant/${req.tenantId}/projects/planning`);
+    return response.data;
+}
+
 export interface getProjectRequest {
     tenantId: string;
     projectId: string;

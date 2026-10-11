@@ -31,6 +31,11 @@ export interface SurveyMeta extends UVCMetadata {
             isUsed: boolean;
         }[];
         isActive: boolean;
+        startDate?: Date | string | null;
+        endDate?: Date | string | null;
+        redirectionUrl?: string | null;
+        resultsSharing?: boolean;
+        showQuestionNumbers?: boolean;
     }
 }
 
@@ -143,6 +148,11 @@ interface updateSurveyRequest {
         options?: {
             executionMode?: SurveyExecutionMode;
             isActive?: boolean;
+            startDate?: Date | string | null;
+            endDate?: Date | string | null;
+            redirectionUrl?: string | null;
+            resultsSharing?: boolean;
+            showQuestionNumbers?: boolean;
         }
     }
 }

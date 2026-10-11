@@ -10,3 +10,10 @@ export const createAttendeeChain = () => {
         body("customFields").optional().isObject().withMessage("Custom fields must be an object").bail(),
     ]
 }
+
+export const deleteAttendeeChain = () => {
+    return [
+        check("eventId").isMongoId().withMessage("Event ID must be a valid Mongo ID"),
+        check("attendeeId").isMongoId().withMessage("Attendee ID must be a valid Mongo ID"),
+    ]
+}

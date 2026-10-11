@@ -249,6 +249,10 @@ const Budget = () => {
                 data={currentBudgetReceipt}
                 positions={budgetQuery.data.positions || []}
                 visible={budgetReceiptModalVisible}
+                loading={
+                    createBudgetReceiptMutation.isPending ||
+                    updateBudgetReceiptMutation.isPending
+                }
                 onClose={() => {
                     setBudgetReceiptModalVisible(false);
                     setCurrentBudgetReceipt(null);

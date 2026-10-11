@@ -3,6 +3,8 @@ import React from 'react';
 
 interface SVHTabsProps {
     defaultValue?: string;
+    value?: string;
+    onChange?: (value: string | null) => void;
     children: React.ReactNode;
     title?: string;
 }
@@ -15,7 +17,12 @@ const SVHTabs = (props: SVHTabsProps) => {
                     {props.title}
                 </Title>
             </Box>
-            <Tabs defaultValue={props.defaultValue || "general"} styles={{}}>
+            <Tabs
+                defaultValue={props.value ? undefined : props.defaultValue || "general"}
+                value={props.value}
+                onChange={props.onChange}
+                styles={{}}
+            >
                 {props.children}
             </Tabs>
         </>

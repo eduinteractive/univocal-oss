@@ -16,7 +16,7 @@ import CalendarItem from "@/components/features/calendar/CalendarItem";
 import { FEATURE_COLORS } from "@/constants/Colors";
 import { useTenant } from "@/context/TenantContext";
 import { registerForPushNotificationsAsync, sendPushNotification } from "@/utils/PushNotifications";
-import { Box, Button, Card, Flex, Text } from "@eduinteractive/balladui";
+import { Box, Card, Flex, Text } from "@eduinteractive/balladui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { RelativePathString, useRouter } from "expo-router";
 import { useEffect, useState } from "react";

@@ -82,6 +82,16 @@ spec:
                 secretKeyRef:
                   name: mongodb-cluster
                   key: uri
+            - name: ETHERPAD_INTERNAL_URL
+              value: http://uvc-etherpad-srv:9001
+            - name: ETHERPAD_PUBLIC_URL
+              value: http://apps.univocal.local.de/etherpad
+            - name: ETHERPAD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: etherpad-api-key
+                  key: apikey
+                  optional: true
             - name: BREVO_API_KEY
               valueFrom:
                 secretKeyRef:

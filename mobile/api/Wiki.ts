@@ -11,10 +11,13 @@ export interface Wiki extends UVCMetadata {
     tableOfContents: WikiToc[];
 }
 
+export type WikiSectionType = "editor" | "etherpad";
+
 export interface WikiSection {
     _id: string;
     title: string;
     content?: string;
+    type?: WikiSectionType;
     materials: {
         title: string,
         link: string,
@@ -156,6 +159,30 @@ interface deleteWikiSectionRequest {
 
 export const deleteWikiSection = async (req: deleteWikiSectionRequest): Promise<void> => {
     const response = await APIHandler.delete(`/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}`);
+    return response.data;
+}
+
+interface setWikiSectionTypeRequest {
+    tenantId: string;
+    wikiId: string;
+    sectionId: string;
+    body: {
+        type: WikiSectionType;
+    }
+}
+
+export const setWikiSectionType = async (req: setWikiSectionTypeRequest): Promise<WikiSection> => {
+    const response = await APIHandler.post(
+        `/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/type`,
+        req.body
+    );
+    return response.data;
+}
+
+export const getWikiSectionEtherpad = async (req: getWikiSectionRequest): Promise<{ url: string; launchUrl: string }> => {
+    const response = await APIHandler.get(
+        `/knowledge/tenant/${req.tenantId}/wiki/${req.wikiId}/section/${req.sectionId}/etherpad`
+    );
     return response.data;
 }
 

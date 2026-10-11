@@ -1,24 +1,19 @@
 import {
     ActionIcon,
-    Anchor,
-    Box,
     Button,
-    Divider,
-    Flex,
+    Card,
     Group,
-    Paper,
-    Switch,
+    Stack,
     Text,
     Title,
+    UnstyledButton,
 } from '@mantine/core';
-import { SVHEvent } from '@eduinteractive/uvc-api';
-import { NotificationHandler } from '@eduinteractive/mantine-common';
-import { useClipboard } from '@mantine/hooks';
-import { useEffect, useMemo, useState } from 'react';
-import QRCode from 'react-qr-code';
-import SVHTextEditor from '../../../common/SVHTextEditor';
+import { SVHEvent, SVHEventSession } from '@eduinteractive/uvc-api';
+import { EDIModal, EDITextInput, NotificationHandler } from '@eduinteractive/mantine-common';
+import { useEffect, useState } from 'react';
 import {
-    IconCheck,
+    IconArrowDown,
+    IconArrowUp,
     IconDownload,
     IconEdit,
     IconTrash,
@@ -26,9 +21,13 @@ import {
 import SVHMultiDropzone from '../../../common/SVHMultiDropzone';
 import { checkPermission } from '../../../../utils/Permission';
 import { useTenant } from '../../../../context/TenantContext';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import SVHQRPDF from '../../../common/SVHQRPDF';
+import { useAuth } from '../../../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import SVHTextEditor from '../../../common/SVHTextEditor';
+import { legalHtmlIsEmpty } from '../../site/legalHtml';
+import SessionDescription from './SessionDescription';
+import SVHDateTimePicker from '../../../common/SVHDateTimePicker';
+import dayjs from 'dayjs';
 
 interface EventTocSubmitData {
     config: {
@@ -40,6 +39,7 @@ interface EventTocSubmitData {
                 link: string;
                 mimetype: string;
             }[];
+            sessions?: SVHEventSession[];
             newUploads?: File[];
         };
     };
@@ -50,252 +50,299 @@ interface EventTocProps {
     onUpdate: (data: EventTocSubmitData) => void;
 }
 
+interface SessionDraft {
+    id: string;
+    title: string;
+    start: Date | null;
+    end: Date | null;
+    place: string;
+    description: string;
+}
+
+const createSessionId = () => {
+    try {
+        if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+    } catch {
+        // randomUUID is unavailable on plain HTTP origins.
+    }
+    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
+const emptyDraft = (): SessionDraft => ({
+    id: createSessionId(),
+    title: '',
+    start: null,
+    end: null,
+    place: '',
+    description: '',
+});
+
 const EventToc = (props: EventTocProps) => {
     const { t } = useTranslation();
     const { currentTenant } = useTenant();
-    const [content, setContent] = useState(
-        props.event.config.toc.content || ''
-    );
+    const { authData } = useAuth();
+    const canEdit =
+        !!currentTenant &&
+        (checkPermission(currentTenant, 'event:edit') ||
+            props.event.authorId === authData?._id);
     const [materials, setMaterials] = useState(
         props.event.config.toc.materials || []
     );
     const [newUploads, setNewUploads] = useState<File[]>([]);
-    const [isEditing, setIsEditing] = useState(false);
+    const [draft, setDraft] = useState<SessionDraft | null>(null);
 
     useEffect(() => {
-        setContent(props.event.config.toc.content || '');
         setMaterials(props.event.config.toc.materials || []);
     }, [props.event]);
 
-    const clipboard = useClipboard();
+    const sessions = props.event.config.toc.sessions ?? [];
 
-    const programLink = useMemo(
-        () =>
-            `${import.meta.env.VITE_KUBERNETES_HOST}/event-program/${props.event
-                ?._id}`,
-        [props.event]
-    );
-
-    const programQRCode = useMemo(
-        () => <QRCode id="eventQR" value={programLink} size={100} />,
-        [programLink]
-    );
-
-    const handleMaterialDelete = (link: string) => {
-        setMaterials(materials.filter((material) => material.link !== link));
+    const persistSessions = (next: SVHEventSession[]) => {
+        props.onUpdate({
+            config: {
+                toc: {
+                    sessions: next,
+                },
+            },
+        });
     };
 
+    const saveDraft = () => {
+        if (!draft?.title.trim() || !draft.start) {
+            NotificationHandler.showError(t('EVENTS.SESSION_REQUIRED'));
+            return;
+        }
+        if (draft.end && dayjs(draft.end).isBefore(draft.start)) {
+            NotificationHandler.showError(t('EVENTS.SESSION_END_BEFORE_START'));
+            return;
+        }
+        const session: SVHEventSession = {
+            id: draft.id,
+            title: draft.title.trim(),
+            start: draft.start,
+            ...(draft.end ? { end: draft.end } : {}),
+            place: draft.place.trim(),
+            description: legalHtmlIsEmpty(draft.description) ? '' : draft.description,
+        };
+        const exists = sessions.some((item) => item.id === session.id);
+        persistSessions(
+            exists
+                ? sessions.map((item) => (item.id === session.id ? session : item))
+                : [...sessions, session]
+        );
+        setDraft(null);
+    };
+
+    const moveSession = (index: number, direction: -1 | 1) => {
+        const target = index + direction;
+        if (target < 0 || target >= sessions.length) return;
+        const next = [...sessions];
+        const [item] = next.splice(index, 1);
+        next.splice(target, 0, item);
+        persistSessions(next);
+    };
+
+    const savedMaterials = props.event.config.toc.materials || [];
+    const materialsDirty = JSON.stringify(materials) !== JSON.stringify(savedMaterials) || newUploads.length > 0;
+    const editingSession = draft ? sessions.find((session) => session.id === draft.id) : undefined;
+
     return (
-        <Flex direction="column" gap="xs">
-            <Group align="center" gap="xl" justify="center">
-                <Flex justify="center" w={150}>
-                    <Switch
-                        onLabel={t('COMMON.ACTIVE')}
-                        offLabel={t('COMMON.INACTIVE')}
-                        size="lg"
-                        checked={props.event.config.toc.enabled}
-                        onChange={(e) => {
-                            props.onUpdate({
-                                config: {
-                                    toc: {
-                                        enabled: e.currentTarget.checked,
-                                    },
-                                },
-                            });
-                        }}
-                    />
-                </Flex>
-                <Box style={{ flex: 1 }}>
-                    <Text>{t('EVENTS.PROGRAM_ENABLE_TITLE')}</Text>
-                    <Text size="xs" c="dimmed">
-                        {t('EVENTS.PROGRAM_ENABLE_DESCRIPTION')}
-                    </Text>
-                </Box>
-                {props.event.config.toc.enabled && (
-                    <Group
-                        align="flex-start"
-                        gap="sm"
-                        p="md"
-                        bg="gray.0"
-                        style={{
-                            border: 'calc(0.125rem*var(--mantine-scale)) solid var(--mantine-color-gray-3)',
-                        }}
-                        mt="md"
-                        w={400}
-                    >
-                        <Flex direction="column" gap="sm" w="100%">
-                            <Flex direction="column">
-                                <Title order={6} c="dimmed">
-                                    {t('EVENTS.PROGRAM_INFO')}
-                                </Title>
-                                <Flex gap="xl" mt="md" justify="space-between">
-                                    <Flex direction="column" gap="sm">
-                                        <Button
-                                            variant="default"
-                                            onClick={() => {
-                                                clipboard.copy(programLink);
-                                                NotificationHandler.showInfo(
-                                                    t('COMMON.COPY_LINK_SUCCESS')
-                                                );
-                                            }}
-                                        >
-                                            {t('COMMON.COPY_LINK')}
-                                        </Button>
-                                        <PDFDownloadLink
-                                            document={
-                                                <SVHQRPDF
-                                                    title={props.event.title}
-                                                    link={programLink}
-                                                    generationNotice={t('COMMON.GENERATION_NOTICE')}
-                                                />
-                                            }
-                                            fileName="QR-Code.pdf"
-                                        >
-                                            <Button variant="default">
-                                                {t('EVENTS.PROGRAM_PDF')}
-                                            </Button>
-                                        </PDFDownloadLink>
-                                    </Flex>
-                                    <Flex
-                                        direction="column"
-                                        gap="sm"
-                                        align="center"
-                                    >
-                                        {programQRCode}
-                                        <Anchor
-                                            fw={600}
-                                            target="_blank"
-                                            ta="center"
-                                            size="xs"
-                                            href={programLink}
-                                        >
-                                            {t('EVENTS.PROGRAM_LINK')}
-                                        </Anchor>
-                                    </Flex>
-                                </Flex>
-                            </Flex>
-                        </Flex>
+        <Stack gap="xl">
+            <Card withBorder radius="sm" p="xl">
+            <Title order={3} c="violet" mb={4}>{t('EVENTS.AGENDA')}</Title>
+            <Text size="sm" c="dimmed" mb="md">{t('EVENTS.AGENDA_HINT')}</Text>
+            <Stack gap="sm">
+            {!canEdit && sessions.length === 0 && (
+                <Text size="sm" c="dimmed">{t('EVENTS.AGENDA_EMPTY')}</Text>
+            )}
+            {sessions.map((session, index) => (
+                <Card key={session.id} withBorder radius="sm" p="md">
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                        <Stack gap={2}>
+                            <Text size="xs" c="dimmed">
+                                {dayjs(session.start).format('DD.MM.YYYY HH:mm')}
+                                {session.end ? ` – ${dayjs(session.end).format('HH:mm')}` : ''}
+                                {session.place ? ` · ${session.place}` : ''}
+                            </Text>
+                            <Text fw={600}>{session.title}</Text>
+                            <SessionDescription html={session.description} />
+                        </Stack>
+                        {canEdit && <Group gap={4} wrap="nowrap">
+                            <ActionIcon variant="subtle" aria-label={t('EVENTS.SESSION_UP')} onClick={() => moveSession(index, -1)}>
+                                <IconArrowUp size={18} stroke={1.5} />
+                            </ActionIcon>
+                            <ActionIcon variant="subtle" aria-label={t('EVENTS.SESSION_DOWN')} onClick={() => moveSession(index, 1)}>
+                                <IconArrowDown size={18} stroke={1.5} />
+                            </ActionIcon>
+                            <ActionIcon
+                                variant="subtle"
+                                aria-label={t('EVENTS.SESSION_EDIT')}
+                                onClick={() => setDraft({
+                                    id: session.id,
+                                    title: session.title,
+                                    start: dayjs(session.start).toDate(),
+                                    end: session.end ? dayjs(session.end).toDate() : null,
+                                    place: session.place ?? '',
+                                    description: session.description ?? '',
+                                })}
+                            >
+                                <IconEdit size={18} stroke={1.5} />
+                            </ActionIcon>
+                            <ActionIcon
+                                variant="subtle"
+                                color="gray"
+                                aria-label={t('EVENTS.SESSION_DELETE')}
+                                onClick={() => persistSessions(sessions.filter((item) => item.id !== session.id))}
+                            >
+                                <IconTrash size={18} stroke={1.5} />
+                            </ActionIcon>
+                        </Group>}
                     </Group>
+                </Card>
+            ))}
+            {canEdit && <UnstyledButton
+                onClick={() => setDraft(emptyDraft())}
+                w="100%"
+                p="md"
+                ta="left"
+                style={{
+                    borderRadius: 'var(--mantine-radius-sm)',
+                    border: '1px dashed var(--mantine-color-violet-3)',
+                    background: 'var(--mantine-color-violet-0)',
+                }}
+            >
+                <Text size="sm" c="violet" fw={600}>
+                    {t('EVENTS.SESSION_ADD')}
+                </Text>
+                <Text size="xs" c="dimmed" mt={2}>
+                    {t('EVENTS.SESSION_ADD_HINT')}
+                </Text>
+            </UnstyledButton>}
+            </Stack>
+            </Card>
+            <EDIModal
+                visible={!!draft}
+                onClose={() => setDraft(null)}
+                onSubmit={saveDraft}
+                title={editingSession ? t('EVENTS.SESSION_EDIT') : t('EVENTS.SESSION_ADD')}
+                type="DEFAULT"
+                isForm
+            >
+                {draft && (
+                    <>
+                        <EDITextInput
+                            label={t('EVENTS.SESSION_TITLE')}
+                            placeholder={t('EVENTS.SESSION_TITLE_PLACEHOLDER')}
+                            value={draft.title}
+                            onChange={(event) => setDraft({ ...draft, title: event.currentTarget.value })}
+                            required
+                        />
+                        <SVHDateTimePicker
+                            label={t('EVENTS.SESSION_START')}
+                            placeholder={t('EVENTS.SESSION_START_PLACEHOLDER')}
+                            value={draft.start}
+                            onChange={(value) => setDraft({ ...draft, start: value })}
+                            required
+                        />
+                        <SVHDateTimePicker
+                            label={t('EVENTS.SESSION_END')}
+                            placeholder={t('EVENTS.SESSION_END_PLACEHOLDER')}
+                            value={draft.end}
+                            onChange={(value) => setDraft({ ...draft, end: value })}
+                            clearable
+                        />
+                        <EDITextInput
+                            label={t('EVENTS.SESSION_PLACE')}
+                            placeholder={t('EVENTS.SESSION_PLACE_PLACEHOLDER')}
+                            value={draft.place}
+                            onChange={(event) => setDraft({ ...draft, place: event.currentTarget.value })}
+                        />
+                        <SVHTextEditor
+                            text={draft.description}
+                            onChange={(description) =>
+                                setDraft((current) => (current ? { ...current, description } : current))
+                            }
+                        />
+                    </>
                 )}
-            </Group>
-            <Divider my="md" />
-            {props.event.config.toc.enabled && (
-                <Flex direction="column">
-                    <Group w="100%" align="center">
-                        <Title order={6} c="dimmed">
-                            {t('EVENTS.PROGRAM')}
-                        </Title>
-                        <Group>
-                            {checkPermission(currentTenant!, 'event:edit') && (
+            </EDIModal>
+            {props.event.config.toc.content && (
+                <Card withBorder radius="sm" p="xl">
+                    <Group justify="space-between" align="flex-start" mb="md">
+                        <Title order={3} c="violet">{t('EVENTS.LEGACY_PROGRAM')}</Title>
+                        <Button
+                            variant="subtle"
+                            color="gray"
+                            onClick={() => props.onUpdate({ config: { toc: { content: '' } } })}
+                        >
+                            {t('EVENTS.LEGACY_PROGRAM_CLEAR')}
+                        </Button>
+                    </Group>
+                    <div dangerouslySetInnerHTML={{ __html: props.event.config.toc.content }} />
+                </Card>
+            )}
+            <Card withBorder radius="sm" p="xl">
+                <Title order={3} c="violet" mb={4}>
+                    {t('EVENTS.MATERIALS')}
+                </Title>
+                <Text size="sm" c="dimmed" mb="md">
+                    {t('EVENTS.MATERIALS_HINT')}
+                </Text>
+                <Stack gap="xs" mt={materials.length > 0 ? 'sm' : 0}>
+                {materials.map((material) => (
+                    <Card key={material.link} withBorder radius="sm" p="sm">
+                        <Group justify="space-between" wrap="nowrap">
+                            <Text size="sm">{material.title}</Text>
+                            <Group gap="xs" wrap="nowrap">
                                 <ActionIcon
                                     variant="subtle"
-                                    size="sm"
-                                    onClick={() => {
-                                        if (isEditing) {
-                                            props.onUpdate({
-                                                config: {
-                                                    toc: {
-                                                        content,
-                                                        materials,
-                                                        newUploads,
-                                                    },
-                                                },
-                                            });
-                                        }
-                                        setIsEditing(!isEditing);
-                                    }}
+                                    onClick={() =>
+                                        window.open(
+                                            `${import.meta.env.VITE_KUBERNETES_HOST}/api/event/tenant/${currentTenant?._id}/event/${props.event._id}/download/${encodeURIComponent(material.link)}`,
+                                            '_blank'
+                                        )
+                                    }
                                 >
-                                    {isEditing ? (
-                                        <IconCheck size={24} />
-                                    ) : (
-                                        <IconEdit size={24} />
-                                    )}
+                                    <IconDownload size={18} stroke={1.5} />
                                 </ActionIcon>
-                            )}
-                        </Group>
-                    </Group>
-                    <Box w="100%" pt={isEditing ? 'xs' : 0}>
-                        {isEditing ? (
-                            <SVHTextEditor
-                                text={content}
-                                onChange={(e) => setContent(e)}
-                            />
-                        ) : content === '' ? (
-                            <Text size="sm" c="dimmed">
-                                {t('EVENTS.NO_CONTENT')}
-                            </Text>
-                        ) : (
-                            <div
-                                dangerouslySetInnerHTML={{ __html: content }}
-                            />
-                        )}
-                    </Box>
-                    <Divider my="md" />
-                    {(isEditing || materials.length > 0) && (
-                        <Box w="100%">
-                            <Title order={6} c="dimmed" mb="xs">
-                                {t('EVENTS.MATERIALS')}
-                            </Title>
-                            {materials.map((material) => (
-                                <Paper
-                                    withBorder
-                                    p="xs"
-                                    key={material.link}
-                                    style={{ borderRadius: 0 }}
-                                >
-                                    <Group
-                                        justify="space-between"
-                                        wrap="nowrap"
+                                {checkPermission(currentTenant!, 'event:edit') && (
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="gray"
+                                        onClick={() => setMaterials(materials.filter((item) => item.link !== material.link))}
                                     >
-                                        <Text>{material.title}</Text>
-                                        <Group gap="xs" wrap="nowrap">
-                                            <ActionIcon
-                                                variant="subtle"
-                                                onClick={() =>
-                                                    window.open(
-                                                        `${
-                                                            import.meta.env
-                                                                .VITE_KUBERNETES_HOST
-                                                        }/api/event/private/tenant/${currentTenant?._id}/event/${
-                                                            props.event._id
-                                                        }/download/${encodeURIComponent(
-                                                            material.link
-                                                        )}`,
-                                                        '_blank'
-                                                    )
-                                                }
-                                            >
-                                                <IconDownload size={24} />
-                                            </ActionIcon>
-                                            {isEditing && (
-                                                <ActionIcon
-                                                    variant="subtle"
-                                                    color="gray"
-                                                    onClick={() =>
-                                                        handleMaterialDelete(
-                                                            material.link
-                                                        )
-                                                    }
-                                                >
-                                                    <IconTrash size={24} />
-                                                </ActionIcon>
-                                            )}
-                                        </Group>
-                                    </Group>
-                                </Paper>
-                            ))}
-                            {isEditing ? (
-                                <SVHMultiDropzone
-                                    value={[]}
-                                    onSelected={setNewUploads}
-                                    onRemove={() => setNewUploads([])}
-                                />
-                            ) : null}
-                        </Box>
-                    )}
-                </Flex>
-            )}
-        </Flex>
+                                        <IconTrash size={18} stroke={1.5} />
+                                    </ActionIcon>
+                                )}
+                            </Group>
+                        </Group>
+                    </Card>
+                ))}
+                </Stack>
+                {checkPermission(currentTenant!, 'event:edit') && (
+                    <SVHMultiDropzone
+                        value={[]}
+                        onSelected={setNewUploads}
+                        onRemove={() => setNewUploads([])}
+                    />
+                )}
+                <Group justify="flex-end" gap="xs" mt="lg">
+                    <Button
+                        disabled={!materialsDirty}
+                        onClick={() => props.onUpdate({
+                            config: {
+                                toc: {
+                                    materials,
+                                    newUploads,
+                                },
+                            },
+                        })}
+                    >
+                        {t('SITE.SAVE')}
+                    </Button>
+                </Group>
+            </Card>
+        </Stack>
     );
 };
 

@@ -1,14 +1,14 @@
 import React from "react";
-import { Flex, Text, Button, Box, applyColor, applySizeProp } from "@eduinteractive/balladui";
-import { UVCEvent, UVCEventAttendee, UVCEventRegistration } from "@/api/Events";
-import { useState, useMemo } from "react";
-import { Switch, ScrollView, RefreshControl, Share } from "react-native";
+import { Flex, Text, Button, Box, TextInput, DateInput, TimeInput, applyColor, applySizeProp } from "@eduinteractive/balladui";
+import { UVCEvent, UVCEventAttendee, UVCEventRegistration, UVCEventSession, publicEventUrl } from "@/api/Events";
+import { useState } from "react";
+import { ScrollView, RefreshControl, Share, Alert } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { htmlToMarkdown } from "@/utils/Parser";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { NotificationHandler } from "@/utils/NotificationHandler";
-import { BASE_URL } from "@/api/APIHandler";
-import { IconEdit } from "@/assets/icons/Icon";
+import { IconEdit, IconTrash } from "@/assets/icons/Icon";
+import dayjs from "dayjs";
 
 interface EventProgramProps {
 	data?: {
@@ -21,32 +21,83 @@ interface EventProgramProps {
 	onRefresh?: () => void;
 }
 
+const formatTime = (date: Date) =>
+	`${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+
+const newSessionId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
 export default function EventProgram({ data, onUpdate, isRefetching, onRefresh }: EventProgramProps) {
-	const [programEnabled, setProgramEnabled] = useState(data?.event.config.toc.enabled || false);
 	const router = useRouter();
 	const { eventId } = useLocalSearchParams<{ eventId: string }>();
+	const [draftId, setDraftId] = useState<string | null>(null);
+	const [title, setTitle] = useState("");
+	const [place, setPlace] = useState("");
+	const [description, setDescription] = useState("");
+	const [startDate, setStartDate] = useState(new Date());
+	const [endDate, setEndDate] = useState<Date | null>(null);
+	const [hasEnd, setHasEnd] = useState(false);
 
-	const programLink = useMemo(() => {
-		return `${BASE_URL}/event-program/${eventId}`;
-	}, [eventId]);
+	const programLink = publicEventUrl(eventId);
 
 	if (!data) {
 		return null;
 	}
 
-	const handleToggleProgram = async () => {
-		const newValue = !programEnabled;
-		setProgramEnabled(newValue);
+	const sessions = data.event.config.toc.sessions ?? [];
 
-		await onUpdate({
+	const persistSessions = (next: UVCEventSession[]) => {
+		onUpdate({
 			config: {
 				toc: {
-					enabled: newValue,
-					content: data.event.config.toc.content,
-					materials: data.event.config.toc.materials,
+					sessions: next,
 				},
 			},
 		});
+	};
+
+	const openDraft = (session?: UVCEventSession) => {
+		const start = session?.start ? new Date(session.start) : new Date();
+		const end = session?.end ? new Date(session.end) : null;
+		setDraftId(session?.id ?? newSessionId());
+		setTitle(session?.title ?? "");
+		setPlace(session?.place ?? "");
+		setDescription(session?.description ?? "");
+		setStartDate(start);
+		setEndDate(end);
+		setHasEnd(Boolean(end));
+	};
+
+	const saveSession = () => {
+		if (!draftId || !title.trim()) {
+			NotificationHandler.showError("Titel und Beginn sind erforderlich.");
+			return;
+		}
+		if (hasEnd && endDate && endDate < startDate) {
+			NotificationHandler.showError("Das Ende muss nach dem Beginn liegen.");
+			return;
+		}
+		const session: UVCEventSession = {
+			id: draftId,
+			title: title.trim(),
+			start: startDate,
+			...(hasEnd && endDate ? { end: endDate } : {}),
+			place: place.trim(),
+			description: description.trim(),
+		};
+		const exists = sessions.some((item) => item.id === session.id);
+		persistSessions(
+			exists ? sessions.map((item) => (item.id === session.id ? session : item)) : [...sessions, session]
+		);
+		setDraftId(null);
+	};
+
+	const moveSession = (index: number, direction: -1 | 1) => {
+		const target = index + direction;
+		if (target < 0 || target >= sessions.length) return;
+		const next = [...sessions];
+		const [item] = next.splice(index, 1);
+		next.splice(target, 0, item);
+		persistSessions(next);
 	};
 
 	const handleShare = async () => {
@@ -74,35 +125,204 @@ export default function EventProgram({ data, onUpdate, isRefetching, onRefresh }
 				gap="md"
 				p="sm"
 			>
-				{/* Enable/Disable Toggle */}
 				<Flex
-					direction="row"
-					align="center"
-					gap="md"
+					direction="column"
+					gap="sm"
 				>
-					<Switch
-						value={programEnabled}
-						onValueChange={handleToggleProgram}
-					/>
-					<Flex
-						flex={1}
-						direction="column"
+					<Text
+						fs="md"
+						fw="bold"
 					>
-						<Text
-							fs="smd"
-							fw="bold"
+						Ablauf
+					</Text>
+					<Text
+						fs="sm"
+						c="gray.6"
+					>
+						Programmpunkte der öffentlichen Seite.
+					</Text>
+					{sessions.length === 0 && <Text c="gray.4">Noch keine Programmpunkte.</Text>}
+					{sessions.map((session, index) => (
+						<Box
+							key={session.id}
+							p="sm"
+							style={{
+								backgroundColor: "#f9f9f9",
+								borderRadius: 8,
+								borderWidth: 1,
+								borderColor: "#e0e0e0",
+							}}
 						>
-							Programm aktivieren
-						</Text>
-						<Text fs="sm">
-							Aktiviere das Programm, um die Teilnehmer*innen ein Programm für das
-							Event anzeigen zu lassen.
-						</Text>
-					</Flex>
+							<Text
+								fs="xs"
+								c="gray.5"
+							>
+								{dayjs(session.start).format("DD.MM.YYYY HH:mm")}
+								{session.end ? ` – ${dayjs(session.end).format("HH:mm")}` : ""}
+								{session.place ? ` · ${session.place}` : ""}
+							</Text>
+							<Text fw="bold">{session.title}</Text>
+							{!!session.description && <Text fs="sm">{session.description}</Text>}
+							<Flex
+								direction="row"
+								gap="xs"
+								wrap="wrap"
+								mt="xs"
+							>
+								<Button
+									variant="subtle"
+									size="sm"
+									disabled={index === 0}
+									onPress={() => moveSession(index, -1)}
+								>
+									Hoch
+								</Button>
+								<Button
+									variant="subtle"
+									size="sm"
+									disabled={index === sessions.length - 1}
+									onPress={() => moveSession(index, 1)}
+								>
+									Runter
+								</Button>
+								<Button
+									variant="subtle"
+									size="sm"
+									onPress={() => openDraft(session)}
+								>
+									<IconEdit size={16} />
+								</Button>
+								<Button
+									variant="subtle"
+									size="sm"
+									onPress={() =>
+										Alert.alert("Programmpunkt entfernen", "Möchtest du diesen Programmpunkt entfernen?", [
+											{ text: "Abbrechen", style: "cancel" },
+											{
+												text: "Entfernen",
+												style: "destructive",
+												onPress: () =>
+													persistSessions(sessions.filter((item) => item.id !== session.id)),
+											},
+										])
+									}
+								>
+									<IconTrash size={16} />
+								</Button>
+							</Flex>
+						</Box>
+					))}
+					{draftId ? (
+						<Flex
+							direction="column"
+							gap="sm"
+						>
+							<TextInput
+								size="sm"
+								label="Titel"
+								placeholder="Titel eingeben..."
+								value={title}
+								onChangeText={setTitle}
+							/>
+							<Flex
+								direction="row"
+								gap="sm"
+							>
+								<DateInput
+									size="sm"
+									label="Beginn"
+									value={startDate}
+									onChange={(value) => {
+										const next = new Date(value);
+										next.setHours(startDate.getHours(), startDate.getMinutes(), 0, 0);
+										setStartDate(next);
+									}}
+								/>
+								<TimeInput
+									size="sm"
+									label="Uhrzeit"
+									value={formatTime(startDate)}
+									onChange={(time) => {
+										const [hours, minutes] = time.split(":").map(Number);
+										const next = new Date(startDate);
+										next.setHours(hours, minutes, 0, 0);
+										setStartDate(next);
+									}}
+								/>
+							</Flex>
+							<Flex
+								direction="row"
+								gap="sm"
+							>
+								<DateInput
+									size="sm"
+									label="Ende"
+									value={endDate ?? startDate}
+									onChange={(value) => {
+										const next = new Date(value);
+										const base = endDate ?? startDate;
+										next.setHours(base.getHours(), base.getMinutes(), 0, 0);
+										setEndDate(next);
+										setHasEnd(true);
+									}}
+								/>
+								<TimeInput
+									size="sm"
+									label="Uhrzeit"
+									value={formatTime(endDate ?? startDate)}
+									onChange={(time) => {
+										const [hours, minutes] = time.split(":").map(Number);
+										const next = new Date(endDate ?? startDate);
+										next.setHours(hours, minutes, 0, 0);
+										setEndDate(next);
+										setHasEnd(true);
+									}}
+								/>
+							</Flex>
+							<TextInput
+								size="sm"
+								label="Ort"
+								placeholder="Ort eingeben..."
+								value={place}
+								onChangeText={setPlace}
+							/>
+							<TextInput
+								size="sm"
+								label="Beschreibung"
+								placeholder="Beschreibung"
+								value={description}
+								onChangeText={setDescription}
+								multiline
+							/>
+							<Flex
+								direction="row"
+								gap="sm"
+							>
+								<Button
+									variant="filled"
+									onPress={saveSession}
+								>
+									Speichern
+								</Button>
+								<Button
+									variant="default"
+									onPress={() => setDraftId(null)}
+								>
+									Abbrechen
+								</Button>
+							</Flex>
+						</Flex>
+					) : (
+						<Button
+							variant="outline"
+							onPress={() => openDraft()}
+						>
+							Programmpunkt hinzufügen
+						</Button>
+					)}
 				</Flex>
 
-				{programEnabled && (
-					<>
+				<>
 						{/* Link Information Section */}
 						<Box
 							bg={applyColor("gray.1")}
@@ -121,7 +341,7 @@ export default function EventProgram({ data, onUpdate, isRefetching, onRefresh }
 										fs="sm"
 										c="gray.5"
 									>
-										Informationen zum Programm:
+										Öffentliche Seite:
 									</Text>
 									<Text
 										fs="xs"
@@ -250,8 +470,7 @@ export default function EventProgram({ data, onUpdate, isRefetching, onRefresh }
 								</Text>
 							)}
 						</Flex>
-					</>
-				)}
+				</>
 			</Flex>
 		</ScrollView>
 	);

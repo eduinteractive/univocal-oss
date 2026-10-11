@@ -3,7 +3,7 @@ import * as WikiController from "../controller/Wiki";
 import * as ContactController from "../controller/Contact";
 import { downloadFile, requireTenantPermission, uploader, validateRequestSchema } from "@eduinteractive/uvc-common";
 import { isWikiAuthor } from "../middlewares/isAuthor";
-import { createWikiChain, createWikiSectionChain, deleteWikiChain, deleteWikiSectionChain, getWikiChain, getWikiSectionChain, updateWikiChain, updateWikiSectionChain } from "../controller/Wiki.validate";
+import { createWikiChain, createWikiSectionChain, deleteWikiChain, deleteWikiSectionChain, getWikiChain, getWikiSectionChain, setWikiSectionTypeChain, updateWikiChain, updateWikiSectionChain } from "../controller/Wiki.validate";
 import { createContactChain, createContactGroupChain, createMultipleContactsChain, deleteContactChain, deleteContactGroupChain, getContactGroupChain, updateContactChain, updateContactGroupChain } from "../controller/Contact.validate";
 
 const TenantRouter = Router({ mergeParams: true });
@@ -19,6 +19,9 @@ TenantRouter.delete("/wiki/:wikiId", requireTenantPermission('knowledge:delete',
 TenantRouter.post("/wiki/:wikiId/section", requireTenantPermission('knowledge:edit', true), isWikiAuthor, createWikiSectionChain(), validateRequestSchema, WikiController.createWikiSection) // Get all Sections
 TenantRouter.get("/wiki/:wikiId/section/:sectionId", getWikiSectionChain(), validateRequestSchema, WikiController.getWikiSection) // Get single Section
 TenantRouter.put("/wiki/:wikiId/section/:sectionId", requireTenantPermission('knowledge:edit', true), isWikiAuthor, uploader.array("newUploads", 5), updateWikiSectionChain(), validateRequestSchema, WikiController.updateWikiSection) // Update Section
+TenantRouter.post("/wiki/:wikiId/section/:sectionId/type", requireTenantPermission('knowledge:edit', true), isWikiAuthor, setWikiSectionTypeChain(), validateRequestSchema, WikiController.setWikiSectionType)
+TenantRouter.get("/wiki/:wikiId/section/:sectionId/etherpad", requireTenantPermission('knowledge:edit', true), getWikiSectionChain(), validateRequestSchema, WikiController.getWikiSectionEtherpad)
+TenantRouter.post("/wiki/:wikiId/section/:sectionId/etherpad/sync", requireTenantPermission('knowledge:edit', true), isWikiAuthor, getWikiSectionChain(), validateRequestSchema, WikiController.syncWikiSectionEtherpad)
 TenantRouter.delete("/wiki/:wikiId/section/:sectionId", requireTenantPermission('knowledge:edit', true), isWikiAuthor, deleteWikiSectionChain(), validateRequestSchema, WikiController.deleteWikiSection) // Delete Section
 TenantRouter.get("/wiki/:wikiId/section/:sectionId/download/:key", downloadFile) // Download Material
 

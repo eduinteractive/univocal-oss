@@ -3,16 +3,32 @@ import {
     ActionIcon,
     Box,
     Card,
+    Center,
     Group,
+    Menu,
     Overlay,
     Table,
     Text,
     Title,
 } from '@mantine/core';
-import { BarChart } from '@mantine/charts';
+import {
+    BarChart,
+    DonutChart,
+    PieChart,
+    RadarChart,
+    WaffleChart,
+} from '@mantine/charts';
 import WordCloud from 'react-d3-cloud';
-import { useRef, useState } from 'react';
-import { IconChartPie, IconDownload, IconTable } from '@tabler/icons-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+    IconChartBar,
+    IconChartDonut,
+    IconChartPie,
+    IconChartRadar,
+    IconDownload,
+    IconGridDots,
+    IconTable,
+} from '@tabler/icons-react';
 import html2canvas from 'html2canvas';
 import { SurveyComponentWithResults } from './SurveyResults';
 import {
@@ -29,6 +45,71 @@ enum SurveyResultView {
     CHART = 'CHART',
 }
 
+enum SurveyChartType {
+    BAR = 'BAR',
+    PIE = 'PIE',
+    DONUT = 'DONUT',
+    RADAR = 'RADAR',
+    WAFFLE = 'WAFFLE',
+}
+
+const CHART_COLORS = [
+    'violet.6',
+    'pink.6',
+    'yellow.6',
+    'grape.6',
+    'indigo.6',
+    'cyan.6',
+    'teal.6',
+    'orange.6',
+    'lime.6',
+    'red.6',
+];
+
+const SINGLE_CHART_TYPES = [
+    SurveyChartType.BAR,
+    SurveyChartType.PIE,
+    SurveyChartType.DONUT,
+    SurveyChartType.RADAR,
+    SurveyChartType.WAFFLE,
+];
+
+const MULTI_CHOICE_CHART_TYPES = [SurveyChartType.BAR, SurveyChartType.RADAR];
+
+const formatCountWithPercent = (count: number, total: number) => {
+    const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+    return `${count} (${percent}%)`;
+};
+
+const countIndex = (results: unknown[], index: number) =>
+    results.reduce<number>(
+        (acc, result) => acc + (result === index ? 1 : 0),
+        0
+    );
+
+const countChoice = (results: unknown[], index: number) =>
+    results.reduce<number>((acc, result) => {
+        if (Array.isArray(result)) {
+            return acc + result.filter((entry) => entry === index).length;
+        }
+        return acc + (result === index ? 1 : 0);
+    }, 0);
+
+const chartTypeIcon = (type: SurveyChartType) => {
+    switch (type) {
+        case SurveyChartType.BAR:
+            return <IconChartBar size={16} />;
+        case SurveyChartType.PIE:
+            return <IconChartPie size={16} />;
+        case SurveyChartType.DONUT:
+            return <IconChartDonut size={16} />;
+        case SurveyChartType.RADAR:
+            return <IconChartRadar size={16} />;
+        case SurveyChartType.WAFFLE:
+            return <IconGridDots size={16} />;
+    }
+};
+
 interface SurveyResultProps {
     data: SurveyComponentWithResults;
 }
@@ -36,8 +117,70 @@ interface SurveyResultProps {
 const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
     const { t } = useTranslation();
     const [view, setView] = useState<SurveyResultView>(SurveyResultView.CHART);
+    const [chartType, setChartType] = useState<SurveyChartType>(SurveyChartType.BAR);
 
     const chartRef = useRef<HTMLDivElement>(null);
+    const totalAnswers = props.data.results.length;
+
+    const isMultipleChoice =
+        props.data.type === SurveyComponentType.CHOICE &&
+        !!(props.data as unknown as SurveyComponentChoice).multiple;
+
+    const availableChartTypes = useMemo(() => {
+        if (
+            props.data.type === SurveyComponentType.LIKERT ||
+            props.data.type === SurveyComponentType.NOMINAL
+        ) {
+            return SINGLE_CHART_TYPES;
+        }
+        if (props.data.type === SurveyComponentType.CHOICE) {
+            return isMultipleChoice ? MULTI_CHOICE_CHART_TYPES : SINGLE_CHART_TYPES;
+        }
+        return [];
+    }, [props.data.type, isMultipleChoice]);
+
+    useEffect(() => {
+        if (
+            availableChartTypes.length > 0 &&
+            !availableChartTypes.includes(chartType)
+        ) {
+            setChartType(SurveyChartType.BAR);
+        }
+    }, [availableChartTypes, chartType]);
+
+    const categoricalChartData = useMemo(() => {
+        if (props.data.type === SurveyComponentType.LIKERT) {
+            return (props.data as unknown as SurveyComponentLikert).scale.labels.map(
+                (label, index) => ({
+                    label,
+                    name: label,
+                    value: countIndex(props.data.results, index),
+                    color: CHART_COLORS[index % CHART_COLORS.length],
+                })
+            );
+        }
+        if (props.data.type === SurveyComponentType.CHOICE) {
+            return (props.data as unknown as SurveyComponentChoice).choices.map(
+                (choice, index) => ({
+                    label: choice,
+                    name: choice,
+                    value: countChoice(props.data.results, index),
+                    color: CHART_COLORS[index % CHART_COLORS.length],
+                })
+            );
+        }
+        if (props.data.type === SurveyComponentType.NOMINAL) {
+            return SurveyComponentNominalScale[
+                (props.data as unknown as SurveyComponentNominal).nominalType
+            ].map((label, index) => ({
+                label,
+                name: label,
+                value: countIndex(props.data.results, index),
+                color: CHART_COLORS[index % CHART_COLORS.length],
+            }));
+        }
+        return [];
+    }, [props.data]);
 
     const handleDownloadPng = async () => {
         if (!chartRef.current) return;
@@ -53,137 +196,113 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
         link.click();
     };
 
+    const renderCategoricalChart = () => {
+        const data = categoricalChartData;
+        const percent = (value: number) => formatCountWithPercent(value, totalAnswers);
+
+        switch (chartType) {
+            case SurveyChartType.PIE:
+                return (
+                    <Center mt="xl" mb="lg">
+                        <PieChart
+                            data={data}
+                            withLabels
+                            withTooltip
+                            withLegend
+                            labelsType="percent"
+                            size={220}
+                            valueFormatter={percent}
+                        />
+                    </Center>
+                );
+            case SurveyChartType.DONUT:
+                return (
+                    <Center mt="xl" mb="lg">
+                        <DonutChart
+                            data={data}
+                            withLabels
+                            withTooltip
+                            withLegend
+                            size={220}
+                            valueFormatter={percent}
+                        />
+                    </Center>
+                );
+            case SurveyChartType.RADAR:
+                return (
+                    <RadarChart
+                        mt="xl"
+                        mb="lg"
+                        h={280}
+                        w="100%"
+                        data={data}
+                        dataKey="label"
+                        series={[
+                            {
+                                name: 'value',
+                                color: 'violet.6',
+                                label: t('SURVEYS.RESULTS.ANSWERS'),
+                            },
+                        ]}
+                        withPolarGrid
+                        withPolarAngleAxis
+                        withPolarRadiusAxis
+                        withTooltip
+                    />
+                );
+            case SurveyChartType.WAFFLE:
+                return (
+                    <Center mt="xl" mb="lg">
+                        <WaffleChart
+                            data={data}
+                            total={Math.max(totalAnswers, 1)}
+                            withLegend
+                            withTooltip
+                            getTooltipLabel={(cell) =>
+                                `${cell.name}: ${percent(cell.value)}`
+                            }
+                        />
+                    </Center>
+                );
+            case SurveyChartType.BAR:
+            default:
+                return (
+                    <BarChart
+                        mt="xl"
+                        mb="lg"
+                        h={180}
+                        w="100%"
+                        data={data}
+                        dataKey="label"
+                        series={[
+                            {
+                                name: 'value',
+                                color: 'violet.6',
+                                label: t('SURVEYS.RESULTS.ANSWERS'),
+                            },
+                        ]}
+                        withBarValueLabel
+                        valueFormatter={percent}
+                        valueLabelProps={{
+                            formatter: (value) => percent(Number(value)),
+                        }}
+                        yAxisProps={{
+                            tickMargin: 10,
+                            tickSize: 10,
+                            interval: 1,
+                            tickFormatter: (value: number) =>
+                                Math.floor(value).toString(),
+                            domain: [0, Math.max(totalAnswers, 1)],
+                        }}
+                    />
+                );
+        }
+    };
+
     const renderChartComponent = () => {
         return (
             <>
-                {props.data.type === SurveyComponentType.LIKERT && (
-                    <BarChart
-                        mt="xl"
-                        mb="lg"
-                        h={150}
-                        w="100%"
-                        data={(
-                            props.data as unknown as SurveyComponentLikert
-                        ).scale.labels.map((label, index) => {
-                            const count = props.data.results.reduce(
-                                (acc: number, result: any) => {
-                                    // Increment count if the result matches the current index (Likert scale response)
-                                    return acc + (result === index ? 1 : 0);
-                                },
-                                0
-                            );
-                            return {
-                                label, // Label for the bar chart (e.g., 'Strongly Agree')
-                                value: count, // Count of how many times this label was chosen
-                            };
-                        })}
-                        dataKey="label"
-                        series={[
-                            {
-                                name: 'value',
-                                color: 'violet',
-                                label: t('SURVEYS.RESULTS.ANSWERS'),
-                            },
-                        ]}
-                        yAxisProps={{
-                            tickMargin: 10,
-                            tickSize: 10,
-                            interval: 1,
-                            tickFormatter: (value: number) =>
-                                Math.floor(value).toString(),
-                            domain: [0, props.data.results.length - 1],
-                        }}
-                    />
-                )}
-                {props.data.type === SurveyComponentType.CHOICE && (
-                    <BarChart
-                        mt="xl"
-                        mb="lg"
-                        w="100%"
-                        h={150}
-                        data={(
-                            props.data as unknown as SurveyComponentChoice
-                        ).choices.map((choice, index) => {
-                            // Calculate the count of how many times this choice was selected
-                            console.log(choice);
-                            const count = props.data.results.reduce(
-                                (acc: number, result: unknown) => {
-                                    // Überprüfe, ob das Ergebnis ein Array ist und zähle die Vorkommen des aktuellen Index
-                                    if (Array.isArray(result)) {
-                                        return (
-                                            acc +
-                                            result.filter((r) => r === index)
-                                                .length
-                                        );
-                                    }
-                                    return acc;
-                                },
-                                0
-                            ); // Initialisiere den Akkumulator mit 0
-
-                            return {
-                                label: choice, // Label für das BarChart (z.B. 'Wahl A')
-                                value: count, // Anzahl, wie oft diese Wahlmöglichkeit gewählt wurde
-                            };
-                        })}
-                        dataKey="label"
-                        series={[
-                            {
-                                name: 'value',
-                                color: 'violet',
-                                label: t('SURVEYS.RESULTS.ANSWERS'),
-                            },
-                        ]}
-                        yAxisProps={{
-                            tickMargin: 10,
-                            tickSize: 10,
-                            interval: 1,
-                            tickFormatter: (value: number) =>
-                                Math.floor(value).toString(),
-                            domain: [0, props.data.results.length], // Adjusted domain to handle maximum number of responses
-                        }}
-                    />
-                )}
-                {props.data.type === SurveyComponentType.NOMINAL && (
-                    <BarChart
-                        mt="xl"
-                        mb="lg"
-                        h={150}
-                        w="100%"
-                        data={SurveyComponentNominalScale[
-                            (props.data as unknown as SurveyComponentNominal)
-                                .nominalType
-                        ].map((label, index) => {
-                            const count = props.data.results.reduce(
-                                (acc: number, result: unknown) => {
-                                    // Increment count if the result matches the current index (Likert scale response)
-                                    return acc + (result === index ? 1 : 0);
-                                },
-                                0
-                            );
-                            return {
-                                label, // Label for the bar chart (e.g., 'Strongly Agree')
-                                value: count, // Count of how many times this label was chosen
-                            };
-                        })}
-                        dataKey="label"
-                        series={[
-                            {
-                                name: 'value',
-                                color: 'violet',
-                                label: t('SURVEYS.RESULTS.ANSWERS'),
-                            },
-                        ]}
-                        yAxisProps={{
-                            tickMargin: 10,
-                            tickSize: 10,
-                            interval: 1,
-                            tickFormatter: (value: number) =>
-                                Math.floor(value).toString(),
-                            domain: [0, props.data.results.length - 1],
-                        }}
-                    />
-                )}
+                {availableChartTypes.length > 0 && renderCategoricalChart()}
                 {props.data.type === SurveyComponentType.OPEN && (
                     <Group mih={150} align="flex-start">
                         {props.data.results.map((result: any, index: number) =>
@@ -325,7 +444,14 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                                 }}
                             >
                                 <Table.Td w="50%">{result.label}</Table.Td>
-                                <Table.Td w="50%">{result.value}</Table.Td>
+                                <Table.Td w="50%">
+                                    {index === results.length - 1
+                                        ? result.value
+                                        : formatCountWithPercent(
+                                              result.value,
+                                              totalAnswers
+                                          )}
+                                </Table.Td>
                             </Table.Tr>
                         ))}
                     </Table.Tbody>
@@ -338,21 +464,7 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                 props.data as unknown as SurveyComponentChoice
             ).choices.map((choice, index) => {
                 // Calculate the count of how many times this choice was selected
-                const count = props.data.results.reduce(
-                    (acc: number, result: any) => {
-                        // Überprüfe, ob das Ergebnis ein Array ist und zähle die Vorkommen des aktuellen Index
-                        if (Array.isArray(result)) {
-                            return (
-                                acc +
-                                (result as any[]).filter(
-                                    (r) => r === index
-                                ).length
-                            );
-                        }
-                        return acc;
-                    },
-                    0
-                ); // Initialisiere den Akkumulator mit 0
+                const count = countChoice(props.data.results, index);
                 return {
                     label: choice, // Label für das BarChart (z.B. 'Wahl A')
                     value: count, // Anzahl, wie oft diese Wahlmöglichkeit gewählt wurde
@@ -360,12 +472,12 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
             });
 
             results.push({
-                label: 'Keine Angabe',
+                label: t('SURVEYS.RESULTS.NO_ANSWER'),
                 value: naCount,
             });
 
             results.push({
-                label: 'Antworten',
+                label: t('SURVEYS.RESULTS.ANSWERS'),
                 value: props.data.results.length,
             });
 
@@ -389,7 +501,14 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                                 }}
                             >
                                 <Table.Td w="50%">{result.label}</Table.Td>
-                                <Table.Td w="50%">{result.value}</Table.Td>
+                                <Table.Td w="50%">
+                                    {index === results.length - 1
+                                        ? result.value
+                                        : formatCountWithPercent(
+                                              result.value,
+                                              totalAnswers
+                                          )}
+                                </Table.Td>
                             </Table.Tr>
                         ))}
                     </Table.Tbody>
@@ -447,7 +566,7 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                     },
                     {}
                 )
-            ).map(([text, value]) => ({ text, value }));
+            ).map(([text, value]) => ({ text, value: Number(value) }));
 
             results.push({
                 text: t('SURVEYS.RESULTS.NO_ANSWER'),
@@ -480,7 +599,12 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                             >
                                 <Table.Td w="50%">{result.text}</Table.Td>
                                 <Table.Td w="50%">
-                                    {result.value as any}
+                                    {index >= results.length - 2
+                                        ? result.value
+                                        : formatCountWithPercent(
+                                              result.value,
+                                              totalAnswers
+                                          )}
                                 </Table.Td>
                             </Table.Tr>
                         ))}
@@ -533,7 +657,14 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
                                 }}
                             >
                                 <Table.Td w="50%">{result.label}</Table.Td>
-                                <Table.Td w="50%">{result.value}</Table.Td>
+                                <Table.Td w="50%">
+                                    {index === results.length - 1
+                                        ? result.value
+                                        : formatCountWithPercent(
+                                              result.value,
+                                              totalAnswers
+                                          )}
+                                </Table.Td>
                             </Table.Tr>
                         ))}
                     </Table.Tbody>
@@ -567,19 +698,52 @@ const SurveyResult = (props: SurveyResultProps): React.ReactNode => {
             <Group justify="space-between" align="end" flex={1}>
                 <Group>
                     <ActionIcon
-                        variant="subtle"
+                        variant={view === SurveyResultView.TABLE ? 'light' : 'subtle'}
                         size="md"
                         onClick={() => setView(SurveyResultView.TABLE)}
                     >
                         <IconTable />
                     </ActionIcon>
-                    <ActionIcon
-                        variant="subtle"
-                        size="md"
-                        onClick={() => setView(SurveyResultView.CHART)}
-                    >
-                        <IconChartPie />
-                    </ActionIcon>
+                    {availableChartTypes.length > 0 ? (
+                        <Menu shadow="md" width={220} position="top-start">
+                            <Menu.Target>
+                                <ActionIcon
+                                    variant={
+                                        view === SurveyResultView.CHART
+                                            ? 'light'
+                                            : 'subtle'
+                                    }
+                                    size="md"
+                                    onClick={() => setView(SurveyResultView.CHART)}
+                                >
+                                    <IconChartPie />
+                                </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                <Menu.Label>{t('SURVEYS.RESULTS.CHART_TYPE')}</Menu.Label>
+                                {availableChartTypes.map((type) => (
+                                    <Menu.Item
+                                        key={type}
+                                        leftSection={chartTypeIcon(type)}
+                                        onClick={() => {
+                                            setChartType(type);
+                                            setView(SurveyResultView.CHART);
+                                        }}
+                                    >
+                                        {t(`SURVEYS.RESULTS.CHART_${type}`)}
+                                    </Menu.Item>
+                                ))}
+                            </Menu.Dropdown>
+                        </Menu>
+                    ) : (
+                        <ActionIcon
+                            variant={view === SurveyResultView.CHART ? 'light' : 'subtle'}
+                            size="md"
+                            onClick={() => setView(SurveyResultView.CHART)}
+                        >
+                            <IconChartPie />
+                        </ActionIcon>
+                    )}
                     <ActionIcon
                         variant="subtle"
                         size="md"

@@ -31,6 +31,11 @@ export interface SurveyMeta extends SVHMetadata {
             isUsed: boolean;
         }[];
         isActive: boolean;
+        startDate?: Date | string | null;
+        endDate?: Date | string | null;
+        redirectionUrl?: string | null;
+        resultsSharing?: boolean;
+        showQuestionNumbers?: boolean;
     }
 }
 
@@ -44,6 +49,24 @@ export interface SurveyComponent {
     type: string;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface PublicSurveyResultsPayload {
+    survey: {
+        _id: string;
+        title: string;
+        description?: string;
+    };
+    components: SurveyComponent[];
+    results: {
+        _id: string;
+        surveyId: string;
+        answers: {
+            [key: string]: unknown;
+        };
+        createdAt: Date;
+        updatedAt: Date;
+    }[];
 }
 
 export interface SurveyResult {

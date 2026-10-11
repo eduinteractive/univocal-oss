@@ -1,5 +1,5 @@
 import { APIHandler } from "../base";
-import { SVHEvent } from "./Types";
+import { SVHPublicEvent } from "./Types";
 
 interface getPublicEventRequest {
     eventId: string;
@@ -7,7 +7,7 @@ interface getPublicEventRequest {
 
 export const getPublicEvent = async (req: getPublicEventRequest) => {
     const response = await APIHandler.get(`/event/public/event/${req.eventId}`);
-    return response.data as Partial<SVHEvent>;
+    return response.data as SVHPublicEvent;
 }
 
 interface createRegistrationRequest {

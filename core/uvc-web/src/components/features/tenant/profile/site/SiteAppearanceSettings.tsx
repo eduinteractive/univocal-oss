@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Card,
     Group,
@@ -8,9 +7,8 @@ import {
     Stack,
     Text,
     Title,
-    UnstyledButton,
 } from '@mantine/core';
-import { IconCheck, IconDeviceDesktop, IconDeviceMobile } from '@tabler/icons-react';
+import { IconDeviceDesktop, IconDeviceMobile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import {
     ProfileSite,
@@ -19,11 +17,11 @@ import {
     SITE_LAYOUTS,
     SITE_PALETTES,
     SiteLayoutPreset,
-    SitePalette,
 } from '@eduinteractive/uvc-api';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { resolveAppearance, SITE_PALETTE_TOKENS } from '../../../site/siteTheme';
+import PaletteSwatch from '../../../site/PaletteSwatch';
+import { resolveAppearance } from '../../../site/siteTheme';
 import SitePreviewCanvas, { PreviewDevice } from './SitePreviewCanvas';
 
 interface SiteAppearanceSettingsProps {
@@ -33,51 +31,6 @@ interface SiteAppearanceSettingsProps {
     saving: boolean;
     onSave: (appearance: ProfileSiteAppearance) => void;
 }
-
-const PaletteSwatch = ({
-    palette,
-    selected,
-    disabled,
-    onSelect,
-}: {
-    palette: SitePalette;
-    selected: boolean;
-    disabled: boolean;
-    onSelect: () => void;
-}) => {
-    const { t } = useTranslation();
-    const tokens = SITE_PALETTE_TOKENS[palette];
-    return (
-        <UnstyledButton
-            onClick={onSelect}
-            disabled={disabled}
-            aria-pressed={selected}
-            p="xs"
-            style={{
-                borderRadius: 'var(--mantine-radius-md)',
-                border: `2px solid ${selected ? tokens.primary : 'var(--mantine-color-gray-3)'}`,
-                transition: 'border-color 200ms ease',
-            }}
-        >
-            <Group gap="sm" wrap="nowrap">
-                <Box
-                    w={40}
-                    h={40}
-                    style={{
-                        flexShrink: 0,
-                        borderRadius: 'var(--mantine-radius-md)',
-                        background: `linear-gradient(135deg, ${tokens.primary} 0 50%, ${tokens.accent} 50% 100%)`,
-                        boxShadow: `inset 0 -10px 0 ${tokens.soft}`,
-                    }}
-                />
-                <Text size="sm" fw={600} style={{ flex: 1 }}>
-                    {t(`SITE.SETTINGS.APPEARANCE.PALETTES.${palette}`)}
-                </Text>
-                {selected && <IconCheck size={18} color={tokens.primary} aria-hidden />}
-            </Group>
-        </UnstyledButton>
-    );
-};
 
 const SiteAppearanceSettings = ({ site, tenantId, canEdit, saving, onSave }: SiteAppearanceSettingsProps) => {
     const { t } = useTranslation();

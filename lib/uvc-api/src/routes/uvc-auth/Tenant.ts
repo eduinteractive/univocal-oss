@@ -14,6 +14,19 @@ export const updateUsersGroup = async (req: updateUsersGroupRequest) => {
     return response.data as TenantUser;
 }
 
+interface updateUserBadgesRequest {
+    groupId: string,
+    body: {
+        userId: string,
+        badges: string[],
+    }
+}
+
+export const updateUserBadges = async (req: updateUserBadgesRequest) => {
+    const response = await APIHandler.put(`/auth/tenant/${req.groupId}/user/badges`, req.body);
+    return response.data as { badges: string[] };
+}
+
 interface deleteUsersGroupRequest {
     groupId: string,
     userId: string,

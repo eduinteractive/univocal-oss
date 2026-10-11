@@ -47,6 +47,20 @@ export const buildSiteUrl = (subdomain: string) => {
 export const buildSitePathUrl = (subdomain: string) =>
     `${import.meta.env.VITE_KUBERNETES_HOST}/g/${subdomain}`;
 
+/**
+ * Public event address. A published group profile with a subdomain serves the
+ * event on that host; otherwise it stays on the app host.
+ */
+export const buildPublicEventUrl = (
+    eventId: string,
+    site?: { subdomain?: string; published?: boolean } | null,
+) => {
+    if (site?.published && site.subdomain) {
+        return `${buildSiteUrl(site.subdomain)}/event/${eventId}`;
+    }
+    return `${import.meta.env.VITE_KUBERNETES_HOST}/event/${eventId}`;
+};
+
 export const profileImageUrl = (key?: string) =>
     key
         ? `${getApiOrigin()}/api/profile/image/${encodeURIComponent(key)}`

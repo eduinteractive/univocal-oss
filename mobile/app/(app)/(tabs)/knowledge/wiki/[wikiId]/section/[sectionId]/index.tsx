@@ -1,15 +1,16 @@
-import { deleteWikiSection, getWikiSection } from "@/api/Wiki";
+import { deleteWikiSection, getWikiSection, getWikiSectionEtherpad, setWikiSectionType, WikiSectionType } from "@/api/Wiki";
 import UVCLoader from "@/components/common/UVCLoader";
 import { useTenant } from "@/context/TenantContext";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { Alert, Linking, RefreshControl, ScrollView } from "react-native";
+import { Alert, Linking, Pressable, RefreshControl, ScrollView } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { htmlToMarkdown } from "@/utils/Parser";
-import React, { useLayoutEffect } from "react";
-import { applySizeProp, Divider, Text } from "@eduinteractive/balladui";
+import React, { useLayoutEffect, useState } from "react";
+import { applyColor, applySizeProp, Button, Card, Divider, Flex, Text } from "@eduinteractive/balladui";
+import { NotificationHandler } from "@/utils/NotificationHandler";
 import UVCMaterials from "@/components/common/UVCMaterials";
-import { IconEdit, IconFiles, IconTrash } from "@/assets/icons/Icon";
+import { IconCheck, IconEdit, IconFiles, IconTrash } from "@/assets/icons/Icon";
 import HeaderMenu from "@/components/layouts/HeaderMenu";
 
 export default () => {
@@ -17,6 +18,7 @@ export default () => {
 	const { wikiId, sectionId } = useLocalSearchParams();
 	const navigation = useNavigation();
 	const queryClient = useQueryClient();
+	const [selectedType, setSelectedType] = useState<WikiSectionType | null>(null);
 
 	const wikiSectionQuery = useQuery({
 		queryKey: ["wiki", currentTenant?._id, wikiId, sectionId],
@@ -59,6 +61,49 @@ export default () => {
 		]);
 	};
 
+	const setTypeMutation = useMutation({
+		mutationFn: setWikiSectionType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["wiki", currentTenant?._id, wikiId, sectionId],
+			});
+		},
+		onError: (error) => {
+			setSelectedType(null);
+			NotificationHandler.showAxiosError(error as Parameters<typeof NotificationHandler.showAxiosError>[0]);
+		},
+	});
+
+	const openEtherpad = async () => {
+		try {
+			const pad = await getWikiSectionEtherpad({
+				tenantId: currentTenant!._id,
+				wikiId: wikiId as string,
+				sectionId: sectionId as string,
+			});
+			if (!pad.url) {
+				NotificationHandler.showError("Das Etherpad konnte nicht geöffnet werden.");
+				return;
+			}
+			await Linking.openURL(pad.launchUrl || pad.url);
+		} catch (error) {
+			NotificationHandler.showAxiosError(error as Parameters<typeof NotificationHandler.showAxiosError>[0]);
+		}
+	};
+
+	const chooseType = (type: WikiSectionType) => {
+		setSelectedType(type);
+		setTypeMutation.mutate({
+			tenantId: currentTenant!._id,
+			wikiId: wikiId as string,
+			sectionId: sectionId as string,
+			body: { type },
+		});
+	};
+
+	const sectionType = wikiSectionQuery.data?.type;
+	const canEditContent = sectionType === "editor";
+
 	useLayoutEffect(() => {
 		if (wikiSectionQuery.data) {
 			navigation.setOptions({
@@ -66,11 +111,15 @@ export default () => {
 				headerRight: () => (
 					<HeaderMenu
 						options={[
-							{
-								label: "Inhalt Bearbeiten",
-								value: "edit",
-								icon: <IconEdit size={20} />,
-							},
+							...(canEditContent
+								? [
+										{
+											label: "Inhalt Bearbeiten",
+											value: "edit",
+											icon: <IconEdit size={20} />,
+										},
+									]
+								: []),
                             {
                                 label: "Materialien bearbeiten",
                                 value: "materials",
@@ -97,7 +146,7 @@ export default () => {
 				),
 			});
 		}
-	}, [wikiSectionQuery.data, navigation]);
+	}, [wikiSectionQuery.data, navigation, canEditContent]);
 
 	if (wikiSectionQuery.isLoading || !wikiSectionQuery.data) {
 		return <UVCLoader />;
@@ -124,7 +173,98 @@ export default () => {
 			>
 				{wiki.title}
 			</Text>
-			<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+			{!wiki.type ? (
+				<Flex
+					direction="column"
+					gap="sm"
+					mt="md"
+				>
+					<Text
+						fs="md"
+						fw="bold"
+					>
+						Wie soll dieses Kapitel geschrieben werden?
+					</Text>
+					<Text
+						fs="sm"
+						c="gray.6"
+					>
+						Die Auswahl gilt dauerhaft für dieses Kapitel.
+					</Text>
+					{(
+						[
+							{
+								type: "editor" as const,
+								title: "Editor",
+								description: "Formatierten Text schreiben, mit Überschriften, Listen und Links.",
+							},
+							{
+								type: "etherpad" as const,
+								title: "Etherpad",
+								description: "Gleichzeitig mit anderen im selben Text schreiben.",
+							},
+						]
+					).map((option) => {
+						const active = selectedType === option.type;
+						return (
+						<Pressable
+							key={option.type}
+							disabled={setTypeMutation.isPending}
+							onPress={() => chooseType(option.type)}
+						>
+							<Card
+								variant="outline"
+								bg={active ? "primary.0" : "white"}
+								p="md"
+								style={{
+									borderColor: active ? applyColor("primary") : applyColor("gray.3"),
+									borderWidth: active ? 2 : 1,
+								}}
+							>
+								<Flex
+									direction="row"
+									align="center"
+									gap="sm"
+								>
+									<Flex
+										direction="column"
+										gap="xs"
+										flex={1}
+									>
+										<Text fw="bold">{option.title}</Text>
+										<Text
+											fs="sm"
+											c="gray.6"
+										>
+											{option.description}
+										</Text>
+									</Flex>
+									{active && (
+										<IconCheck
+											size={20}
+											color={applyColor("primary")}
+										/>
+									)}
+								</Flex>
+							</Card>
+						</Pressable>
+						);
+					})}
+				</Flex>
+			) : (
+				<>
+					<Markdown>{htmlToMarkdown(wiki.content || "")}</Markdown>
+					{wiki.type === "etherpad" && (
+						<Button
+							variant="outline"
+							mt="sm"
+							onPress={openEtherpad}
+						>
+							Im Browser bearbeiten
+						</Button>
+					)}
+				</>
+			)}
 			{wiki.materials.length > 0 && (
 				<>
 					<Divider my="sm" />

@@ -330,8 +330,7 @@ export const createBudgetReceipt = async (req: createBudgetReceiptRequest): Prom
 
     const response = await APIHandler.post(
         `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
     );
     return response.data;
 }
@@ -368,8 +367,7 @@ export const updateBudgetReceipt = async (req: updateBudgetReceiptRequest): Prom
 
     const response = await APIHandler.put(
         `/tenant/tenant/${req.tenantId}/budget/${req.budgetId}/receipt/${req.receiptId}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
     );
     return response.data;
 }

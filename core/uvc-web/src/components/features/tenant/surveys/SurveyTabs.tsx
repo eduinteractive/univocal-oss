@@ -1,14 +1,19 @@
 import {
     ActionIcon,
     Anchor,
+    Badge,
     Box,
     Button,
+    Card,
     Flex,
     Group,
+    SimpleGrid,
     Switch,
     Tabs,
     Text,
+    ThemeIcon,
     Title,
+    Tooltip,
     UnstyledButton,
 } from '@mantine/core';
 import {
@@ -21,10 +26,16 @@ import {
     IconChevronDown,
     IconChevronUp,
     IconClipboardText,
+    IconDownload,
     IconEdit,
+    IconExternalLink,
     IconFileDescription,
+    IconLink,
+    IconPlus,
     IconPresentation,
+    IconPrinter,
     IconQuestionMark,
+    IconTrash,
 } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import QRCode from 'react-qr-code';
@@ -37,7 +48,9 @@ import {
     EDIDeleteDialog,
     EDIModal,
     EDINumberInput,
+    EDISelect,
     EDIStatisticsCards,
+    EDITextInput,
     NotificationHandler,
 } from '@eduinteractive/mantine-common';
 import SurveyResultsCSV from './SurveyResultsCSV';
@@ -47,11 +60,18 @@ import { checkPermission } from '../../../../utils/Permission';
 import SurveyResults from './SurveyResults';
 import SVHQRPDF from '../../../common/SVHQRPDF';
 import SVHTabs from '../../../common/SVHTabs';
+import SVHDateTimePicker from '../../../common/SVHDateTimePicker';
 import { useTranslation } from 'react-i18next';
 
 interface SurveyTabsSubmitData {
     options: {
-        isActive: boolean;
+        isActive?: boolean;
+        executionMode?: SurveyExecutionMode;
+        startDate?: Date | null;
+        endDate?: Date | null;
+        redirectionUrl?: string | null;
+        showQuestionNumbers?: boolean;
+        resultsSharing?: boolean;
     };
 }
 
@@ -76,7 +96,14 @@ const SurveyTabs = (props: SurveyTabsProps) => {
     const [genAmount, setGenAmount] = useState(0);
     const [genModalVisible, setGenModalVisible] = useState(false);
     const [isExecutionActve, setIsExecutionActive] = useState(false);
+    const [executionMode, setExecutionMode] = useState<SurveyExecutionMode>(
+        SurveyExecutionMode.DEFAULT
+    );
     const [resultDelete, setResultDelete] = useState(false);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [redirectionUrl, setRedirectionUrl] = useState('');
+    const [showQuestionNumbers, setShowQuestionNumbers] = useState(true);
 
     const hasPermission = useMemo(() => {
         return (
@@ -93,19 +120,75 @@ const SurveyTabs = (props: SurveyTabsProps) => {
         [props.data]
     );
 
+    const resultsLink = useMemo(
+        () => `${surveyLink}/results`,
+        [surveyLink]
+    );
+
     const surveyTANs = useMemo(
         () => props.data.options.tans,
         [props.data.options.tans]
     );
 
     const surveyQRCode = useMemo(
-        () => <QRCode id="surveyQR" value={surveyLink} size={100} />,
+        () => <QRCode id="surveyQR" value={surveyLink} size={72} />,
         [surveyLink]
     );
 
     useEffect(() => {
         setIsExecutionActive(props.data?.options.isActive);
+        setExecutionMode(
+            props.data?.options.executionMode || SurveyExecutionMode.DEFAULT
+        );
+        setStartDate(
+            props.data?.options.startDate
+                ? new Date(props.data.options.startDate)
+                : null
+        );
+        setEndDate(
+            props.data?.options.endDate
+                ? new Date(props.data.options.endDate)
+                : null
+        );
+        setRedirectionUrl(props.data?.options.redirectionUrl || '');
+        setShowQuestionNumbers(props.data?.options.showQuestionNumbers !== false);
     }, [props.data]);
+
+    const optionsUnchanged =
+        executionMode === props.data.options.executionMode &&
+        (startDate?.getTime() ?? null) ===
+            (props.data.options.startDate
+                ? new Date(props.data.options.startDate).getTime()
+                : null) &&
+        (endDate?.getTime() ?? null) ===
+            (props.data.options.endDate
+                ? new Date(props.data.options.endDate).getTime()
+                : null) &&
+        (redirectionUrl.trim() || '') ===
+            (props.data.options.redirectionUrl || '') &&
+        showQuestionNumbers === (props.data.options.showQuestionNumbers !== false);
+
+    const handleOptionsSave = () => {
+        if (!executionMode) {
+            return NotificationHandler.showError(
+                t('SURVEYS.ERRORS.EXECUTION_MODE_REQUIRED')
+            );
+        }
+        if (startDate && endDate && startDate > endDate) {
+            return NotificationHandler.showError(
+                t('SURVEYS.EXECUTION.START_END_ERROR')
+            );
+        }
+        props.onUpdate({
+            options: {
+                executionMode,
+                startDate,
+                endDate,
+                redirectionUrl: redirectionUrl.trim() || null,
+                showQuestionNumbers,
+            },
+        });
+    };
 
     return (
         <SVHTabs defaultValue="questions" title={props.data?.title}>
@@ -159,12 +242,13 @@ const SurveyTabs = (props: SurveyTabsProps) => {
 
             {hasPermission && (
                 <Tabs.Panel value="execution" p="md">
-                    <Group align="center" gap="xl" justify="center">
-                        <Flex justify="center" w={150}>
+                    <Title order={5} c="violet.6" mb="sm">
+                        {t('SURVEYS.EXECUTION.GENERAL_SETTINGS')}
+                    </Title>
+                    <Card padding="md" radius="md" bg="violet.0">
+                        <Group align="flex-start" wrap="nowrap" gap="md">
                             <Switch
-                                onLabel={t('COMMON.ACTIVE')}
-                                offLabel={t('COMMON.INACTIVE')}
-                                size="lg"
+                                size="sm"
                                 checked={isExecutionActve}
                                 onChange={(e) => {
                                     setIsExecutionActive(e.target.checked);
@@ -175,53 +259,45 @@ const SurveyTabs = (props: SurveyTabsProps) => {
                                     });
                                 }}
                             />
-                        </Flex>
-                        <Box style={{ flex: 1 }}>
-                            <Text>{t('SURVEYS.EXECUTION.ACTIVATE')}</Text>
-                            <Text size="xs" c="dimmed">
-                                {t('SURVEYS.EXECUTION.ACTIVATE_DESCRIPTION')}
-                            </Text>
-                        </Box>
-                    </Group>
+                            <Box style={{ flex: 1 }}>
+                                <Text size="sm" fw={600} c="violet.6">
+                                    {t('SURVEYS.EXECUTION.ACTIVATE')}
+                                </Text>
+                                <Text size="xs" c="dimmed">
+                                    {t('SURVEYS.EXECUTION.ACTIVATE_DESCRIPTION')}
+                                </Text>
+                            </Box>
+                        </Group>
+                    </Card>
                     {props.data.options.isActive && (
-                        <Group
-                            align="flex-start"
-                            gap="sm"
-                            p="md"
-                            bg="gray.0"
-                            style={{
-                                border: 'calc(0.125rem*var(--mantine-scale)) solid var(--mantine-color-gray-3)',
-                            }}
-                            mt="md"
-                            w="100%"
-                        >
-                            <Flex direction="column" gap="sm" w="100%">
-                                <Flex
-                                    direction="row"
-                                    gap="xl"
-                                    justify="space-between"
-                                    flex={1}
-                                    pr="xl"
+                        <Card padding="md" radius="md" bg="violet.0" mt="md">
+                            <Flex align="center" gap="md" wrap="wrap">
+                                <Box
+                                    bg="white"
+                                    p={6}
+                                    style={{ borderRadius: 10, lineHeight: 0, flexShrink: 0 }}
                                 >
-                                    <Flex direction="column">
-                                        <Title order={6} c="dimmed">
-                                            {t('SURVEYS.EXECUTION.INFO_TITLE')}
-                                        </Title>
-                                        <Text size="sm">
-                                            {t('SURVEYS.EXECUTION.SURVEY_ID')} {props.data?._id}
-                                        </Text>
-                                        <Text size="sm">
-                                            {t('SURVEYS.EXECUTION.SURVEY_MODE')}{' '}
-                                            {
-                                                SURVEY_EXECUTION_MODE_STRINGS[
-                                                    props.data?.options
-                                                        .executionMode
-                                                ]
-                                            }
-                                        </Text>
-                                        <Group wrap="wrap" gap="sm" mt="md">
-                                            <Button
-                                                variant="default"
+                                    {surveyQRCode}
+                                </Box>
+                                <Box style={{ flex: '1 1 180px' }}>
+                                    <Text fw={600} c="violet.6" size="sm">
+                                        {t('SURVEYS.EXECUTION.INFO_TITLE')}
+                                    </Text>
+                                    <Anchor
+                                        size="xs"
+                                        c="dimmed"
+                                        target="_blank"
+                                        href={surveyLink}
+                                    >
+                                        {t('SURVEYS.EXECUTION.LINK_TO_SURVEY')}
+                                    </Anchor>
+                                </Box>
+                                <Group gap={4} wrap="nowrap">
+                                        <Tooltip label={t('SURVEYS.EXECUTION.COPY_LINK')}>
+                                            <ActionIcon
+                                                variant="subtle"
+                                                color="violet"
+                                                size="lg"
                                                 onClick={() => {
                                                     clipboard.copy(surveyLink);
                                                     NotificationHandler.showInfo(
@@ -229,185 +305,255 @@ const SurveyTabs = (props: SurveyTabsProps) => {
                                                     );
                                                 }}
                                             >
-                                                {t('SURVEYS.EXECUTION.COPY_LINK')}
-                                            </Button>
-                                            <PDFDownloadLink
-                                                document={
-                                                    <SVHQRPDF
-                                                        link={surveyLink}
-                                                        title={props.data.title}
-                                                        generationNotice={t('COMMON.GENERATION_NOTICE')}
-                                                    />
-                                                }
-                                                fileName={t('SURVEYS.PDF.QR_CODE_FILENAME')}
-                                            >
-                                                <Button variant="default">
-                                                    {t('SURVEYS.EXECUTION.QR_CODE_PRINT')}
-                                                </Button>
-                                            </PDFDownloadLink>
-                                            {props.data.options
-                                                .executionMode ===
-                                                SurveyExecutionMode.TAN && (
-                                                <>
-                                                    <PDFDownloadLink
-                                                        document={
-                                                            <SurveyCodesPDF
-                                                                survey={
-                                                                    props.data
-                                                                }
-                                                                link={
-                                                                    surveyLink
-                                                                }
-                                                                labels={{
-                                                                    codeLabel: t('SURVEYS.PDF.CODE_LABEL'),
-                                                                    tanLabel: t('SURVEYS.PDF.TAN_LABEL'),
-                                                                    generatedAt: t('SURVEYS.PDF.GENERATED_AT'),
-                                                                    generatedIn: t('SURVEYS.PDF.GENERATED_IN'),
-                                                                }}
-                                                            />
-                                                        }
-                                                        fileName={t('SURVEYS.PDF.CODES_FILENAME')}
-                                                    >
-                                                        <Button variant="default">
-                                                            {t('SURVEYS.EXECUTION.CODES_DOWNLOAD')}
-                                                        </Button>
-                                                    </PDFDownloadLink>
-                                                    <EDIModal
-                                                        title={t('SURVEYS.EXECUTION.CODES_GENERATE_MODAL_TITLE')}
-                                                        onSubmit={() => {
-                                                            if (genAmount < 1) {
-                                                                return NotificationHandler.showError(
-                                                                    t('SURVEYS.ERRORS.CODES_AMOUNT_MIN')
-                                                                );
-                                                            }
-                                                            props.onGenerateCodes(
-                                                                genAmount
-                                                            );
-                                                            setGenModalVisible(
-                                                                false
-                                                            );
-                                                        }}
-                                                        onClose={() =>
-                                                            setGenModalVisible(
-                                                                false
-                                                            )
-                                                        }
-                                                        visible={
-                                                            genModalVisible
-                                                        }
-                                                        type="DEFAULT"
-                                                    >
-                                                        <EDINumberInput
-                                                            label={t('SURVEYS.EXECUTION.CODES_AMOUNT_LABEL')}
-                                                            value={genAmount}
-                                                            onChange={(value) =>
-                                                                setGenAmount(
-                                                                    value as number
-                                                                )
-                                                            }
-                                                            min={1}
+                                                <IconLink size={18} />
+                                            </ActionIcon>
+                                        </Tooltip>
+                                        <PDFDownloadLink
+                                            style={{ display: 'inline-flex', textDecoration: 'none' }}
+                                            document={
+                                                <SVHQRPDF
+                                                    link={surveyLink}
+                                                    title={props.data.title}
+                                                    generationNotice={t('COMMON.GENERATION_NOTICE')}
+                                                />
+                                            }
+                                            fileName={t('SURVEYS.PDF.QR_CODE_FILENAME')}
+                                        >
+                                            <Tooltip label={t('SURVEYS.EXECUTION.QR_CODE_PRINT')}>
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="violet"
+                                                    size="lg"
+                                                    component="span"
+                                                >
+                                                    <IconPrinter size={18} />
+                                                </ActionIcon>
+                                            </Tooltip>
+                                        </PDFDownloadLink>
+                                        {props.data.options.executionMode ===
+                                            SurveyExecutionMode.TAN && (
+                                            <>
+                                                <PDFDownloadLink
+                                                    style={{ display: 'inline-flex', textDecoration: 'none' }}
+                                                    document={
+                                                        <SurveyCodesPDF
+                                                            survey={props.data}
+                                                            link={surveyLink}
+                                                            labels={{
+                                                                codeLabel: t('SURVEYS.PDF.CODE_LABEL'),
+                                                                tanLabel: t('SURVEYS.PDF.TAN_LABEL'),
+                                                                generatedAt: t('SURVEYS.PDF.GENERATED_AT'),
+                                                                generatedIn: t('SURVEYS.PDF.GENERATED_IN'),
+                                                            }}
                                                         />
-                                                    </EDIModal>
-                                                    <Button
-                                                        variant="default"
-                                                        onClick={() =>
-                                                            setGenModalVisible(
-                                                                true
-                                                            )
+                                                    }
+                                                    fileName={t('SURVEYS.PDF.CODES_FILENAME')}
+                                                >
+                                                    <Tooltip label={t('SURVEYS.EXECUTION.CODES_DOWNLOAD')}>
+                                                        <ActionIcon
+                                                            variant="subtle"
+                                                            color="violet"
+                                                            size="lg"
+                                                            component="span"
+                                                        >
+                                                            <IconDownload size={18} />
+                                                        </ActionIcon>
+                                                    </Tooltip>
+                                                </PDFDownloadLink>
+                                                <EDIModal
+                                                    title={t('SURVEYS.EXECUTION.CODES_GENERATE_MODAL_TITLE')}
+                                                    onSubmit={() => {
+                                                        if (genAmount < 1) {
+                                                            return NotificationHandler.showError(
+                                                                t('SURVEYS.ERRORS.CODES_AMOUNT_MIN')
+                                                            );
                                                         }
+                                                        props.onGenerateCodes(genAmount);
+                                                        setGenModalVisible(false);
+                                                    }}
+                                                    onClose={() => setGenModalVisible(false)}
+                                                    visible={genModalVisible}
+                                                    type="DEFAULT"
+                                                >
+                                                    <EDINumberInput
+                                                        label={t('SURVEYS.EXECUTION.CODES_AMOUNT_LABEL')}
+                                                        value={genAmount}
+                                                        onChange={(value) =>
+                                                            setGenAmount(value as number)
+                                                        }
+                                                        min={1}
+                                                    />
+                                                </EDIModal>
+                                                <Tooltip label={t('SURVEYS.EXECUTION.CODES_GENERATE')}>
+                                                    <ActionIcon
+                                                        variant="subtle"
+                                                        color="violet"
+                                                        size="lg"
+                                                        onClick={() => setGenModalVisible(true)}
                                                     >
-                                                        {t('SURVEYS.EXECUTION.CODES_GENERATE')}
-                                                    </Button>
-                                                    <Button
-                                                        variant="default"
+                                                        <IconPlus size={18} />
+                                                    </ActionIcon>
+                                                </Tooltip>
+                                                <Tooltip label={t('SURVEYS.EXECUTION.CODES_DELETE')}>
+                                                    <ActionIcon
+                                                        variant="subtle"
+                                                        color="red"
+                                                        size="lg"
                                                         onClick={() => {
                                                             props.onResetCodes();
                                                         }}
                                                     >
-                                                        {t('SURVEYS.EXECUTION.CODES_DELETE')}
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </Group>
-                                        {props.data.options.executionMode ===
-                                            SurveyExecutionMode.TAN && (
-                                            <>
-                                                <UnstyledButton
-                                                    onClick={toggle}
-                                                    mt="md"
-                                                    c="dimmed"
-                                                    style={{
-                                                        display: 'flex',
-                                                        justifyContent:
-                                                            'flex-start',
-                                                        alignItems: 'center',
-                                                    }}
-                                                >
-                                                    <Text size="sm" mr={5}>
-                                                        {t('SURVEYS.EXECUTION.CODES_SHOW')}
-                                                    </Text>
-                                                    {tanOpened ? (
-                                                        <IconChevronUp />
-                                                    ) : (
-                                                        <IconChevronDown />
-                                                    )}
-                                                </UnstyledButton>
-                                                {tanOpened && (
-                                                    <Flex
-                                                        direction="row"
-                                                        gap="sm"
-                                                        wrap="wrap"
-                                                        justify="stretch"
-                                                        mt="sm"
-                                                    >
-                                                        {surveyTANs?.length ===
-                                                            0 && (
-                                                            <Text
-                                                                c="dimmed"
-                                                                size="sm"
-                                                            >
-                                                                {t('SURVEYS.EXECUTION.CODES_EMPTY')}
-                                                            </Text>
-                                                        )}
-                                                        {surveyTANs?.map(
-                                                            (tan) => (
-                                                                <Text
-                                                                    key={
-                                                                        tan.code
-                                                                    }
-                                                                    c="dimmed"
-                                                                    size="xs"
-                                                                    td={
-                                                                        tan.isUsed
-                                                                            ? 'line-through'
-                                                                            : ''
-                                                                    }
-                                                                >
-                                                                    {tan.code}
-                                                                </Text>
-                                                            )
-                                                        )}
-                                                    </Flex>
-                                                )}
+                                                        <IconTrash size={18} />
+                                                    </ActionIcon>
+                                                </Tooltip>
                                             </>
                                         )}
-                                    </Flex>
-                                    <Flex direction="column" gap="sm">
-                                        {surveyQRCode}
-                                        <Anchor
-                                            fw={600}
-                                            target="_blank"
-                                            ta="center"
-                                            size="xs"
-                                            href={surveyLink}
-                                        >
-                                            {t('SURVEYS.EXECUTION.LINK_TO_SURVEY')}
-                                        </Anchor>
-                                    </Flex>
-                                </Flex>
+                                </Group>
                             </Flex>
-                        </Group>
+                            {props.data.options.executionMode ===
+                                SurveyExecutionMode.TAN && (
+                                <Box mt="md">
+                                    <UnstyledButton
+                                        onClick={toggle}
+                                        c="violet.6"
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'flex-start',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <Text size="sm" fw={500} mr={4}>
+                                            {t('SURVEYS.EXECUTION.CODES_SHOW')}
+                                        </Text>
+                                        {tanOpened ? (
+                                            <IconChevronUp size={16} />
+                                        ) : (
+                                            <IconChevronDown size={16} />
+                                        )}
+                                    </UnstyledButton>
+                                    {tanOpened && (
+                                        <Group gap={6} mt="sm">
+                                            {surveyTANs?.length === 0 && (
+                                                <Text c="dimmed" size="sm">
+                                                    {t('SURVEYS.EXECUTION.CODES_EMPTY')}
+                                                </Text>
+                                            )}
+                                            {surveyTANs?.map((tan) => (
+                                                <Badge
+                                                    key={tan.code}
+                                                    variant="white"
+                                                    color="violet"
+                                                    size="sm"
+                                                    tt="none"
+                                                    td={tan.isUsed ? 'line-through' : undefined}
+                                                    c={tan.isUsed ? 'dimmed' : 'violet.6'}
+                                                >
+                                                    {tan.code}
+                                                </Badge>
+                                            ))}
+                                        </Group>
+                                    )}
+                                </Box>
+                            )}
+                        </Card>
                     )}
+                    <Title order={5} c="violet.6" mt="xl" mb="sm">
+                        {t('SURVEYS.EXECUTION.ADDITIONAL_SETTINGS')}
+                    </Title>
+                    <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+                        <Card padding="md" radius="md" bg="violet.0">
+                            <Flex direction="column" gap="xs">
+                                <Text size="sm" fw={600} c="violet.6">
+                                    {t('SURVEYS.EXECUTION.SECTION_ACCESS')}
+                                </Text>
+                                <EDISelect
+                                    label={t('SURVEYS.FIELDS.EXECUTION_MODE')}
+                                    placeholder={t('SURVEYS.FIELDS.EXECUTION_MODE_PLACEHOLDER')}
+                                    value={executionMode}
+                                    onChange={(value) =>
+                                        setExecutionMode(value as SurveyExecutionMode)
+                                    }
+                                    required
+                                    data={Object.keys(SURVEY_EXECUTION_MODE_STRINGS)
+                                        .filter(
+                                            (key) =>
+                                                key !== SurveyExecutionMode.PERSONAL ||
+                                                executionMode === SurveyExecutionMode.PERSONAL
+                                        )
+                                        .map((key) => ({
+                                            value: key,
+                                            label: SURVEY_EXECUTION_MODE_STRINGS[
+                                                key as SurveyExecutionMode
+                                            ],
+                                        }))}
+                                />
+                                <Group
+                                    grow
+                                    preventGrowOverflow={false}
+                                    align="flex-start"
+                                >
+                                    <SVHDateTimePicker
+                                        label={t('SURVEYS.EXECUTION.START_DATE')}
+                                        placeholder={t('SURVEYS.EXECUTION.START_DATE_PLACEHOLDER')}
+                                        value={startDate}
+                                        onChange={setStartDate}
+                                        valueFormat="DD.MM.YYYY HH:mm"
+                                        clearable
+                                    />
+                                    <SVHDateTimePicker
+                                        label={t('SURVEYS.EXECUTION.END_DATE')}
+                                        placeholder={t('SURVEYS.EXECUTION.END_DATE_PLACEHOLDER')}
+                                        value={endDate}
+                                        onChange={setEndDate}
+                                        valueFormat="DD.MM.YYYY HH:mm"
+                                        clearable
+                                    />
+                                </Group>
+                            </Flex>
+                        </Card>
+                        <Card padding="md" radius="md" bg="violet.0">
+                            <Flex direction="column" gap="xs">
+                                <Text size="sm" fw={600} c="violet.6">
+                                    {t('SURVEYS.EXECUTION.SECTION_DISPLAY')}
+                                </Text>
+                                <EDITextInput
+                                    label={t('SURVEYS.EXECUTION.REDIRECTION_URL')}
+                                    placeholder={t('SURVEYS.EXECUTION.REDIRECTION_URL_PLACEHOLDER')}
+                                    value={redirectionUrl}
+                                    onChange={(event) =>
+                                        setRedirectionUrl(event.currentTarget.value)
+                                    }
+                                    rightSectionPointerEvents="all"
+                                    rightSection={
+                                        <Tooltip
+                                            label={t('SURVEYS.EXECUTION.REDIRECTION_URL_TOOLTIP')}
+                                            multiline
+                                            w={240}
+                                        >
+                                            <ThemeIcon radius="xl" size="sm" color="violet">
+                                                <IconQuestionMark size={14} />
+                                            </ThemeIcon>
+                                        </Tooltip>
+                                    }
+                                />
+                                <Switch
+                                    mt="xs"
+                                    size="sm"
+                                    label={t('SURVEYS.EXECUTION.SHOW_QUESTION_NUMBERS')}
+                                    description={t('SURVEYS.EXECUTION.SHOW_QUESTION_NUMBERS_DESCRIPTION')}
+                                    checked={showQuestionNumbers}
+                                    onChange={(event) =>
+                                        setShowQuestionNumbers(event.currentTarget.checked)
+                                    }
+                                />
+                            </Flex>
+                        </Card>
+                    </SimpleGrid>
+                    <Group justify="flex-end" mt="md">
+                        <Button onClick={handleOptionsSave} disabled={optionsUnchanged}>
+                            {t('SURVEYS.EXECUTION.SAVE')}
+                        </Button>
+                    </Group>
                 </Tabs.Panel>
             )}
             <Tabs.Panel value="questions" p="md">
@@ -415,7 +561,10 @@ const SurveyTabs = (props: SurveyTabsProps) => {
             </Tabs.Panel>
 
             <Tabs.Panel value="results" p="md">
-                <Flex direction="row" gap="xl">
+                <Title order={4} c="violet.6" mb="xs">
+                    {t('SURVEYS.RESULTS.SECTION_GENERAL')}
+                </Title>
+                <Flex direction="row" gap="md" align="flex-start" mb="md">
                     {hasPermission && (
                         <EDIDeleteDialog
                             title={t('SURVEYS.RESULTS.DELETE_TITLE')}
@@ -459,6 +608,61 @@ const SurveyTabs = (props: SurveyTabsProps) => {
                         )}
                     </Flex>
                 </Flex>
+                {hasPermission && (
+                    <Box bg="violet.0" p="md" mb="md" style={{ borderRadius: 16 }}>
+                        <Title order={4} c="violet.6" mb="xs">
+                            {t('SURVEYS.RESULTS.SECTION_PUBLISHING')}
+                        </Title>
+                        <Flex direction="row" gap="md" align="center">
+                            <Switch
+                                onLabel={t('COMMON.ACTIVE')}
+                                offLabel={t('COMMON.INACTIVE')}
+                                size="lg"
+                                checked={!!props.data.options.resultsSharing}
+                                onChange={(event) =>
+                                    props.onUpdate({
+                                        options: {
+                                            resultsSharing: event.currentTarget.checked,
+                                        },
+                                    })
+                                }
+                            />
+                            <Box style={{ flex: 1 }}>
+                                <Text fw={500} size="sm">
+                                    {t('SURVEYS.RESULTS.SHARING')}
+                                </Text>
+                                <Text size="xs" c="dimmed">
+                                    {t('SURVEYS.RESULTS.SHARING_DESCRIPTION')}
+                                </Text>
+                            </Box>
+                            {props.data.options.resultsSharing && (
+                                <Group gap="xs">
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="violet"
+                                        component="a"
+                                        href={resultsLink}
+                                        target="_blank"
+                                    >
+                                        <IconExternalLink />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="violet"
+                                        onClick={() => {
+                                            clipboard.copy(resultsLink);
+                                            NotificationHandler.showInfo(
+                                                t('SURVEYS.RESULTS.COPY_RESULTS_LINK_SUCCESS')
+                                            );
+                                        }}
+                                    >
+                                        <IconLink />
+                                    </ActionIcon>
+                                </Group>
+                            )}
+                        </Flex>
+                    </Box>
+                )}
                 <SurveyResults
                     data={{
                         components: props.components,

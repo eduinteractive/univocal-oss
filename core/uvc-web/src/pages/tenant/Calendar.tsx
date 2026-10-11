@@ -20,8 +20,7 @@ const Calendar = () => {
     const { currentTenant } = useTenant();
     const { t } = useTranslation();
 
-    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [displayedDate, setDisplayedDate] = useState(() => new Date());
 
     const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(
         null
@@ -72,28 +71,6 @@ const Calendar = () => {
         onError: NotificationHandler.showAxiosError,
     });
 
-    const handlePrevMonth = () => {
-        let newMonth = currentMonth - 1;
-        let newYear = currentYear;
-        if (newMonth < 0) {
-            newMonth = 11;
-            newYear--;
-        }
-        setCurrentMonth(newMonth);
-        setCurrentYear(newYear);
-    };
-
-    const handleNextMonth = () => {
-        let newMonth = currentMonth + 1;
-        let newYear = currentYear;
-        if (newMonth > 11) {
-            newMonth = 0;
-            newYear++;
-        }
-        setCurrentMonth(newMonth);
-        setCurrentYear(newYear);
-    };
-
     return (
         <SVHPageWrapper p="md">
             <Group gap="xs">
@@ -108,14 +85,10 @@ const Calendar = () => {
             <CalendarFilter
                 calenderToken={calendarTokenQuery.data}
                 filter={metadataFilter || undefined}
-                month={currentMonth}
-                year={currentYear}
                 onAdd={() => {
                     setEventModalVisible(true);
                 }}
                 onFilter={(filter) => setMetadataFilter(filter)}
-                onNextMonth={handleNextMonth}
-                onPreviousMonth={handlePrevMonth}
             />
             <CalendarEventModal
                 event={currentEvent || undefined}
@@ -140,8 +113,8 @@ const Calendar = () => {
             />
             {!metadataFilter?.text && (
                 <CalendarRaster
-                    month={currentMonth}
-                    year={currentYear}
+                    date={displayedDate}
+                    onDateChange={setDisplayedDate}
                     events={calendarEventsQuery.data || []}
                     onSave={(data) => {
                         if (!data._id) {

@@ -47,6 +47,11 @@ interface updateSurveyRequest {
         options?: {
             executionMode?: SurveyExecutionMode;
             isActive?: boolean;
+            startDate?: Date | null;
+            endDate?: Date | null;
+            redirectionUrl?: string | null;
+            resultsSharing?: boolean;
+            showQuestionNumbers?: boolean;
         }
     }
 }

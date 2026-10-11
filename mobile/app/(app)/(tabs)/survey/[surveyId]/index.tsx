@@ -73,14 +73,19 @@ export default () => {
 		onError: NotificationHandler.showAxiosError,
 	});
 
-	const handleUpdateSurvey = async (data: { isActive: boolean }) => {
+	const handleUpdateSurvey = async (data: {
+		isActive?: boolean;
+		startDate?: Date | string | null;
+		endDate?: Date | string | null;
+		redirectionUrl?: string | null;
+		showQuestionNumbers?: boolean;
+		resultsSharing?: boolean;
+	}) => {
 		await updateMutation.mutateAsync({
 			tenantId: currentTenant!.tenant!._id,
 			surveyId: surveyId,
 			body: {
-				options: {
-					isActive: data.isActive,
-				},
+				options: data,
 			},
 		});
 		queryClient.invalidateQueries({ queryKey: ["survey", currentTenant?.tenant!._id, surveyId] });
@@ -204,6 +209,7 @@ export default () => {
 						data={surveyQuery.data}
 						refreshing={surveyQuery.isRefetching}
 						onRefresh={surveyQuery.refetch}
+						onUpdate={handleUpdateSurvey}
 					/>
 				),
 			},

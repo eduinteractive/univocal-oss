@@ -8,12 +8,15 @@ import {
 	SurveyMeta,
 } from "@/api/Survey";
 import { useEffect, useState } from "react";
-import { BarChart } from "react-native-gifted-charts";
-import { ScrollView, Pressable, TextInput, RefreshControl } from "react-native";
+import { BarChart, PieChart } from "react-native-gifted-charts";
+import { ScrollView, Pressable, TextInput, RefreshControl, Share } from "react-native";
 import React from "react";
-import { applyColor, applySizeProp, Card, Flex, Text, Box, Divider } from "@eduinteractive/balladui";
+import { applyColor, applySizeProp, Button, Card, Flex, Switch, Text, Box, Divider } from "@eduinteractive/balladui";
+import { BASE_URL } from "@/api/APIHandler";
+import { NotificationHandler } from "@/utils/NotificationHandler";
 
-// TODO: Move these to a proper constants file
+const SLICE_COLORS = ["#1C7ED6", "#0D9488", "#F08C00", "#E03131", "#7048E8", "#0CA678", "#F06595", "#1864AB"];
+
 const SurveyComponentNominalScale: Record<string, string[]> = {
 	YESNO: ["Ja", "Nein"],
 	CHECK: ["Ja", "Nein", "Vielleicht"],
@@ -32,11 +35,14 @@ interface SurveyResultsProps {
 	};
 	refreshing: boolean;
 	onRefresh: () => void;
+	onUpdate: (data: { resultsSharing: boolean }) => Promise<void>;
 }
 
 export default function SurveyResults(props: SurveyResultsProps) {
 	const [components, setComponents] = useState<SurveyComponentWithResults[]>([]);
 	const [expandedQuestions, setExpandedQuestions] = useState<Record<string, boolean>>({});
+	const [chartMode, setChartMode] = useState<Record<string, "bar" | "donut">>({});
+	const [chartWidth, setChartWidth] = useState<Record<string, number>>({});
 
 	useEffect(() => {
 		if (props.data) {
@@ -106,7 +112,6 @@ export default function SurveyResults(props: SurveyResultsProps) {
 				}
 				case SurveyComponentType.NOMINAL: {
 					const nominalComponent = component as unknown as SurveyComponentNominal;
-                    console.log(nominalComponent.nominalType);
 					return SurveyComponentNominalScale[nominalComponent.nominalType].map(
 						(label, index) => {
 							const count = component.results.reduce(
@@ -276,24 +281,106 @@ export default function SurveyResults(props: SurveyResultsProps) {
 							w="100%"
 							mt="sm"
 							direction="column"
+							gap="sm"
 						>
-							<BarChart
-								data={barData}
-								barWidth={22}
-								spacing={30}
-								hideRules
-								xAxisThickness={1}
-								yAxisThickness={1}
-								yAxisTextStyle={{ color: "#666" }}
-								noOfSections={4}
-								maxValue={Math.max(...barData.map((d) => d.value))}
-								width={300}
-								initialSpacing={10}
-								endSpacing={5}
-								height={200}
-								frontColor="#3b82f6"
-								hideOrigin
-							/>
+							<Flex
+								direction="row"
+								gap="xs"
+							>
+								{(
+									[
+										["bar", "Balken"],
+										["donut", "Ring"],
+									] as const
+								).map(([mode, label]) => {
+									const active = (chartMode[component._id] ?? "bar") === mode;
+									return (
+										<Pressable
+											key={mode}
+											onPress={() =>
+												setChartMode((current) => ({
+													...current,
+													[component._id]: mode,
+												}))
+											}
+										>
+											<Box
+												px="sm"
+												py="xs"
+												bg={active ? "primary" : "gray.1"}
+												style={{ borderRadius: 999 }}
+											>
+												<Text
+													fs="xs"
+													fw="bold"
+													c={active ? "white" : "gray.7"}
+												>
+													{label}
+												</Text>
+											</Box>
+										</Pressable>
+									);
+								})}
+							</Flex>
+							{(chartMode[component._id] ?? "bar") === "donut" ? (
+								barData.some((item) => item.value > 0) ? (
+									<Flex
+										align="center"
+										w="100%"
+									>
+										<PieChart
+											donut
+											radius={84}
+											innerRadius={54}
+											data={barData
+												.map((item, index) => ({
+													value: item.value,
+													color: SLICE_COLORS[index % SLICE_COLORS.length],
+												}))
+												.filter((item) => item.value > 0)}
+										/>
+									</Flex>
+								) : (
+									<Text
+										fs="sm"
+										c="gray.5"
+									>
+										Keine Antworten.
+									</Text>
+								)
+							) : (
+								<Box
+									w="100%"
+									onLayout={(event) => {
+										const next = Math.floor(event.nativeEvent.layout.width);
+										setChartWidth((current) =>
+											current[component._id] === next
+												? current
+												: { ...current, [component._id]: next }
+										);
+									}}
+								>
+									{!!chartWidth[component._id] && (
+										<BarChart
+											data={barData}
+											barWidth={22}
+											spacing={24}
+											hideRules
+											xAxisThickness={1}
+											yAxisThickness={1}
+											yAxisTextStyle={{ color: "#666" }}
+											noOfSections={4}
+											maxValue={Math.max(1, ...barData.map((item) => item.value))}
+											width={chartWidth[component._id]}
+											initialSpacing={10}
+											endSpacing={5}
+											height={200}
+											frontColor="#1C7ED6"
+											hideOrigin
+										/>
+									)}
+								</Box>
+							)}
 							<Divider
 								my="md"
 								color="gray.4"
@@ -316,13 +403,10 @@ export default function SurveyResults(props: SurveyResultsProps) {
 											h={10}
 											style={{
 												backgroundColor:
-													applyColor(
-														"blue"
-													),
-												borderRadius:
-													applySizeProp(
-														"xl"
-													),
+													(chartMode[component._id] ?? "bar") === "donut"
+														? SLICE_COLORS[index % SLICE_COLORS.length]
+														: "#1C7ED6",
+												borderRadius: applySizeProp("xl"),
 											}}
 										/>
 										<Text
@@ -349,6 +433,17 @@ export default function SurveyResults(props: SurveyResultsProps) {
 		);
 	};
 
+	const resultsSharing = !!props.data?.survey.options.resultsSharing;
+	const resultsLink = `${BASE_URL}/survey-transaction/${props.data?.survey._id}/results`;
+
+	const shareResults = async () => {
+		try {
+			await Share.share({ message: resultsLink });
+		} catch {
+			NotificationHandler.showError("Fehler beim Teilen des Links");
+		}
+	};
+
 	return (
 		<ScrollView
 			style={{ padding: applySizeProp("sm"), backgroundColor: "white" }}
@@ -363,6 +458,49 @@ export default function SurveyResults(props: SurveyResultsProps) {
 				gap="md"
 				direction="column"
 			>
+				<Flex
+					direction="row"
+					align="center"
+					gap="md"
+				>
+					<Switch
+						checked={resultsSharing}
+						onChange={(value) => props.onUpdate({ resultsSharing: value })}
+					/>
+					<Flex
+						flex={1}
+						direction="column"
+					>
+						<Text
+							fs="smd"
+							fw="bold"
+						>
+							Ergebnisse teilen
+						</Text>
+						<Text fs="sm">
+							Wenn diese Option aktiviert ist, können die Ergebnisse dieser Umfrage mit anderen geteilt werden.
+						</Text>
+					</Flex>
+				</Flex>
+				{resultsSharing && (
+					<Flex
+						direction="column"
+						gap="xs"
+					>
+						<Text
+							fs="xs"
+							c="gray.5"
+						>
+							{resultsLink}
+						</Text>
+						<Button
+							variant="default"
+							onPress={shareResults}
+						>
+							Ergebnislink teilen
+						</Button>
+					</Flex>
+				)}
 				{components.map(renderResult)}
 			</Flex>
 		</ScrollView>

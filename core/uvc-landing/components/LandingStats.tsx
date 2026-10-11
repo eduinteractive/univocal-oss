@@ -7,6 +7,11 @@ import { useEffect } from "react";
 const MARKETING_PATHS = new Set<string>([
 	"/",
 	"/funktionen",
+	"/funktionen/fachschaften",
+	"/funktionen/asten",
+	"/funktionen/gremien",
+	"/funktionen/changelog",
+	"/funktionen/roadmap",
 	"/faq",
 	"/forschung",
 	"/forschung/beitraege",

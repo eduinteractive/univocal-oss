@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { IconChartDots3, IconChevronDown, IconFileText, IconLogin } from "@tabler/icons-react";
+import { IconChartDots3, IconChevronDown, IconFileText, IconLayoutGrid, IconLogin, IconNews, IconRoute, IconSchool, IconBuildingCommunity, IconUsersGroup } from "@tabler/icons-react";
 import {
 	ActionIcon,
 	AppShell,
@@ -17,6 +17,7 @@ import {
 	rem,
 	ScrollArea,
 	SimpleGrid,
+	Stack,
 	Text,
 	ThemeIcon,
 	Title,
@@ -51,6 +52,48 @@ const footerData = [
 	},
 ];
 
+const audienceLinks = [
+	{
+		icon: IconSchool,
+		title: "Für Fachschaften",
+		description: "Events, Finanzen, Wiki und die eigene Webpräsenz für die Fachschaft",
+		link: "/funktionen/fachschaften",
+	},
+	{
+		icon: IconBuildingCommunity,
+		title: "Für ASten",
+		description: "Referate, Haushalt und Stimmungsbilder für die Studierendenschaft",
+		link: "/funktionen/asten",
+	},
+	{
+		icon: IconUsersGroup,
+		title: "Für Gremien und Ausschüsse",
+		description: "Sitzungen, Beschlüsse und Termine für die akademische Selbstverwaltung",
+		link: "/funktionen/gremien",
+	},
+];
+
+const moreLinks = [
+	{
+		icon: IconLayoutGrid,
+		title: "Funktionsübersicht",
+		description: "Alle Werkzeuge auf einen Blick",
+		link: "/funktionen",
+	},
+	{
+		icon: IconNews,
+		title: "Changelog",
+		description: "Was in der aktuellen Version dazu kam",
+		link: "/funktionen/changelog",
+	},
+	{
+		icon: IconRoute,
+		title: "Roadmap",
+		description: "Was als Nächstes folgt",
+		link: "/funktionen/roadmap",
+	},
+];
+
 const researchLinks = [
 	{
 		icon: IconFileText,
@@ -74,10 +117,11 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 	const [queryClient] = useState(() => new QueryClient());
 	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
 	const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
+	const [functionsOpened, { toggle: toggleFunctions }] = useDisclosure(false);
 	const theme = useMantineTheme();
 	const matchMedia = useMediaQuery(`(min-width: ${rem(theme.breakpoints.sm)})`);
 
-	const researchItems = researchLinks.map((item) => (
+	const menuItem = (item: { icon: React.ElementType; title: string; description: string; link: string }) => (
 		<Link
 			key={item.link}
 			href={item.link}
@@ -116,7 +160,11 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 				</div>
 			</Group>
 		</Link>
-	));
+	);
+
+	const audienceItems = audienceLinks.map(menuItem);
+	const moreItems = moreLinks.map(menuItem);
+	const researchItems = researchLinks.map(menuItem);
 
 	const groups = footerData.map((group, index) => (
 		<Text<"a">
@@ -157,12 +205,61 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							>
 								Startseite
 							</Link>
-							<Link
-								href="/funktionen"
-								className={classes.link}
+							<HoverCard
+								width={760}
+								position="bottom"
+								radius="md"
+								shadow="md"
+								withinPortal
 							>
-								Funktionen
-							</Link>
+								<HoverCard.Target>
+									<Link
+										href="/funktionen"
+										className={classes.link}
+									>
+										<Center inline>
+											<span>Funktionen</span>
+											<IconChevronDown
+												size={16}
+												stroke={1.5}
+												style={{ marginLeft: 4 }}
+											/>
+										</Center>
+									</Link>
+								</HoverCard.Target>
+								<HoverCard.Dropdown style={{ overflow: "hidden" }}>
+									<SimpleGrid
+										cols={2}
+										spacing="lg"
+									>
+										<Stack gap={0}>
+											<Text
+												fw={600}
+												c={COLORS.PRIMARY}
+												px="md"
+											>
+												Zielgruppe
+											</Text>
+											<Divider my="sm" />
+											{audienceItems}
+										</Stack>
+										<Stack
+											gap={0}
+											style={{ borderLeft: "1px solid rgba(18, 8, 117, 0.08)", paddingLeft: "var(--mantine-spacing-md)" }}
+										>
+											<Text
+												fw={600}
+												c={COLORS.PRIMARY}
+												px="md"
+											>
+												Mehr
+											</Text>
+											<Divider my="sm" />
+											{moreItems}
+										</Stack>
+									</SimpleGrid>
+								</HoverCard.Dropdown>
+							</HoverCard>
 							<HoverCard
 								width={600}
 								position="bottom"
@@ -282,12 +379,59 @@ const UVCAppShell = (props: UVCAppShellProps) => {
 							>
 								Startseite
 							</Link>
-							<Link
-								className={classes.link}
-								href="/funktionen"
+							<Group
+								gap={0}
+								wrap="nowrap"
+								w="100%"
 							>
-								Funktionen
-							</Link>
+								<Link
+									className={classes.link}
+									href="/funktionen"
+									onClick={closeDrawer}
+									style={{ width: "auto", flex: 1 }}
+								>
+									Funktionen
+								</Link>
+								<UnstyledButton
+									onClick={toggleFunctions}
+									aria-expanded={functionsOpened}
+									aria-label="Funktionen öffnen"
+									px="xs"
+								>
+									<IconChevronDown
+										size={16}
+										stroke={1.5}
+										style={{
+											transform: functionsOpened ? "rotate(180deg)" : undefined,
+											transition: "transform 200ms ease",
+										}}
+									/>
+								</UnstyledButton>
+							</Group>
+							<Collapse expanded={functionsOpened}>
+								<Text
+									size="xs"
+									fw={700}
+									c="dimmed"
+									px="md"
+									pt="sm"
+									pb={4}
+								>
+									Zielgruppe
+								</Text>
+								{audienceItems}
+								<Text
+									size="xs"
+									fw={700}
+									c="dimmed"
+									px="md"
+									pt="sm"
+									pb={4}
+								>
+									Mehr
+								</Text>
+								{moreItems}
+							</Collapse>
 							<UnstyledButton
 								className={classes.link}
 								onClick={toggleLinks}

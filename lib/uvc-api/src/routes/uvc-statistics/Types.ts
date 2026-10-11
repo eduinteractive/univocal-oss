@@ -14,6 +14,11 @@ export type LandingEventType =
 export type LandingPath =
     | "/"
     | "/funktionen"
+    | "/funktionen/fachschaften"
+    | "/funktionen/asten"
+    | "/funktionen/gremien"
+    | "/funktionen/changelog"
+    | "/funktionen/roadmap"
     | "/faq"
     | "/forschung"
     | "/forschung/beitraege"

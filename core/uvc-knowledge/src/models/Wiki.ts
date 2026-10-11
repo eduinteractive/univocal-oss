@@ -19,6 +19,7 @@ export interface ToCAttrs {
 
 interface WikiAttrs extends SVHMetadataAttrs {
     tableOfContents: ToCAttrs[];
+    etherpadGroupId?: string;
 }
 
 interface WikiModel extends Model<WikiDoc> {
@@ -28,10 +29,12 @@ interface WikiModel extends Model<WikiDoc> {
 export interface WikiDoc extends SVHMetadataDoc {
     _id: Types.ObjectId;
     tableOfContents: ToCAttrs[];
+    etherpadGroupId?: string;
 }
 
 const WikiSchema = new Schema({
     tableOfContents: [WikiTocSchema],
+    etherpadGroupId: { type: String },
 })
 
 WikiSchema.add(SVHMetadataSchema);

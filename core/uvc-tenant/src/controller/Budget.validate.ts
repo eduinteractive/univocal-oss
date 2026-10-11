@@ -3,6 +3,18 @@ import { body, check } from "express-validator"
 import { BudgetPositionType } from "../models/BudgetPosition"
 import { Types } from "mongoose"
 
+const sanitizeMoney = (value: unknown) => {
+    if (typeof value === "number") return value;
+    if (typeof value !== "string") return value;
+    const cleaned = value.replace(/[^\d,.-]/g, "");
+    if (!cleaned) return value;
+    const lastComma = cleaned.lastIndexOf(",");
+    const lastDot = cleaned.lastIndexOf(".");
+    return lastComma > lastDot
+        ? cleaned.replace(/\./g, "").replace(",", ".")
+        : cleaned.replace(/,/g, "");
+};
+
 export const createBudgetChain = () => {
     return [
         ...createSVHMetadataChain(),
@@ -78,7 +90,7 @@ export const createBudgetReceiptChain = () => {
     return [
         check("budgetId").isMongoId().withMessage("budgetId must be a valid Mongo ID").customSanitizer((value) => new Types.ObjectId(value)),
         body("positionId").optional().isMongoId().withMessage("positionId must be a valid Mongo ID").customSanitizer((value) => new Types.ObjectId(value)),
-        body("amount").isFloat({ min: 0 }).withMessage("amount must be a number"),
+        body("amount").customSanitizer(sanitizeMoney).isFloat({ min: 0 }).withMessage("amount must be a number"),
         body("description").optional().isString().withMessage("description must be a string"),
         body("date").isISO8601().withMessage("date must be a date"),
     ]
@@ -89,7 +101,7 @@ export const updateBudgetReceiptChain = () => {
         check("budgetId").isMongoId().withMessage("budgetId must be a valid Mongo ID").customSanitizer((value) => new Types.ObjectId(value)),
         check("receiptId").isMongoId().withMessage("receiptId must be a valid Mongo ID").customSanitizer((value) => new Types.ObjectId(value)),
         body("positionId").isMongoId().withMessage("positionId must be a valid Mongo ID").customSanitizer((value) => new Types.ObjectId(value)),
-        body("amount").optional().isFloat({ min: 0 }).withMessage("amount must be a number"),
+        body("amount").optional().customSanitizer(sanitizeMoney).isFloat({ min: 0 }).withMessage("amount must be a number"),
         body("description").optional().isString().withMessage("description must be a string"),
         body("date").optional().isISO8601().withMessage("date must be a date"),
         body("file").optional().customSanitizer((value) => value ? JSON.parse(value) : undefined).isObject().withMessage("file must be an object"),

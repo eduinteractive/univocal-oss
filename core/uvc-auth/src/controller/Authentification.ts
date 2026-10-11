@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { sign, verify } from "jsonwebtoken";
 import UserContact, { UserContactDoc } from "../models/UserContact";
 import { AuthentificationError, BadRequestError, ForbiddenError, NotFoundError, RedisClient, REQ_CLIENT, sendBrevoTemplateMail } from "@eduinteractive/uvc-common";
-import { normalizeUserData, setAuthCookie } from "../services/Authentification";
+import { normalizeUserData, setAuthCookie, toSessionGroups } from "../services/Authentification";
 import { schacHomeOrganizationFromSubjectId } from "../utils/schacHomeOrganizationFromSubjectId";
 
 interface LoginRequest {
@@ -505,7 +505,7 @@ export const check = async (req: Request, res: Response, next: NextFunction) => 
 
             // Compare decoded token 
             if (
-                JSON.stringify(decodedToken.groups) !== JSON.stringify(userAccount.groups) ||
+                JSON.stringify(toSessionGroups(decodedToken.groups || [])) !== JSON.stringify(toSessionGroups(userAccount.groups)) ||
                 JSON.stringify(decodedToken.domains) !== JSON.stringify(userAccount.domains) ||
                 JSON.stringify(decodedToken.contact) !== JSON.stringify(userAccount.contact) ||
                 decodedToken.authProvider !== userAccount.authProvider ||

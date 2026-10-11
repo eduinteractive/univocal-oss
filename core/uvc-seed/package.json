@@ -1,0 +1,28 @@
+{
+	"name": "uvc-seed",
+	"version": "1.1.1",
+	"description": "Dev-only demo data for Univocal",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon",
+		"start": "npm run build && node ./build/src/service.js",
+		"build": "rimraf ./build && tsc",
+		"build:prod": "rimraf ./build && tsc -p tsconfig.prod.json",
+		"test": "node -e \"process.exit(0)\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "Apache-2.0",
+	"devDependencies": {
+		"@types/bcryptjs": "catalog:",
+		"@types/express": "catalog:uvc-express-boilerplate-dev",
+		"nodemon": "catalog:uvc-express-boilerplate-dev",
+		"rimraf": "catalog:uvc-express-boilerplate-dev",
+		"tsx": "catalog:uvc-express-boilerplate-dev"
+	},
+	"dependencies": {
+		"bcryptjs": "catalog:",
+		"express": "catalog:uvc-express-boilerplate",
+		"mongoose": "catalog:uvc-express-boilerplate"
+	}
+}

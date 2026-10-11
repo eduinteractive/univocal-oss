@@ -71,7 +71,13 @@ const SurveyResults = (props: SurveyResultsProps) => {
         }
     }, [props.data]);
 
-    return <>{components.map((component) => <SurveyResult data={component} />)}</>;
+    return (
+        <>
+            {components.map((component) => (
+                <SurveyResult key={component._id} data={component} />
+            ))}
+        </>
+    );
 };
 
 export default SurveyResults;

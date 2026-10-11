@@ -8,6 +8,11 @@ import {
 } from '@eduinteractive/mantine-common';
 import SVHTextArea from '../../../common/SVHTextArea';
 import { useTranslation } from 'react-i18next';
+import {
+    budgetAmountInputProps,
+    commitBudgetAmount,
+    parseBudgetAmount,
+} from './budgetAmount';
 
 interface BudgetPositionModalSubmitData {
     title: string;
@@ -31,8 +36,8 @@ const BudgetPositionModal = (props: BudgetPositionModalProps) => {
     const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [soll_amount, setSollAmount] = useState(0);
-    const [ist_amount, setIstAmount] = useState(0);
+    const [soll_amount, setSollAmount] = useState<number | string>(0);
+    const [ist_amount, setIstAmount] = useState<number | string>(0);
 
     useEffect(() => {
         if (props.data && 'title' in props.data) {
@@ -53,17 +58,19 @@ const BudgetPositionModal = (props: BudgetPositionModalProps) => {
         if (!title) {
             return NotificationHandler.showError(t("COMMON.ATTRIBUTES.TITLE_ERROR"));
         }
-        if (ist_amount < 0) {
+        const sollAmount = parseBudgetAmount(soll_amount);
+        const istAmount = parseBudgetAmount(ist_amount);
+        if (istAmount < 0) {
             return NotificationHandler.showError(t("BUDGET.ATTRIBUTES.IST_AMOUNT_ERROR"));
         }
-        if (soll_amount < 0) {
+        if (sollAmount < 0) {
             return NotificationHandler.showError(t("BUDGET.ATTRIBUTES.SOLL_AMOUNT_ERROR"));
         }
         props.onSubmit({
             title,
             description,
-            soll_amount: Math.round((soll_amount + Number.EPSILON) * 100) / 100,
-            ist_amount: Math.round((ist_amount + Number.EPSILON) * 100) / 100,
+            soll_amount: Math.round((sollAmount + Number.EPSILON) * 100) / 100,
+            ist_amount: Math.round((istAmount + Number.EPSILON) * 100) / 100,
             type: props.data!.type,
             parent: props.data ? props.data?.parent : undefined,
         });
@@ -105,27 +112,17 @@ const BudgetPositionModal = (props: BudgetPositionModalProps) => {
                             label={t("BUDGET.ATTRIBUTES.SOLL_AMOUNT")}
                             placeholder={t("BUDGET.ATTRIBUTES.SOLL_AMOUNT_PLACEHOLDER")}
                             value={soll_amount}
-                            onChange={(value) =>
-                                setSollAmount(
-                                    typeof value === 'number' ? value : 0
-                                )
-                            }
-                            decimalScale={2}
+                            onChange={(value) => setSollAmount(commitBudgetAmount(value))}
                             required
-                            fixedDecimalScale
+                            {...budgetAmountInputProps}
                         />
                         {props.ist_active && !props.receipt_active && (
                             <EDINumberInput
                                 label={t("BUDGET.ATTRIBUTES.IST_AMOUNT")}
                                 placeholder={t("BUDGET.ATTRIBUTES.IST_AMOUNT_PLACEHOLDER")}
                                 value={ist_amount}
-                                onChange={(value) =>
-                                    setIstAmount(
-                                        typeof value === 'number' ? value : 0
-                                    )
-                                }
-                                decimalScale={2}
-                                fixedDecimalScale
+                                onChange={(value) => setIstAmount(commitBudgetAmount(value))}
+                                {...budgetAmountInputProps}
                             />
                         )}
                     </>

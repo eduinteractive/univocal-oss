@@ -46,11 +46,13 @@ const ContactGroup = lazy(
 const Surveys = lazy(() => import('../pages/tenant/surveys/Surveys'));
 const Survey = lazy(() => import('../pages/tenant/surveys/Survey'));
 const SurveyTransaction = lazy(() => import('../pages/SurveyTransaction'));
+const SurveyPublicResults = lazy(() => import('../pages/SurveyPublicResults'));
 const Events = lazy(() => import('../pages/tenant/events/Events'));
 const Event = lazy(() => import('../pages/tenant/events/Event'));
 const EventRegistration = lazy(() => import('../pages/EventRegistration'));
 const EventAccreditation = lazy(() => import('../pages/EventAccreditation'));
 const EventProgram = lazy(() => import('../pages/EventProgram'));
+const PublicEvent = lazy(() => import('../pages/PublicEvent'));
 const Projects = lazy(() => import('../pages/tenant/projects/Projects'));
 const Project = lazy(() => import('../pages/tenant/projects/Project'));
 const OpenTenants = lazy(() => import('../pages/discover/Tenants'));
@@ -60,10 +62,26 @@ const SVHRouter = (): JSX.Element => {
     return (
         <Routes>
             <Route
+                path="/survey-transaction/:surveyId/results"
+                element={
+                    <SVHSuspense>
+                        <SurveyPublicResults />
+                    </SVHSuspense>
+                }
+            />
+            <Route
                 path="/survey-transaction/:surveyId"
                 element={
                     <SVHSuspense>
                         <SurveyTransaction />
+                    </SVHSuspense>
+                }
+            />
+            <Route
+                path="/event/:eventId"
+                element={
+                    <SVHSuspense>
+                        <PublicEvent />
                     </SVHSuspense>
                 }
             />
@@ -217,6 +235,14 @@ const SVHRouter = (): JSX.Element => {
                                     />
                                     <Route
                                         path=":eventId"
+                                        element={
+                                            <SVHSuspense>
+                                                <Event />
+                                            </SVHSuspense>
+                                        }
+                                    />
+                                    <Route
+                                        path=":eventId/:tab"
                                         element={
                                             <SVHSuspense>
                                                 <Event />

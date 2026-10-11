@@ -18,6 +18,7 @@ import MembersInvitations from '../../components/features/tenant/members/Members
 import MembersJoinRequests from '../../components/features/tenant/members/MembersJoinRequests';
 import SVHFilter, { SVHFilterObject } from '../../components/common/SVHFilter';
 import { useTranslation } from 'react-i18next';
+import { checkPermission } from '../../utils/Permission';
 
 const Members = () => {
     const navigate = useNavigate();
@@ -45,10 +46,29 @@ const Members = () => {
             SAPI.TENANT.TENANT.getTenantJoinRequests({ tenantId: currentTenant!._id }),
     });
 
-    const tenantMemberUpdateGroup = useMutation({
-        mutationFn: SAPI.AUTH.TENANT.updateUsersGroup,
+    const saveMemberMutation = useMutation({
+        mutationFn: async (body: { userId: string; permissionLevel?: number; badges?: string[] }) => {
+            if (body.permissionLevel !== undefined) {
+                await SAPI.AUTH.TENANT.updateUsersGroup({
+                    groupId: currentTenant!._id,
+                    body: {
+                        userId: body.userId,
+                        permissionLevel: body.permissionLevel,
+                    },
+                });
+            }
+            if (body.badges !== undefined) {
+                await SAPI.AUTH.TENANT.updateUserBadges({
+                    groupId: currentTenant!._id,
+                    body: {
+                        userId: body.userId,
+                        badges: body.badges,
+                    },
+                });
+            }
+        },
         onSuccess: () => {
-            NotificationHandler.showSuccess('Mitglied erfolgreich bearbeitet!');
+            NotificationHandler.showSuccess(t('TENANT_PAGES.MEMBERS.SUCCESS.EDITED'));
             tenantMemberQuery.refetch();
         },
         onError: NotificationHandler.showAxiosError,
@@ -139,6 +159,7 @@ const Members = () => {
                             mail: '',
                             group_permission: 0,
                             group_id: currentTenant!._id,
+                            badges: [],
                         }),
                     text: t('TENANT_PAGES.MEMBERS.ADD_MEMBER'),
                     permission: 'member:administration',
@@ -187,8 +208,11 @@ const Members = () => {
             />
             <MemberModal
                 user={currentUser}
-                onSave={(permission, mail) => {
+                onSave={(permission, mail, badges) => {
                     if (currentUser?._id === '') {
+                        if (permission === null) {
+                            return;
+                        }
                         tenantMemberInviteMutation.mutate({
                             body: {
                                 tenantId: currentTenant!._id,
@@ -196,14 +220,24 @@ const Members = () => {
                                 permissionLevel: permission,
                             },
                         });
-                    } else {
-                        tenantMemberUpdateGroup.mutate({
-                            groupId: currentTenant!._id,
-                            body: {
-                                userId: currentUser?._id || '',
-                                permissionLevel: permission,
-                            },
-                        });
+                    } else if (currentUser) {
+                        const canEditPermission = checkPermission(currentTenant!, 'member:administration');
+                        const canEditBadges = checkPermission(currentTenant!, 'member:badges');
+                        const permissionChanged = canEditPermission
+                            && permission !== null
+                            && permission !== currentUser.group_permission;
+                        const previousBadges = currentUser.badges ?? [];
+                        const badgesChanged = canEditBadges && (
+                            badges.length !== previousBadges.length
+                            || badges.some((badge, index) => badge !== previousBadges[index])
+                        );
+                        if (permissionChanged || badgesChanged) {
+                            saveMemberMutation.mutate({
+                                userId: currentUser._id,
+                                permissionLevel: permissionChanged ? permission! : undefined,
+                                badges: badgesChanged ? badges : undefined,
+                            });
+                        }
                     }
                     setCurrentUser(null);
                 }}

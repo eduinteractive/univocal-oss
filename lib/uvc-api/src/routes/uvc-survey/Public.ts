@@ -1,4 +1,4 @@
-import { SurveyComponent, SurveyMeta, SurveyResult } from "../..";
+import { PublicSurveyResultsPayload, SurveyComponent, SurveyMeta, SurveyResult } from "../..";
 import { APIHandler } from "../base";
 
 interface getPublicSurveyRequest {
@@ -23,6 +23,11 @@ interface createSurveyResultRequest {
             [key: string]: unknown;
         }
     }
+}
+
+export const getPublicSurveyResults = async (req: getPublicSurveyRequest): Promise<PublicSurveyResultsPayload> => {
+    const response = await APIHandler.get(`/survey/public/survey/${req.surveyId}/result`);
+    return response.data;
 }
 
 export const createSurveyResult = async (req: createSurveyResultRequest): Promise<SurveyResult> => {

@@ -1,10 +1,10 @@
 import React from "react";
 import { SurveyMeta, SurveyComponent, SurveyResult, SurveyExecutionMode } from "@/api/Survey";
 import { Modal, ScrollView, Share, View, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { BASE_URL } from "@/api/APIHandler";
-import { applyColor, Box, Button, Flex, Text, applySizeProp, TextInput, Space, Switch } from "@eduinteractive/balladui";
+import { applyColor, Box, Button, DateInput, Flex, Text, TimeInput, applySizeProp, TextInput, Space, Switch } from "@eduinteractive/balladui";
 
 const SURVEY_EXECUTION_MODE_STRINGS = {
 	[SurveyExecutionMode.DEFAULT]: "Standard - Anonym ohne Einschränkungen",
@@ -19,7 +19,13 @@ interface SurveyExecutionProps {
 		components: SurveyComponent[];
 		results: SurveyResult[];
 	};
-	onUpdate: (data: { isActive: boolean }) => Promise<void>;
+	onUpdate: (data: {
+		isActive?: boolean;
+		startDate?: Date | null;
+		endDate?: Date | null;
+		redirectionUrl?: string | null;
+		showQuestionNumbers?: boolean;
+	}) => Promise<void>;
 	onGenerateCodes: (amount: number) => Promise<void>;
 	onResetCodes: () => Promise<void>;
 }
@@ -29,8 +35,64 @@ export default function SurveyExecution(props: SurveyExecutionProps) {
 	const [showCodesModal, setShowCodesModal] = useState(false);
 	const [codeAmount, setCodeAmount] = useState("1");
 	const [showTans, setShowTans] = useState(false);
+	const [startDate, setStartDate] = useState<Date | null>(null);
+	const [endDate, setEndDate] = useState<Date | null>(null);
+	const [redirectionUrl, setRedirectionUrl] = useState("");
+	const [showQuestionNumbers, setShowQuestionNumbers] = useState(true);
+	const [savingOptions, setSavingOptions] = useState(false);
+
+	const surveyOptions = props.data?.survey?.options;
+
+	useEffect(() => {
+		if (!surveyOptions) return;
+		setStartDate(surveyOptions.startDate ? new Date(surveyOptions.startDate) : null);
+		setEndDate(surveyOptions.endDate ? new Date(surveyOptions.endDate) : null);
+		setRedirectionUrl(surveyOptions.redirectionUrl || "");
+		setShowQuestionNumbers(surveyOptions.showQuestionNumbers !== false);
+	}, [
+		surveyOptions,
+		surveyOptions?.startDate,
+		surveyOptions?.endDate,
+		surveyOptions?.redirectionUrl,
+		surveyOptions?.showQuestionNumbers,
+	]);
 
 	const surveyLink = `${BASE_URL}/survey-transaction/${props.data?.survey._id}`;
+
+	const formatTime = (date: Date) =>
+		`${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+
+	const setDatePart = (current: Date | null, value: string) => {
+		const next = new Date(value);
+		const base = current ?? new Date();
+		next.setHours(base.getHours(), base.getMinutes(), 0, 0);
+		return next;
+	};
+
+	const setTimePart = (current: Date | null, time: string) => {
+		const [hours, minutes] = time.split(":").map(Number);
+		const next = new Date(current ?? new Date());
+		next.setHours(hours, minutes, 0, 0);
+		return next;
+	};
+
+	const saveOptions = async () => {
+		if (startDate && endDate && startDate > endDate) {
+			NotificationHandler.showError("Die Startzeit muss vor der Endzeit liegen.");
+			return;
+		}
+		setSavingOptions(true);
+		try {
+			await props.onUpdate({
+				startDate,
+				endDate,
+				redirectionUrl: redirectionUrl.trim() || null,
+				showQuestionNumbers,
+			});
+		} finally {
+			setSavingOptions(false);
+		}
+	};
 
 	const handleShare = async () => {
 		try {
@@ -223,6 +285,142 @@ export default function SurveyExecution(props: SurveyExecutionProps) {
 						</Flex>
 					</Box>
 				)}
+
+				<Flex
+					direction="column"
+					gap="sm"
+				>
+					<Text
+						fs="smd"
+						fw="bold"
+					>
+						Zeitraum
+					</Text>
+					<Text fs="sm">
+						Leer lassen, wenn die Umfrage sofort und ohne Endzeit erreichbar sein soll.
+					</Text>
+					{startDate ? (
+						<Flex
+							direction="column"
+							gap="sm"
+						>
+							<Flex
+								direction="row"
+								gap="sm"
+							>
+								<DateInput
+									size="sm"
+									label="Startzeit"
+									value={startDate}
+									onChange={(value) => setStartDate(setDatePart(startDate, value))}
+								/>
+								<TimeInput
+									size="sm"
+									label="Uhrzeit"
+									value={formatTime(startDate)}
+									onChange={(time) => setStartDate(setTimePart(startDate, time))}
+								/>
+							</Flex>
+							<Button
+								variant="subtle"
+								size="sm"
+								onPress={() => setStartDate(null)}
+							>
+								Startzeit entfernen
+							</Button>
+						</Flex>
+					) : (
+						<Button
+							variant="outline"
+							onPress={() => setStartDate(new Date())}
+						>
+							Startzeit hinzufügen
+						</Button>
+					)}
+					{endDate ? (
+						<Flex
+							direction="column"
+							gap="sm"
+						>
+							<Flex
+								direction="row"
+								gap="sm"
+							>
+								<DateInput
+									size="sm"
+									label="Endzeit"
+									value={endDate}
+									onChange={(value) => setEndDate(setDatePart(endDate, value))}
+								/>
+								<TimeInput
+									size="sm"
+									label="Uhrzeit"
+									value={formatTime(endDate)}
+									onChange={(time) => setEndDate(setTimePart(endDate, time))}
+								/>
+							</Flex>
+							<Button
+								variant="subtle"
+								size="sm"
+								onPress={() => setEndDate(null)}
+							>
+								Endzeit entfernen
+							</Button>
+						</Flex>
+					) : (
+						<Button
+							variant="outline"
+							onPress={() => setEndDate(new Date())}
+						>
+							Endzeit hinzufügen
+						</Button>
+					)}
+					<TextInput
+						size="sm"
+						label="Weiterleitungs-URL"
+						placeholder="Weiterleitungs-URL eingeben..."
+						value={redirectionUrl}
+						onChangeText={setRedirectionUrl}
+						autoCapitalize="none"
+					/>
+					<Text
+						fs="xs"
+						c="gray.5"
+					>
+						Nach Beantwortung der Umfrage wird die Person auf diese Adresse weitergeleitet.
+					</Text>
+					<Flex
+						direction="row"
+						align="center"
+						gap="md"
+					>
+						<Switch
+							checked={showQuestionNumbers}
+							onChange={setShowQuestionNumbers}
+						/>
+						<Flex
+							flex={1}
+							direction="column"
+						>
+							<Text
+								fs="smd"
+								fw="bold"
+							>
+								Fragennummern anzeigen
+							</Text>
+							<Text fs="sm">
+								Teilnehmende sehen bei jeder Frage eine fortlaufende Nummer.
+							</Text>
+						</Flex>
+					</Flex>
+					<Button
+						variant="filled"
+						loading={savingOptions}
+						onPress={saveOptions}
+					>
+						Speichern
+					</Button>
+				</Flex>
 			</Flex>
 
 			<Modal

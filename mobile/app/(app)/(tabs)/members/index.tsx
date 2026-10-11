@@ -43,6 +43,8 @@ export default () => {
 	});
 
 	const isAdmin = currentTenant?.permissionLevel === GROUP_PERMISSION_LEVEL.ADMIN;
+	const canAssignBadges =
+		currentTenant?.permissionLevel === GROUP_PERMISSION_LEVEL.MODERATOR || isAdmin;
 
 	const joinRequestsQuery = useQuery({
 		queryKey: ["tenantJoinRequests", currentTenant?._id],
@@ -81,7 +83,7 @@ export default () => {
 	});
 
 	const handleLongPress = (itemId: string, type: "member" | "invitation") => {
-		if (itemId === authData?._id) return;
+		if (type === "member" && !canAssignBadges) return;
 		setSelectedItem({ id: itemId, type });
 		setIsOpen(true);
 	};
@@ -143,6 +145,26 @@ export default () => {
 						>
 							{item.firstName} {item.lastName}
 						</Text>
+						{(item.badges ?? []).length > 0 && (
+							<Flex
+								direction="row"
+								wrap="wrap"
+								gap="xs"
+								mt="xs"
+							>
+								{(item.badges ?? []).map((badge) => (
+									<Box
+										key={badge}
+										bg="primary.1"
+										px="sm"
+										py="xs"
+										style={{ borderRadius: 999 }}
+									>
+										<Text fs="xs">{badge}</Text>
+									</Box>
+								))}
+							</Flex>
+						)}
 					</Box>
 				</Flex>
 			</Card>

@@ -39,10 +39,13 @@ export interface Wiki extends SVHMetadata {
     tableOfContents: WikiToc[];
 }
 
+export type WikiSectionType = "editor" | "etherpad";
+
 export interface WikiSection {
     _id: string;
     title: string;
     content?: string;
+    type?: WikiSectionType;
     materials: {
         title: string,
         link: string,

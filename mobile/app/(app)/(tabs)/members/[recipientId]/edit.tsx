@@ -1,12 +1,12 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
 import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTenant, TenantUser, updateUsersGroup, deleteUsersGroup } from "@/api/Tenant";
+import { getTenant, TenantUser, updateUsersGroup, deleteUsersGroup, updateUserBadges } from "@/api/Tenant";
 import { useTenant } from "@/context/TenantContext";
 import { KeyboardAvoidingView, Platform, ScrollView, Alert } from "react-native";
 import { NotificationHandler } from "@/utils/NotificationHandler";
 import { Card, Flex, Text, Button, Select, TextInput, applyColor } from "@eduinteractive/balladui";
-import { GROUP_PERMISSION_OPTIONS } from "@/api/Auth";
+import { GROUP_PERMISSION_LEVEL, GROUP_PERMISSION_OPTIONS } from "@/api/Auth";
 import UVCLoader from "@/components/common/UVCLoader";
 import { IconTrash } from "@/assets/icons/Icon";
 
@@ -17,8 +17,14 @@ export default () => {
 	const navigation = useNavigation();
 	const { recipientId } = useLocalSearchParams<{ recipientId: string }>();
 
+	const isAdmin = currentTenant?.permissionLevel === GROUP_PERMISSION_LEVEL.ADMIN;
+	const canAssignBadges =
+		currentTenant?.permissionLevel === GROUP_PERMISSION_LEVEL.MODERATOR || isAdmin;
+
 	// Form state
 	const [permissionLevel, setPermissionLevel] = useState<number>(0);
+	const [badges, setBadges] = useState<string[]>([]);
+	const [badgeDraft, setBadgeDraft] = useState("");
 	const [currentUser, setCurrentUser] = useState<TenantUser | null>(null);
 
 	// Fetch tenant data to get user details
@@ -34,57 +40,102 @@ export default () => {
 			if (user) {
 				setCurrentUser(user);
 				setPermissionLevel(user.group_permission);
+				setBadges(user.badges ?? []);
 			}
 		}
 	}, [tenantQuery.data, recipientId]);
 
+	useEffect(() => {
+		if (currentTenant && !canAssignBadges) {
+			router.back();
+		}
+	}, [currentTenant, canAssignBadges, router]);
+
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			title: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : "Mitglied bearbeiten",
-			headerRight: () => (
-				<Flex
-					direction="row"
-					gap="sm"
-				>
-					<Button
-						variant="subtle"
-						size="sm"
-						onPress={handleDelete}
+			headerRight: () =>
+				isAdmin ? (
+					<Flex
+						direction="row"
+						gap="sm"
 					>
-						<IconTrash
-							color={applyColor("red")}
-							size={20}
-						/>
-					</Button>
-				</Flex>
-			),
+						<Button
+							variant="subtle"
+							size="sm"
+							onPress={handleDelete}
+						>
+							<IconTrash
+								color={applyColor("red")}
+								size={20}
+							/>
+						</Button>
+					</Flex>
+				) : null,
 		});
-	}, [navigation, currentUser]);
+	}, [navigation, currentUser, isAdmin]);
 
-	const updatePermissionMutation = useMutation({
-		mutationFn: updateUsersGroup,
+	const badgesChanged = (next: string[], previous: string[] = []) =>
+		next.length !== previous.length || next.some((badge, index) => badge !== previous[index]);
+
+	const saveMutation = useMutation({
+		mutationFn: async () => {
+			if (!currentUser) return;
+			if (isAdmin && permissionLevel !== currentUser.group_permission) {
+				await updateUsersGroup({
+					groupId: currentUser.group_id,
+					body: {
+						userId: currentUser._id,
+						permissionLevel,
+					},
+				});
+			}
+			if (badgesChanged(badges, currentUser.badges)) {
+				await updateUserBadges({
+					groupId: currentUser.group_id,
+					body: {
+						userId: currentUser._id,
+						badges,
+					},
+				});
+			}
+		},
 		onSuccess: () => {
-			NotificationHandler.showSuccess("Berechtigung erfolgreich aktualisiert");
+			NotificationHandler.showSuccess("Mitglied erfolgreich bearbeitet");
 			queryClient.invalidateQueries({ queryKey: ["tenant", currentTenant?._id] });
 			router.back();
 		},
 		onError: NotificationHandler.showAxiosError,
 	});
 
+	const addBadge = () => {
+		const label = badgeDraft.trim().replace(/\s+/g, " ");
+		if (!label) return;
+		if (label.length > 40) {
+			NotificationHandler.showError("Eine Funktion darf höchstens 40 Zeichen lang sein.");
+			return;
+		}
+		if (badges.some((badge) => badge.toLowerCase() === label.toLowerCase())) {
+			setBadgeDraft("");
+			return;
+		}
+		if (badges.length >= 8) {
+			NotificationHandler.showError("Es sind höchstens 8 Funktionen erlaubt.");
+			return;
+		}
+		setBadges((current) => [...current, label]);
+		setBadgeDraft("");
+	};
+
 	const handleSubmit = () => {
 		if (!currentUser) return;
 
-		if (permissionLevel === currentUser.group_permission) {
+		const permissionChanged = isAdmin && permissionLevel !== currentUser.group_permission;
+		if (!permissionChanged && !badgesChanged(badges, currentUser.badges)) {
 			return NotificationHandler.showError("Keine Änderungen vorgenommen");
 		}
 
-		updatePermissionMutation.mutate({
-			groupId: currentUser.group_id,
-			body: {
-				userId: currentUser._id,
-				permissionLevel,
-			},
-		});
+		saveMutation.mutate();
 	};
 
 	const handleDelete = () => {
@@ -122,7 +173,7 @@ export default () => {
 			value: String(value),
 		}));
 
-	if (tenantQuery.isLoading || !currentUser) {
+	if (tenantQuery.isLoading || !currentUser || (currentTenant && !canAssignBadges)) {
 		return <UVCLoader />;
 	}
 
@@ -178,26 +229,75 @@ export default () => {
 						disabled={true}
 					/>
 
-					{/* Permission Selection */}
-					<Select
-						label="Neue Berechtigung"
-						placeholder="Berechtigung auswählen..."
-						size="sm"
-						value={permissionLevel.toString()}
-						options={getPermissionOptions()}
-						onChange={(value) => setPermissionLevel(parseInt(value))}
-					/>
+					{isAdmin && (
+						<>
+							<Select
+								label="Neue Berechtigung"
+								placeholder="Berechtigung auswählen..."
+								size="sm"
+								value={permissionLevel.toString()}
+								options={getPermissionOptions()}
+								onChange={(value) => setPermissionLevel(parseInt(value))}
+							/>
 
-					<Text
-						fs="sm"
-						c="gray.5"
-						mt="sm"
-					>
-						Die Änderung der Berechtigung wird sofort wirksam. Das Mitglied erhält
-						entsprechend neue oder eingeschränkte Zugriffsrechte.
-					</Text>
+							<Text
+								fs="sm"
+								c="gray.5"
+							>
+								Die Änderung der Berechtigung wird sofort wirksam. Das Mitglied erhält
+								entsprechend neue oder eingeschränkte Zugriffsrechte.
+							</Text>
+						</>
+					)}
 
-					{/* Action Buttons */}
+					<Flex direction="column" gap="sm">
+						<Text fs="sm" fw="bold">
+							Funktion
+						</Text>
+						<Text fs="xs" c="gray.5">
+							Sichtbar für alle Mitglieder. Höchstens 8 Funktionen, jeweils bis zu 40 Zeichen.
+						</Text>
+						{badges.length > 0 && (
+							<Flex direction="row" wrap="wrap" gap="xs">
+								{badges.map((badge) => (
+									<Flex
+										key={badge}
+										direction="row"
+										align="center"
+										gap="xs"
+										bg="primary.1"
+										px="sm"
+										py="xs"
+										style={{ borderRadius: 999 }}
+									>
+										<Text fs="xs">{badge}</Text>
+										<Button
+											variant="subtle"
+											size="sm"
+											onPress={() =>
+												setBadges((current) => current.filter((item) => item !== badge))
+											}
+										>
+											Entfernen
+										</Button>
+									</Flex>
+								))}
+							</Flex>
+						)}
+						<TextInput
+							size="sm"
+							label="Funktion hinzufügen"
+							placeholder="Zum Beispiel Sprecher*in"
+							value={badgeDraft}
+							onChangeText={setBadgeDraft}
+							onSubmitEditing={addBadge}
+							maxLength={40}
+						/>
+						<Button variant="outline" onPress={addBadge}>
+							Funktion hinzufügen
+						</Button>
+					</Flex>
+
 					<Flex
 						direction="column"
 						gap="sm"
@@ -205,12 +305,15 @@ export default () => {
 					>
 						<Button
 							variant="filled"
-							loading={updatePermissionMutation.isPending}
-							loadingText="Berechtigung wird aktualisiert..."
+							loading={saveMutation.isPending}
+							loadingText="Wird gespeichert..."
 							onPress={handleSubmit}
-							disabled={permissionLevel === currentUser.group_permission}
+							disabled={
+								!(isAdmin && permissionLevel !== currentUser.group_permission) &&
+								!badgesChanged(badges, currentUser.badges)
+							}
 						>
-							Berechtigung aktualisieren
+							Speichern
 						</Button>
 					</Flex>
 				</Flex>
